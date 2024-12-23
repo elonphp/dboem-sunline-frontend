@@ -508,14 +508,15 @@ export const useStore = defineStore('counter', () => {
                     // 都不符合條件則加入
                     if (header.code !== 'item' && !is_M2 && !is_checkbox && !is_json && !is_quantity && !is_note) {
                         row.push(key ? language_value() : '')
-                        
+
                     } else if (is_checkbox) {
                         // checkbox
                         if (key == 'win_stdwin_subtype') {
                             let data = ''
                             options[key].option_values.forEach((value) => {
                                 data += `'${value.value}'\n`
-                            })
+                            }) 
+                            
                             row.push(key ? data : '')
                         } else {
                             options[key].option_values.forEach((value) => {

@@ -1,0 +1,39 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@vee-validate/i18n": "^4.12.6",
+    "@vee-validate/nuxt": "^4.12.6",
+    "@vee-validate/rules": "^4.12.6",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "bootstrap": "^5.3.3",
+    "compressorjs": "^1.2.1",
+    "file-saver": "^2.0.5",
+    "flatpickr": "^4.6.13",
+    "jquery": "^3.7.1",
+    "js-sha256": "^0.11.0",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.11.1",
+    "vee-validate": "^4.14.7",
+    "vue": "^3.4.21",
+    "vue-recaptcha-v3": "^2.0.1",
+    "vue-router": "^4.3.0",
+    "xlsx": "^0.18.5",
+    "xlsx-js-style": "^1.2.0"
+  },
+  "devDependencies": {
+    "@pinia/nuxt": "^0.5.1",
+    "pinia": "^2.1.7",
+    "sass": "^1.72.0"
+  }
+}

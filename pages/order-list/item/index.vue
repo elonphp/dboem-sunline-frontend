@@ -446,10 +446,10 @@ const delete_order = async()=>{
 // 更新資料
 const up_date = async (copy_item) => {
     const temp = store.temporarily_product || copy_item
+    console.log('複製出來的或是新增的',temp)
     const url = `${store.baseUrl}api/v2/sales/orders/save?locale=${store.language}&return=1`
     const url2 = `${store.baseUrl}api/v2/sales/orders/save?locale=${store.language}`
     const products = [...list_data.value]
-
     if (temp) {
         // let sqm =  parseFloat(+total_sqm.value)
         // let quantity =  parseFloat(+total_quantity.value)
@@ -464,9 +464,11 @@ const up_date = async (copy_item) => {
             acc += +item.quantity
             return acc
         }, 0)
+        // 把新的商品移到最後面
         if (temp.id) {
             const product_idx = products.findIndex(x => x.id == temp.id)
             products.splice(product_idx, 1)
+            console.log(products)
         }
         if (products.length < 1) {
             material = temp.material
@@ -489,6 +491,7 @@ const up_date = async (copy_item) => {
             // temp.price = 0;
             // temp.total = 0;
         }
+        console.log('把複製跟原本加在一起的',products)
         const submit_data = {
             order_id: order_id,
             // 業務

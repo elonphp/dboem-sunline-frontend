@@ -231,7 +231,14 @@ export const useStore = defineStore('counter', () => {
         // 拉桿分段需求
         lever_value:'拉桿分段需求idx',
         // 轉角度數
-        corner_angle_value:order.text_corner_angle.replace(':num','idx')
+        corner_angle_value:order.text_corner_angle,
+        
+        position_value:'C:num位置',
+
+        corner_angle_item1:'item1',
+
+        corner_angle_item:'item:num'
+
       }
     }
 
@@ -267,7 +274,14 @@ export const useStore = defineStore('counter', () => {
                             }
                         }
                         // 把key值當索引獲取語言文字
-                        let text = textMap.value[obj_key].replace('idx', idx + 1)
+                        let text
+                        if(obj_key === 'corner_angle_item'){
+                            text = textMap.value[obj_key].replace(':num', idx + 2)
+                        }else if(textMap.value[obj_key].includes(':num')){
+                            text = textMap.value[obj_key].replace(':num', idx + 1)
+                        }else{
+                            text = textMap.value[obj_key].replace('idx', idx + 1)
+                        }
                         if (text) {
                             headers.push(text)
                         }
@@ -310,7 +324,16 @@ export const useStore = defineStore('counter', () => {
             } else {
                 item.forEach((obj, idx) => {
                     Object.keys(obj).forEach((k) => {
-                        if (textMap.value[k].replace('idx', idx + 1) === header) {
+                        let index = idx + 1
+                        let replace = 'idx'
+                        if(textMap.value[k].includes(':num')){
+                            replace = ':num'
+                        }
+                        if(k === 'corner_angle_item'){
+                            index = idx +2
+                        }
+                        
+                        if (textMap.value[k].replace(replace, index) === header) {
                             match_value = obj[k]
                         }
                     })
@@ -445,7 +468,20 @@ export const useStore = defineStore('counter', () => {
                     })
 
                     // 處理 JSON 選項，把標題添加到表頭
-                    json_data.sort((a, b) => a.option_code.localeCompare(b.option_code))
+                    let json_data_sort = ["dividers_json","lever_segmentation_note","auxiliaries","layers_json","t_post_json","corner_angle"]
+                    json_data.sort((a, b) => {
+                        const json_valuesA = json_headers_language(JSON.parse(a.value))
+                        const json_valuesB = json_headers_language(JSON.parse(b.value))
+                        const indexA = json_data_sort.indexOf(a.option_code);
+                        const indexB = json_data_sort.indexOf(b.option_code);
+                        // 如果 option_code 相同
+                        if (indexA === indexB) {
+                            // 比較 json_values 的長度，長的排前面所以B - A
+                            return json_valuesB.length - json_valuesA.length;
+                        }
+                        // 如果 option_code 不同，維持原本的排序邏輯
+                        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+                      });
                     json_data.forEach((data) => {
                         const json_values = json_headers_language(JSON.parse(data.value))
                         json_values.forEach((name) => {
@@ -511,10 +547,10 @@ export const useStore = defineStore('counter', () => {
 
                     } else if (is_checkbox) {
                         // checkbox
-                        if (key == 'win_stdwin_subtype') {
+                        if (key == 'win_stdwin_subtype' || key == 'outer_frame_cut_position') {
                             let data = ''
                             options[key].option_values.forEach((value) => {
-                                data += `'${value.value}'\n`
+                                data += `${value.value},\n`
                             }) 
                             
                             row.push(key ? data : '')

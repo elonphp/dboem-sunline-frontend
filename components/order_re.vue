@@ -236,6 +236,7 @@
                       <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.confirm_by_window.code}.option_values[0].value`] }"
                         :name="`${order_data.confirm_by_window.code}.option_values[0].value`"
                         v-model="data_val[order_data.confirm_by_window.code]" value="Y" class="form-check-input"
+                        rules="required"
                          />
                       {{ order_data.confirm_by_window.name }}
                       <VeeField type="hidden" :name="`${order_data.confirm_by_window.code}.name`"
@@ -248,7 +249,7 @@
                         :value="order_data.confirm_by_window.type" />
                       <VeeField type="hidden" :name="`${order_data.confirm_by_window.code}.option_values[0].option_value_id`" value="0" />
                     </label>
-                    <VeeErrorMessage v-if="show_corner_hint" class="error__label" :name="`${order_data.confirm_by_window.code}.option_values[0].value`" />
+                    <!-- <VeeErrorMessage v-if="show_corner_hint" class="error__label" :name="`${order_data.confirm_by_window.code}.option_values[0].value`" /> -->
                   </div>
                 </div>
               </div>
@@ -587,7 +588,7 @@
                   </div>
                 </div>
                 <!-- 切窗台 -->
-                <div class="row mb-3" v-if="false">
+                <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-4 " for="">
                     <span class="text-danger">*</span>
                     {{ order_data.outer_frame_cut_position.name }}
@@ -598,11 +599,10 @@
                       <template v-for="(data,idx) in order_data.outer_frame_cut_position.option_values" :key="data.id">
                         <label :for="'outer_frame_cut_position' + data.id">
                           <VeeField 
-                            type="radio" 
+                            type="checkbox" 
                             :name="`${order_data.outer_frame_cut_position.code}.option_value_id`" 
                             :value="data.id"
-                            v-model="order_fill_out_id.outer_frame_cut_position"
-                            @click="checkbox_value(data.id,'outer_frame_cut_position')" 
+                            v-model="data_id[order_data.outer_frame_cut_position.code]"
                             class="form-check-input" 
                             :id="'outer_frame_cut_position' + data.id"
                             label="outer_frame_cut_position"
@@ -1680,7 +1680,7 @@
                   <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
                   <span>{{store.language_txt.order.text_dividers}}</span>
                 </button>
-                <button type="button" class="add_text_btn" @click="add_json(order_data.lever_segmentation_note.code,lever_segmentation_obj)">
+                <button type="button" class="add_text_btn" v-if="show_add_lever && !is_none_win_lever" @click="add_json(order_data.lever_segmentation_note.code,lever_segmentation_obj)">
                   <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
                   <span>{{order_data.lever_segmentation_note.name}}</span>
                 </button>
@@ -2088,7 +2088,7 @@
                       <VeeErrorMessage class="error__label" :name="`${order_data.is_uplow_track_fixed.code}.option_value_id`" />
                     </div>
               </div>
-                <div class="col-md-6 col-12 row mb-3" v-if="!is_folding_door">
+              <div class="col-md-6 col-12 row mb-3" v-if="!is_folding_door">
                     <label class="label-set col-form-label col-sm-4 " for="">
                       <span class="text-danger">*</span>
                       {{ order_data.door_openclose.name }}
@@ -2121,7 +2121,48 @@
                       />
                       <VeeErrorMessage class="error__label" :name="`${order_data.door_openclose.code}.option_value_id`" />
                     </div>
-                </div>
+              </div>
+              <div class="col-md-6 col-12 row mb-3">
+                    <label class="label-set col-form-label col-sm-4 " for="">
+                      <span class="text-danger">*</span>
+                      {{ order_data.track_width.name }}
+                    </label>
+                    <div class="col-sm-8">
+                      <VeeField type="number" :name="`${order_data.track_width.code}.option_value_id`" id="track_width"
+                        class="form-control" :class="{ 'error': errors[`${order_data.track_width.code}.option_value_id`] }"
+                        v-model="data_val[order_data.track_width.code]"
+                        label="track_width" rules="required">
+                      </VeeField>
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.name`"
+                        :value="order_data.track_width.name" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_id`"
+                        :value="order_data.track_width.id" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_code`"
+                        :value="order_data.track_width.code" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.type`"
+                        :value="order_data.track_width.type" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.value`"
+                      v-model="data_val[order_data.track_width.code]"
+                      />
+                      <VeeErrorMessage class="error__label" :name="`${order_data.track_width.code}.option_value_id`" />
+                    <label class="mt-2">
+                      <VeeField type="checkbox"
+                        :name="`${order_data.track_to_window_width.code}.option_values[0].value`"
+                        v-model="data_val[order_data.track_to_window_width.code]" value="Y" class="form-check-input"
+                         />
+                      {{ order_data.track_to_window_width.name }}
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.name`"
+                        :value="order_data.track_to_window_width.name" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_id`"
+                        :value="order_data.track_to_window_width.id" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_code`"
+                        :value="order_data.track_to_window_width.code" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.type`"
+                        :value="order_data.track_to_window_width.type" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_values[0].option_value_id`" value="0" />
+                    </label>
+                    </div>
+              </div>
             </div>
           </div>
         </div>
@@ -2236,15 +2277,18 @@
                 <!-- 轉角片 -->
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
                     {{ order_data.decorative_pane_corner_piece.name }}
                   </label>
                   <div class="col-sm-8">
                     <VeeField 
                         as="select" 
+                        :class="{ 'error': errors[`${order_data.decorative_pane_corner_piece.code}.option_value_id`] }"
                         :name="`${order_data.decorative_pane_corner_piece.code}.option_value_id`"
                         v-model="data_id[order_data.decorative_pane_corner_piece.code]"
                         @change="set_name(data,order_data.decorative_pane_corner_piece.code)"
                         id="decorative_pane_corner_piece"
+                        rules="required"
                         class="form-select">
                       <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
                       <option v-for="data in order_data.decorative_pane_corner_piece.option_values" :key="data.id"
@@ -2261,8 +2305,8 @@
                     <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece.code}.type`"
                       :value="order_data.decorative_pane_corner_piece.type" />
                     <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece.code}.value`"
-                    v-model="data_val[order_data.decorative_pane_corner_piece.code]"
-                     />
+                    v-model="data_val[order_data.decorative_pane_corner_piece.code]"/>
+                    <VeeErrorMessage class="error__label" :name="`${order_data.decorative_pane_corner_piece.code}.option_value_id`" />
                   </div>
                 </div>
               </div>
@@ -2318,6 +2362,38 @@
                     </div>
                   </div>
                 </div>
+                <!-- 轉角片深度 -->
+                <div class="row mb-3" v-if="!is_none_return">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{order_data.decorative_pane_corner_piece_depth.name}}
+                  </label>
+                  <div class="col-sm-8">
+                    <div class="input-group">
+                      <VeeField  
+                        type="number" 
+                        :class="{ 'error': errors[`${order_data.decorative_pane_corner_piece_depth.code}.value`] }"
+                        :name="`${order_data.decorative_pane_corner_piece_depth.code}.value`"
+                        v-model="data_val[order_data.decorative_pane_corner_piece_depth.code]"  
+                        class="form-control"
+                        rules="required"
+                        />
+                      <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece_depth.code}.name`"
+                        :value="order_data.decorative_pane_corner_piece_depth.name" />
+                      <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece_depth.code}.option_id`"
+                        :value="order_data.decorative_pane_corner_piece_depth.id" />
+                      <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece_depth.code}.option_code`"
+                        :value="order_data.decorative_pane_corner_piece_depth.code" />
+                      <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece_depth.code}.type`"
+                        :value="order_data.decorative_pane_corner_piece_depth.type" />
+                      <VeeField type="hidden" :name="`${order_data.decorative_pane_corner_piece_depth.code}.option_value_id`"
+                        value="0" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label"
+                      :name="`${order_data.decorative_pane_corner_piece_depth.code}.value`" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -2344,29 +2420,31 @@
                   <div class="col-sm-10">
                     <div class="d-flex align-items-center  p-2 pt-0"
                       :class="{ 'error': errors[`${t_post_data.code}.option_value_id`] }">
-                      <div class="picOption" v-for="data in t_post_data.option_values" :key="data.id">
-                        <VeeField type="radio" :id="'t_post' + data.id"
-                          :name="`${t_post_data.code}.option_value_id`" :value="data.id"
-                          v-model="data_id[t_post_data.code]"
-                          @change="set_name(data,t_post_data.code),select_T_post()"
-                          label="t_post" rules="required" />
-                        <VeeField type="hidden" :name="`${t_post_data.code}.name`"  :key="t_post_data.code + 'name'"
-                          :value="t_post_data.name" />
-                        <VeeField type="hidden" :name="`${t_post_data.code}.option_id`"  :key="t_post_data.code + 'option_id'"
-                          :value="t_post_data.id" />
-                        <VeeField type="hidden" :name="`${t_post_data.code}.option_code`"  :key="t_post_data.code + 'option_code'"
-                          :value="t_post_data.code" />
-                        <VeeField type="hidden" :name="`${t_post_data.code}.type`"  :key="t_post_data.code + 'type'"
-                          :value="t_post_data.type" />
-                        <VeeField type="hidden" :name="`${t_post_data.code}.value`"  :key="t_post_data.code + 'value'"
-                        v-model="data_val[t_post_data.code]"
-                           />
-                        <label :for="'t_post' + data.id">
-                          <img :src="data.thumb" :alt="data.name">
-                        </label>
-                        <p class="mb-3">
-                          {{ data.name }}
-                        </p>
+                      <div v-for="data in t_post_data.option_values" :key="data.id">
+                        <div class="picOption" v-if="show_t_post(data)">
+                          <VeeField type="radio" :id="'t_post' + data.id"
+                            :name="`${t_post_data.code}.option_value_id`" :value="data.id"
+                            v-model="data_id[t_post_data.code]"
+                            @change="set_name(data,t_post_data.code),select_T_post()"
+                            label="t_post" rules="required" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.name`"  :key="t_post_data.code + 'name'"
+                            :value="t_post_data.name" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.option_id`"  :key="t_post_data.code + 'option_id'"
+                            :value="t_post_data.id" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.option_code`"  :key="t_post_data.code + 'option_code'"
+                            :value="t_post_data.code" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.type`"  :key="t_post_data.code + 'type'"
+                            :value="t_post_data.type" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.value`"  :key="t_post_data.code + 'value'"
+                          v-model="data_val[t_post_data.code]"
+                            />
+                          <label :for="'t_post' + data.id">
+                            <img :src="data.thumb" :alt="data.name">
+                          </label>
+                          <p class="mb-3">
+                            {{ data.name }}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     <VeeErrorMessage class="error__label" :name="`${t_post_data.code}.option_value_id`" />
@@ -2375,8 +2453,19 @@
                 </div>
               </div>
               <!-- T位置 -->
-              <div class="col-md-12 row" v-if="t_post_json.length > 0">
-                <div class="col-md-6 d-flex mb-3 position-relative" v-for="(item,idx) in t_post_json"
+              <div class="d-none">
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.name`"
+                  :value="order_data.t_post_json.name" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_id`"
+                  :value="order_data.t_post_json.id" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_code`"
+                  :value="order_data.t_post_json.code" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.type`"
+                  :value="order_data.t_post_json.type" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_value_id`" value="0" />
+              </div>
+              <div class="col-md-12 row" v-if="t_post_json">
+                <div class="col-md-6 d-flex mb-3 position-relative" v-for="(item,idx) in t_post_json.t_post_height"
                   :key="'T-POST_position' + idx +1">
                   <label class="label-set col-form-label col-sm-4 pe-3" :for="'T-POST_position' + idx+1">
                     <span class="text-danger">*</span>
@@ -2385,43 +2474,138 @@
                   <div class="col-xxl-8 col pe-3">
                     <VeeField type="number"
                     @keydown="clearInput"
-                     :name="`${order_data.t_post_json.code}.value.height[${idx}].t_post_value`"
+                     :name="`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`"
                       :id="'T-POST_position' + idx +1" 
                       class="form-control" 
                       v-model="item.t_post_value" 
                       rules="required"
                       :disabled="!!t_post_json.t_post_average"
-                      :class="{ 'error': errors[`${order_data.t_post_json.code}.value.height[${idx}].t_post_value`] }"
+                      :class="{ 'error': errors[`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`] }"
                       label="T-POST_position" />
-                    <VeeField type="hidden" :name="`${order_data.t_post_json.code}.name`"
-                      :value="order_data.t_post_json.name" />
-                    <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_id`"
-                      :value="order_data.t_post_json.id" />
-                    <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_code`"
-                      :value="order_data.t_post_json.code" />
-                    <VeeField type="hidden" :name="`${order_data.t_post_json.code}.type`"
-                      :value="order_data.t_post_json.type" />
-                    <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_value_id`" value="0" />
                     <VeeErrorMessage class="error__label"
                       :name="`${order_data.t_post_json.code}.value.height[${idx}].t_post_value`" />
                   </div>
                   <div class="d-flex align-items-center">
-                    <i class="fas fa-times  close_btn btn-right-2" @click="del_json(order_data.t_post_json.code,idx)"></i>
+                    <button type="button" :disabled="show_corner && idx === 0" @click="del_json(order_data.t_post_json.code,idx)">
+                      <i class="fas fa-times  close_btn btn-right-2"></i>
+                    </button>
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 d-flex align-items-center mt-3" v-if="false">
+              <!-- 垂直T均分 -->
+              <div class="col-md-6 d-flex align-items-center mt-3" v-if="t_post_json.t_post_height.length > 0">
                 <div class="col-4 label-set pe-2"></div>
                 <div class="col-8">
                   <VeeField type="checkbox" :name="`${order_data.t_post_json.code}.value.t_post_average`"
-                    v-model="order_fill_out.t_post.setting" class="form-check-input" value="Y" />
+                    v-model="t_post_json.t_post_average"
+                    class="form-check-input" value="Y" />
                   <label for=""
                     class="col-8 label-set text-start ps-2">{{ store.language_txt.order.text_divide_equally}}</label>
                 </div>
               </div>
-              <div class="col-12 text-center mt-4">
+              <div class="col-12 text-center my-4">
                 <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.t_post_json.code,t_post_obj)"></i>
               </div>
+              <hr v-if="show_corner">
+              <!-- 轉角窗 -->
+              <div class="d-none" v-if="show_corner && corner_angle_data.length > 0">
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.name`"
+                    :value="order_data.corner_angle.name" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_id`"
+                    :value="order_data.corner_angle.id" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_code`"
+                    :value="order_data.corner_angle.code" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.type`"
+                    :value="order_data.corner_angle.type" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_value_id`"
+                    value="0" />
+                </div>
+                <div class="row col-md-8 col-12 mb-3" v-for="(data,idx) in corner_angle_data" :key="`corner_angle${idx +1}`" v-if="show_corner">
+                  <span class="col-sm-3" v-if="idx == 0">
+                    {{store.language_txt.order.text_corner_shutters}}
+                    <div class="col-12 text-center mt-4" v-if="show_corner">
+                      <button type="button" class="add_text_btn" @click="add_json(order_data.corner_angle.code,corner_angle_obj)">
+                        <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
+                        <span>{{order_data.corner_angle.name.replace(':num',corner_angle_data.length + 1) }}</span>
+                      </button>
+                    </div>
+                  </span>
+                  <span class="col-sm-3" v-else></span>
+                  <div class="col-sm-8 col-12 row position-relative ">
+                    <!-- 角度 -->
+                    <label class="label-set col-form-label col-sm-4" :for="order_data.corner_angle.name">
+                      <span class="text-danger">*</span>
+                      C{{idx + 1}}{{ order_data.corner_angle.name}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_value"
+                        :id="`${order_data.corner_angle.name}${idx + 1}`" class="form-control"
+                        :label="`corner_angle${idx + 1}`"
+                        rules="required"/>
+                        <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`" />
+                    </div>
+                    <!-- 位置 -->
+                    <label class="label-set col-form-label col-sm-4">
+                      <span class="text-danger">*</span>
+                      C{{idx + 1}}位置
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3">
+                      <div class="input-group">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].position_value`] }"
+                        @keydown="clearInput"
+                        v-model="data.position_value"
+                         class="form-control"
+                        :label="`position_value${idx + 1}`"
+                        rules="required"/>
+                        <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`" />
+                    </div>
+                    <!-- item1 -->
+                    <label class="label-set col-form-label col-sm-4" v-if="idx === 0">
+                      <span class="text-danger">*</span>
+                      item {{idx+1}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3 " v-if="idx === 0">
+                      <div class="input-group">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_item1"
+                         class="form-control"
+                        :label="`position_value${idx + 1}`"
+                        rules="required"/>
+                      <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`" />
+                    </div>
+                    <!-- item -->
+                    <label class="label-set col-form-label col-sm-4">
+                      <span class="text-danger">*</span>
+                      item {{idx+2}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3 ">
+                      <div class="input-group">
+                        <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_item"
+                         class="form-control"
+                        :label="`item${idx + 1}`"
+                        rules="required"/>
+                      <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`" />
+                    </div>
+                  </div>
+                   <div class="col position-relative ">
+                    <i class="fas fa-times close_btn close_btn_2" @click="del_json(order_data.corner_angle.code,idx)"></i>
+                   </div>
+                </div>
             </div>
           </div>
         </div>
@@ -2532,7 +2716,7 @@
           <div class="block block3 mainForm">
             <h2 class="title">{{ store.language_txt.order.text_other}}</h2>
             <div class="row flex-auto">
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6 mb-3" v-if="show_multilayer">
                 <!-- 多層窗 -->
                 <div class="row mb-3" v-if="show_multilayer">
                   <span class="col-sm-2">{{store.language_txt.order.text_double_hung}}</span>
@@ -2580,43 +2764,6 @@
                   </div>
                 </div>
                 <hr v-if="show_multilayer">
-                <!-- 轉角窗 -->
-                <div class="d-none" v-if="show_corner && corner_angle_data.length > 0">
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.name`"
-                    :value="order_data.corner_angle.name" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_id`"
-                    :value="order_data.corner_angle.id" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_code`"
-                    :value="order_data.corner_angle.code" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.type`"
-                    :value="order_data.corner_angle.type" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_value_id`"
-                    value="0" />
-                </div>
-                <div class="row mb-3" v-for="(data,idx) in corner_angle_data" :key="`corner_angle${idx +1}`" v-if="show_corner">
-                  <span class="col-sm-2" v-if="idx == 0">{{store.language_txt.order.text_corner_shutters}}</span>
-                  <span class="col-sm-2" v-else></span>
-                  <label class="label-set col-form-label col-sm-4" :for="order_data.corner_angle.name">
-                    <!-- <span class="text-danger">*</span> -->
-                    {{ order_data.corner_angle.name.replace(':num',idx+1) }}
-                  </label>
-                  <div class="col-sm-6 position-relative">
-                    <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`"
-                      @keydown="clearInput"
-                      v-model="data.corner_angle_value"
-                      :id="`${order_data.corner_angle.name}${idx + 1}`" class="form-control"
-                      :label="`corner_angle${idx + 1}`"/>
-                      <i class="fas fa-times close_btn" @click="del_json(order_data.corner_angle.code,idx)"></i>
-                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`" />
-                  </div>
-                </div>
-                <div class="col-12 text-center mt-4" v-if="show_corner">
-                  <button type="button" class="add_text_btn" @click="add_json(order_data.corner_angle.code,corner_angle_obj)">
-                    <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                    <span>{{order_data.corner_angle.name.replace(':num',corner_angle_data.length + 1) }}</span>
-                  </button>
-                </div>
-                <hr v-if="show_corner">
               </div>
               <!-- 窗簾盒 -->
               <div class="col-md-6 mb-3" v-if="show_pelmet">
@@ -2952,6 +3099,13 @@ const handleScroll = () => {
 
 const remove_style = ()=>{
   data_id.value[selected_win_style.value] = ""
+  // 重置表單
+  // 窗型類型驗證沒辦法被刪除
+  // 所以強制重置並賦予材質的id(值)&value值
+  order_form.value.resetForm();
+  order_form.value.setFieldValue(`${order_data.value.win_material?.code}.option_value_id`,data_id.value[order_data.value.win_material?.code]);
+  order_form.value.setFieldValue(`${order_data.value.win_material?.code}.value`,data_val.value[order_data.value.win_material?.code]);
+  
 }
 
 
@@ -3103,15 +3257,17 @@ const track_img = (top_track)=>{
   }
 }
 
+
 // 選擇T柱型式起碼添加一個T位置，選擇無則取消
 const select_T_post = ()=>{
   const t_post = t_post_json.value
-  if(!is_none_post.value && t_post.length <= 0){
+  if(!is_none_post.value && t_post.t_post_height.length <= 0){
     add_json(order_data.value.t_post_json.code, t_post_obj.value)
   }else if(is_none_post.value){
-    data_val.value[order_data.value.t_post_json?.code] = []
+    data_val.value[order_data.value.t_post_json?.code].t_post_height = []
   }
 }
+
 
 
 // 拉桿分段obj
@@ -3139,9 +3295,9 @@ const layer_obj = ref({
   layer_value:""
 })
 // 轉角窗角度 - obj
-const corner_angle_obj = ref({
-  corner_angle_value:""
-})
+const corner_angle_obj = ref([
+  {corner_angle_value:"",position_value:"",corner_angle_item1:"",corner_angle_item:""}
+])
 
 // 輔料obj
 const auxiliary_obj = ref([
@@ -3189,13 +3345,50 @@ const show_Preview_img = (item,old_img) =>{
   }
 }
 
+const show_t_post = (data)=>{
+  if(show_corner.value){
+    const none = [2209,2348,10030]
+    return !none.includes(data.id);
+  }else{
+    return true
+  }
+}
+
+// 總軌道寬與窗同寬
+const track_to_window_width = ()=>{
+  const is_checked = data_val.value[order_data.value?.track_to_window_width?.code] == 'Y'
+  if(is_checked){
+    data_val.value[order_data.value.track_width.code] = data_val.value[order_data.value.win_width.code]
+    $('#track_width').prop('disabled',true)
+  }else{
+    $('#track_width').prop('disabled',false)
+  }
+}
+
 // JSON資料增加
 const add_json = (code,data)=>{
-  data_val.value[code].push({...data})
+  if (!Array.isArray(data_val.value[code]) && code !== 't_post_json') {
+    data_val.value[code] = [];
+  }
+  if(code == 't_post_json'){
+    if(!data_val.value[code].t_post_height){
+      data_val.value[code].t_post_height = []
+      data_val.value[code].t_post_height.push({...data})
+    }else{
+      data_val.value[code].t_post_height.push({...data})
+    }
+    console.log(data_val.value[code])
+  }else{
+    data_val.value[code].push({...data})
+  }
 }
 // JSON資料刪除
 const del_json = (code,idx) =>{
- data_val.value[code].splice(idx,1)
+  if(code == 't_post_json'){
+    data_val.value[code].t_post_height.splice(idx,1)
+  }else{
+    data_val.value[code].splice(idx,1)
+  }
 }
 
 const show_info_img = (e) => {
@@ -3313,7 +3506,7 @@ const is_none_decorative_pane = computed(()=>{
 
 // 無T柱
 const is_none_post = computed(()=>{
-  const t_post = data_id.value[t_post_data.value.code]
+  const t_post = data_id.value[t_post_data.value?.code]
   return t_post== 2209 || t_post == 2348 || t_post == 10030
 })
 
@@ -3337,7 +3530,18 @@ const show_corner = computed(()=>{
   const id = 2011
   const data = data_id.value[order_data.value.win_stdwin_subtype.code]
   if(!is_track.value && data){
-    return data_id.value[order_data.value.win_stdwin_subtype.code].includes(id) && !is_special_windows.value && !is_track.value
+    const match = data_id.value[order_data.value.win_stdwin_subtype.code].includes(id) && !is_special_windows.value && !is_track.value
+    // 轉角窗一定要包含T1 一個
+    if(t_post_json.value.t_post_height.length < 1 && t_post_json.value && match){
+      add_json(order_data.value.t_post_json.code, t_post_obj.value)
+    }
+    if(match && corner_angle_data.value.length < 1){
+      add_json(order_data.value.corner_angle.code,corner_angle_obj.value)
+    }
+    if(match && is_none_post.value){
+      data_id.value[t_post_data.value?.code] = ""
+    }
+    return match
   }
 })
 
@@ -3456,9 +3660,10 @@ const t_post_data = computed(() => {
   
 });
 
+
 // 垂直T
 const t_post_json = computed(()=>{
-  return data_val.value[order_data.value.t_post_json?.code]
+  return data_val.value[order_data.value?.t_post_json?.code]
 })
 
 // 水平T
@@ -3474,6 +3679,12 @@ const corner_angle_data = computed(()=>{
 // 輔料
 const auxiliary_data = computed(()=>{
   return data_val.value[order_data.value.auxiliaries?.code]
+})
+
+// 不要轉角片
+const is_none_return = computed(()=>{
+  const value = data_id.value[order_data.value.decorative_pane_corner_piece?.code]
+  return value == 2177 || value == "" 
 })
 
 // 飾板高度值
@@ -3583,8 +3794,9 @@ const show_add_lever = computed(()=>{
 
 // 寬度
 watch(() => data_val.value[order_data.value?.win_width?.code],debounce(async (newVal, oldVal) => {
-    if (newVal && newVal !== oldVal) {
-      order_form.value.validateField(`${order_data.value.blade_numbers.code}.value`);  //觸發葉片組驗證
+    if (newVal && newVal !== oldVal && oldVal !== "") {
+      order_form.value.validateField(`${order_data.value?.blade_numbers?.code}.value`);  //觸發葉片組驗證
+      track_to_window_width() // 軌道總寬與窗同寬
     }
   }, 300)
 );
@@ -3635,6 +3847,12 @@ watch(() => data_val.value[order_data.value?.win_height?.code], debounce((newVal
   }
 },500),{ immediate: true })
 
+// 軌道總寬與窗同寬
+watch(()=>data_val.value[order_data.value?.track_to_window_width?.code],debounce((newVal,oldVal)=>{
+  track_to_window_width()
+},100),{ immediate: true })
+
+
 // 更換摺疊門or推拉門觸發下軌道種類&頂板深度、高度api資料
 watch(()=> data_id.value[selected_win_style.value],debounce((newVal, oldVal) => {
   if (newVal && newVal !== oldVal && is_track.value) {
@@ -3657,6 +3875,29 @@ watch(() => data_val.value[order_data.value?.layers_json?.code]?.layer, (newVal,
     deep: true // 深度監視
 })
 
+// 垂直T 均分
+const calculate_T_POST = (idx)=>{
+  const width = +data_val.value[order_data.value?.win_width?.code]
+  const t_post = t_post_json.value.t_post_height
+  if(idx == 0){
+    t_post[0].t_post_value = Math.floor(width / (t_post.length + 1) )
+  }else{
+    t_post[idx].t_post_value = Math.floor(t_post[0].t_post_value + t_post[idx - 1].t_post_value)
+  }
+  
+}
+// 垂直T 均分
+watch(() => t_post_json.value, (newVal, oldVal) => {
+  const checked =  newVal.t_post_average 
+  if(!!checked){
+    newVal.t_post_height.map((item,idx)=>{
+      calculate_T_POST(idx)
+    })
+  }
+  }, {
+    deep: true // 深度監視
+});
+
 
 // API ------------------------------------------------>
 const get_order_data = async()=>{
@@ -3673,7 +3914,7 @@ const get_order_data = async()=>{
   data_val.value[order_data.value.lever_segmentation_note.code] = []   //拉桿分段 
   data_val.value[order_data.value.dividers_json.code] = []    //中隔
   data_val.value[order_data.value.auxiliaries.code] = []  //輔料
-  data_val.value[order_data.value.t_post_json.code] = []  //垂直T
+  data_val.value[order_data.value.t_post_json.code] = {t_post_average:"",t_post_height:[]}  //垂直T
   data_val.value[order_data.value.layers_json.code] = {layer:"",value:[]}  //水平T
   data_val.value[order_data.value.corner_angle.code] = []   // 轉角窗角度
   // 多選checkbox
@@ -3951,7 +4192,8 @@ const show_errors = (errors) => {
 // 未通過驗證
 const onInvalidSubmit = ({ values, errors, results }) =>{
   if(errors){
-    console.log(values)
+    console.log(errors);
+    
     show_alart_box.value = true
   }else if(edit_mode.value !== true){
     onSubmit()

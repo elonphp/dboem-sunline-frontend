@@ -1,1 +1,0 @@
-import{q as o,c as n,a as r,o as s}from"./B4Idg1NY.js";const u={__name:"footer",setup(a){return o(()=>{const e=$("footer").innerHeight();document.documentElement.style.setProperty("--footer-height",e+"px")}),(e,t)=>(s(),n("footer",null,t[0]||(t[0]=[r("div",null,"Copyright ©Sunline 2024",-1)])))}};export{u as default};

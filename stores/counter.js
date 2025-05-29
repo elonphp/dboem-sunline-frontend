@@ -233,7 +233,7 @@ export const useStore = defineStore('counter', () => {
         // 轉角度數
         corner_angle_value:order.text_corner_angle,
         
-        position_value:'C:num位置',
+        position_value:`C:num${order.text_position}`,
 
         corner_angle_item1:'item1',
 
@@ -349,6 +349,8 @@ export const useStore = defineStore('counter', () => {
 
     // 匯出excel
     const exportTable = (order,mail) => {
+        console.log(order);
+        
         // 檔案名字
         const fileName = order.code + '.xlsx'
         // 樣式
@@ -427,7 +429,8 @@ export const useStore = defineStore('counter', () => {
                             return
                         }
                         // 標頭中英文
-                        const header_name = language.value == 'en' ? options[option].en_name : options[option].name
+                        // const header_name = language.value == 'en' ? options[option].en_name : options[option].name
+                        const header_name = options[option].name
 
                         // 檢查選項是否在優先排列的清單中
                         const priority_header_idx = priority_header.findIndex((text) => option.includes(text))
@@ -438,7 +441,11 @@ export const useStore = defineStore('counter', () => {
                             }
                             // 如果選項的類型是 JSON，則存入 json_data
                             if (options[option].type === 'json') {
-                                json_data.push(options[option])
+                                if(options[option].value !== 'undefined'){
+                                    json_data.push(options[option])
+                                }
+                                console.log(options[option]);
+                                
                                 return
                             } else {
                                 // 否則直接添加到表頭
@@ -470,6 +477,7 @@ export const useStore = defineStore('counter', () => {
                     // 處理 JSON 選項，把標題添加到表頭
                     let json_data_sort = ["dividers_json","lever_segmentation_note","auxiliaries","layers_json","t_post_json","corner_angle"]
                     json_data.sort((a, b) => {
+                        
                         const json_valuesA = json_headers_language(JSON.parse(a.value))
                         const json_valuesB = json_headers_language(JSON.parse(b.value))
                         const indexA = json_data_sort.indexOf(a.option_code);
@@ -512,7 +520,21 @@ export const useStore = defineStore('counter', () => {
                 let json_arr
                 // 有的話另外處理
                 if (json) {
-                    json_arr = json.map((key) => JSON.parse(options[key].value))
+                    // json_arr = json.map((key) => JSON.parse(options[key].value))
+                   json_arr = json
+                    .map((key) => {
+                      const value = options[key]?.value;
+                      if (value !== undefined && value !== 'undefined') {
+                        try {
+                          return JSON.parse(value);
+                        } catch (e) {
+                          console.warn(`JSON parse failed for key ${key}:`, value);
+                          return null;
+                        }
+                      }
+                      return null;
+                    })
+                    .filter(item => item !== null);
                 }
                 // 商品順序
                 let row = [idx + 1]
@@ -538,6 +560,8 @@ export const useStore = defineStore('counter', () => {
                     const is_note = header.code == 'note'
                     let is_json
                     // json
+                    console.log(json_arr);
+                    
                     if (json_arr.length > 0) {
                         is_json = json_body_value(json_arr, header.name)
                     }
@@ -712,6 +736,8 @@ export const useStore = defineStore('counter', () => {
             const res_data = await res.json()
             if(res_data.success && !res_data.error){
                 return res_data.response
+            }else{
+                alert('系統錯誤，請聯繫相關人員')
             }
         } catch (err) {
             console.log(err)

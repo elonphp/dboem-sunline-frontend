@@ -383,36 +383,59 @@ const copy_data = async(id)=>{
     const confirmed =  confirm(store.language_txt.order.text_confirm_copy)
     if (confirmed){
         store.show_loading(true)
-        const copy_item = await get_order_data(id)
-        // 刪除id & 時間
-        delete copy_item.code
-        delete copy_item.created_at
-        delete copy_item.updated_at
-        delete copy_item.id
-        copy_item.status_code = 'Draft'
-        delete copy_item.order_date
-        // 選項刪除id & 時間
-        copy_item.order_products.map(item =>{
-            delete item.order_id;
-            delete item.id
-            Object.keys(item.order_product_options).forEach(key => {
-                delete item.order_product_options[key].id;
-                delete item.order_product_options[key].order_product_id;
-                delete item.order_product_options[key].sort_order;
-                delete item.order_product_options[key].created_at;
-                delete item.order_product_options[key].updated_at;
-                if(item.order_product_options[key].type == 'checkbox'){
-                // checkbox 刪除id
-                Object.values(item.order_product_options[key].option_values).map(item =>{
-                    delete item.id
-                    delete item.sort_order
-                })
+        const url = `${store.baseUrl}api/v2/sales/orders/copyOrder/${id}`
+        try {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + store.userData.jwtToken
+                },
+                body: ""
+            })
+            const data = await res.json()
+            if (res.ok) {
+                alert(data.success || data.error)
+                await get_list_data()
             }
-            });
+        } catch (err) {
+            console.log('error', err);
+        }
+
+
+
+
+
+        // const copy_item = await get_order_data(id)
+        // // 刪除id & 時間
+        // delete copy_item.code
+        // delete copy_item.created_at
+        // delete copy_item.updated_at
+        // delete copy_item.id
+        // copy_item.status_code = 'Draft'
+        // delete copy_item.order_date
+        // // 選項刪除id & 時間
+        // copy_item.order_products.map(item =>{
+        //     delete item.order_id;
+        //     delete item.id
+        //     Object.keys(item.order_product_options).forEach(key => {
+        //         delete item.order_product_options[key].id;
+        //         delete item.order_product_options[key].order_product_id;
+        //         delete item.order_product_options[key].sort_order;
+        //         delete item.order_product_options[key].created_at;
+        //         delete item.order_product_options[key].updated_at;
+        //         if(item.order_product_options[key].type == 'checkbox'){
+        //         // checkbox 刪除id
+        //         Object.values(item.order_product_options[key].option_values).map(item =>{
+        //             delete item.id
+        //             delete item.sort_order
+        //         })
+        //     }
+        //     });
             
-        })
-        // console.log(copy_item);
-        await Save_order(copy_item)
+        // })
+        // // console.log(copy_item);
+        // await Save_order(copy_item)
         store.show_loading(false)
 
     }

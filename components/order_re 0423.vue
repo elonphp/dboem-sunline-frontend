@@ -59,7 +59,7 @@
           </div>
         </div>
       </section>
-      <section id="style" v-if="!!design_data.design && design_data.type">
+      <section id="design" v-if="!!design_data.design && design_data.type">
         <div class="container container-original">
           <div class="block block2">
             <h2 class="title">{{ store.language_txt.order.text_style}}</h2>
@@ -128,8 +128,7 @@
           </div>
         </div>
       </section>
-      <!-- 尺寸大區塊 -->
-      <section id="sizeSection" v-if="show_block">
+      <section id="setting" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">{{ store.language_txt.order.text_basicsetting}}</h2>
@@ -399,6 +398,588 @@
                     <span class="fs-xs">{{ store.language_txt.order.helper_height }}</span>
                   </div>
                 </div>
+              </div>
+              <!-- right -->
+              <div class="col-md-6 flex-auto">
+                <!-- wsms -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-4 position-relative " :for="order_data.wsms.name">
+                    <span class="text-danger">*</span>
+                    {{ order_data.wsms.name }}
+                    <i class="fas fa-question-circle"></i>
+                    <div class="info_box">
+                      {{ store.language_txt.order.helper_ms }}
+                    </div>
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" :name="`${order_data.wsms.code}.option_value_id`" :id="order_data.wsms.option_value_id"
+                      class="form-select" :class="{ 'error': errors[`${order_data.wsms.code}.option_value_id`] }"
+                      v-model="data_id[order_data.wsms.code]"
+                      @change="set_name(option,order_data.wsms.code)"
+                     label="wsms" rules="required">
+                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option :value="option.id" v-for="option in wsms_data">
+                        {{ option.name }}
+                      </option>
+                    </VeeField>
+                    <VeeField type="hidden" :name="`${order_data.wsms.code}.name`" :value="order_data.wsms.name" />
+                    <VeeField type="hidden" :name="`${order_data.wsms.code}.option_id`" :value="order_data.wsms.id" />
+                    <VeeField type="hidden" :name="`${order_data.wsms.code}.option_code`"
+                      :value="order_data.wsms.code" />
+                    <VeeField type="hidden" :name="`${order_data.wsms.code}.type`" :value="order_data.wsms.type" />
+                    <VeeField type="hidden" :name="`${order_data.wsms.code}.value`" v-model="data_val[order_data.wsms.code]"
+                    />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.wsms.code}.option_value_id`" />
+                  </div>
+                </div>
+                <!-- imom -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-4 position-relative" :for="order_data.imom.name">
+                    <span class="text-danger">*</span>
+                    {{ order_data.imom.name }}
+                    <i class="fas fa-question-circle"></i>
+                    <div class="info_box">
+                      <p>{{ store.language_txt.order.helper_om }}</p>
+                      <p>{{ store.language_txt.order.helper_im }}</p>
+                    </div>
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" :name="`${order_data.imom.code}.option_value_id`" :id="order_data.imom.name"
+                      class="form-select" :class="{ 'error': errors[`${order_data.imom.code}.option_value_id`] }"
+                      v-model="data_id[order_data.imom.code]"
+                      @change="set_name(option,order_data.imom.code)"
+                      label="imom" rules="required">
+                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option :value="option.id" v-for="option in order_data.imom.option_values" >
+                        {{ option.name }}
+                      </option>
+                    </VeeField>
+                    <VeeField type="hidden" :name="`${order_data.imom.code}.name`" :value="order_data.imom.name" />
+                    <VeeField type="hidden" :name="`${order_data.imom.code}.option_id`" :value="order_data.imom.id" />
+                    <VeeField type="hidden" :name="`${order_data.imom.code}.option_code`"
+                      :value="order_data.imom.code" />
+                    <VeeField type="hidden" :name="`${order_data.imom.code}.type`" :value="order_data.imom.type" />
+                    <VeeField type="hidden" :name="`${order_data.imom.code}.value`" 
+                    v-model="data_val[order_data.imom.code]" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.imom.code}.option_value_id`" />
+                  </div>
+                </div>
+                <!-- 軌道寬度 -->
+                <div class="row mb-3" v-if="is_track">
+                    <label class="label-set col-form-label col-sm-4 " for="">
+                      <span class="text-danger">*</span>
+                      {{ order_data.track_width.name }}
+                    </label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField type="number" :name="`${order_data.track_width.code}.option_value_id`" id="track_width"
+                          class="form-control" :class="{ 'error': errors[`${order_data.track_width.code}.option_value_id`] }"
+                          v-model="data_val[order_data.track_width.code]"
+                          label="track_width" rules="required">
+                        </VeeField>
+                        <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.name`"
+                        :value="order_data.track_width.name" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_id`"
+                        :value="order_data.track_width.id" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_code`"
+                        :value="order_data.track_width.code" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.type`"
+                        :value="order_data.track_width.type" />
+                      <VeeField type="hidden" :name="`${order_data.track_width.code}.value`"
+                      v-model="data_val[order_data.track_width.code]"
+                      />
+                      <VeeErrorMessage class="error__label" :name="`${order_data.track_width.code}.option_value_id`" />
+                    <label class="mt-2">
+                      <VeeField type="checkbox"
+                        :name="`${order_data.track_to_window_width.code}.option_values[0].value`"
+                        v-model="data_val[order_data.track_to_window_width.code]" value="Y" class="form-check-input"
+                         />
+                      {{ order_data.track_to_window_width.name }}
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.name`"
+                        :value="order_data.track_to_window_width.name" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_id`"
+                        :value="order_data.track_to_window_width.id" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_code`"
+                        :value="order_data.track_to_window_width.code" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.type`"
+                        :value="order_data.track_to_window_width.type" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_values[0].option_value_id`" value="0" />
+                    </label>
+                    </div>
+              </div>
+              </div>
+              <!-- windows_colors -->
+              <div class="col-12">
+                <div class="row">
+                  <label class="label-set col-form-label col-sm-2 " for="">
+                    <span class="text-danger">*</span>
+                    {{material_color.name}}
+                  </label>
+                  <div class="col-sm-10">
+                    <div class="d-flex algin-items-center flex-wrap  p-2 pt-0"
+                      :class="{ 'error': errors[`${material_color.code}.option_value_id`] }">
+                      <div class="picOption" v-for="color in material_color.option_values">
+                        <VeeField type="radio" :id="'setting_color_' + color.id"
+                          :name="`${material_color.code}.option_value_id`"
+                          @change="set_custom_name(color,material_color.code)"
+                          v-model="data_id[material_color.code]"
+                          :value="color.id" label="setting_color" rules="required" />
+                        <VeeField type="hidden" :name="`${material_color.code}.name`"
+                          :value="material_color.name" />
+                        <VeeField type="hidden" :name="`${material_color.code}.option_id`"
+                          :value="material_color.id" />
+                        <VeeField type="hidden" :name="`${material_color.code}.code`"
+                          :value="material_color.code" />
+                        <VeeField type="hidden" :name="`${material_color.code}.type`"
+                          :value="material_color.type" />
+                        <VeeField type="hidden" :name="`${material_color.code}.value`" :value="color.code + ' ' + show_custom_name(color)"
+                        v-model="data_val[material_color.code]"
+                         />
+                        <label :for="'setting_color_' + color.id">
+                          <img :src="color.thumb" :alt="show_custom_name(color)">
+                        </label>
+
+                        <p class="color-code">{{ color.code }}</p>
+                        <p>{{ show_custom_name(color) }}</p>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${material_color.code}.option_value_id`" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+      <section id="outerFrame" v-if="show_block && !is_track">
+        <div class="container container-original">
+          <div class="block block3 mainForm">
+            <h2 class="title">{{ store.language_txt.order.text_outer_frame }}</h2>
+            <div class="row flex-auto col-12">
+              <!-- 框型 -->
+              <div class="row flex-auto col-12" v-if="doorType_outerFrame">
+                <div class="col-md-6 flex-auto">
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-2 " for="">
+                      <span class="text-danger">*</span>
+                      {{ doorType_outerFrame.name }}
+                    </label>
+                    <div class="col-sm-10">
+                      <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
+                        :class="{ 'error': errors[`${doorType_outerFrame.code}.option_value_id`] }">
+                        <div class="picOption" v-for="(item, idx) in doorType_outerFrame.option_values"
+                          :key="'outerFrame' + item.id">
+                          <VeeField type="radio" :id="'outerFrame' + item.id"
+                            v-model="data_id[doorType_outerFrame.code]"
+                            @change="set_custom_name(item,doorType_outerFrame.code)"
+                            :name="`${doorType_outerFrame.code}.option_value_id`" :value="item.id" rules="required" />
+                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.name`"
+                            :value="doorType_outerFrame.name" />
+                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.option_id`"
+                            :value="doorType_outerFrame.id" />
+                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.option_code`"
+                            :value="doorType_outerFrame.code" />
+                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.type`"
+                            :value="doorType_outerFrame.type" />
+                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.value`"
+                          v-model="data_val[doorType_outerFrame.code]"
+                           />
+                          <label :for="'outerFrame' + item.id">
+                            <img :src="item.thumb" :alt="show_custom_name(item)">
+                          </label>
+                          <p class="fs-xs">{{ show_custom_name(item)}}</p>
+                        </div>
+                        <VeeErrorMessage class="error__label" :name="`${doorType_outerFrame.code}.option_value_id`" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- left -->
+              <div class="col-md-6 flex-auto">
+                <!-- 邊數 -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{ order_data.outer_frame_sides.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" :name="`${order_data.outer_frame_sides.code}.option_value_id`" id="" class="form-select"
+                      rules="required" :class="{ 'error': errors[`${order_data.outer_frame_sides.code}.option_value_id`] }"
+                      v-model="data_id[order_data.outer_frame_sides.code]"
+                      @change="set_name(data,order_data.outer_frame_sides.code)"
+                      >
+                      <option value="" disabled>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option v-for="data in order_data.outer_frame_sides.option_values" :key="data.id" @change="order_fill_out_id.outer_frame_sides = data.id"
+                        :value="data.id">
+                        {{ data.name }}
+                      </option>
+                    </VeeField>
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.name`"
+                      :value="order_data.outer_frame_sides.name" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.option_id`"
+                      :value="order_data.outer_frame_sides.id" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.option_code`"
+                      :value="order_data.outer_frame_sides.code" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.type`"
+                      :value="order_data.outer_frame_sides.type" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.value`"
+                    v-model="data_val[order_data.outer_frame_sides.code]"
+                     />
+
+                    <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_sides.code}.option_value_id`" />
+                  </div>
+                </div>
+                <!-- 切窗台 -->
+                <div class="row mb-3" v-if="!is_track">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{ order_data.outer_frame_cut_position.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <div class="d-flex align-items-center gap-3 flex-wrap p-2"
+                      :class="{ 'error': errors[`${order_data.outer_frame_cut_position.code}.option_value_id`] }">
+                      <template v-for="(data,idx) in order_data.outer_frame_cut_position.option_values" :key="data.id" >
+                        <label :for="'outer_frame_cut_position' + data.id">
+                          <VeeField
+                            v-if="!is_track" 
+                            type="checkbox" 
+                            :name="`${order_data.outer_frame_cut_position.code}.option_value_id`" 
+                            :value="data.id"
+                            class="form-check-input" 
+                            :id="'outer_frame_cut_position' + data.id"
+                            label="outer_frame_cut_position"
+                            :disabled="none_frame_cut && data.id !== 2222"
+                            @change="change_none_frame_cut(data.id,values.outer_frame_cut_position.option_value_id)"
+                            rules="required" 
+                          />
+                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.name`"
+                            :value="order_data.outer_frame_cut_position.name" />
+                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.option_id`"
+                            :value="order_data.outer_frame_cut_position.id" />
+                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.option_code`"
+                            :value="order_data.outer_frame_cut_position.code" />
+                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.type`"
+                            :value="order_data.outer_frame_cut_position.type" />
+                          <span class="ms-2">{{ data.name }}</span>
+                        </label>
+                      </template>
+                        <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_cut_position.code}.option_value_id`" />
+                    </div>
+                  </div>
+                </div>
+                <!-- 鑽孔 -->
+                <div class="row mb-3" v-if="is_wood">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{ order_data.sldwood_pre_drilled_hole.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`" id="" class="form-select"
+                      rules="required" :class="{ 'error': errors[`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`] }"
+                      v-model="data_id[order_data.sldwood_pre_drilled_hole.code]"
+                      @change="set_name(data,order_data.sldwood_pre_drilled_hole.code)"
+                     >
+                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option v-for="data in order_data.sldwood_pre_drilled_hole.option_values" :key="data.id"
+                        :value="data.id">
+                        {{ data.name }}
+                      </option>
+                    </VeeField>
+                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.name`"
+                      :value="order_data.sldwood_pre_drilled_hole.name" />
+                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_id`"
+                      :value="order_data.sldwood_pre_drilled_hole.id" />
+                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_code`"
+                      :value="order_data.sldwood_pre_drilled_hole.code" />
+                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.type`"
+                      :value="order_data.sldwood_pre_drilled_hole.type" />
+                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.value`"
+                    v-model="data_val[order_data.sldwood_pre_drilled_hole.code]"
+                     />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`" />
+                  </div>
+                </div>
+              </div>
+              <!-- right -->
+              <div class="col-md-6 flex-auto">
+                <!-- 墊片厚度 -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{ order_data.outer_frame_gasket_thickness.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <!-- text -->
+                    <div v-if="data_val[order_data.sldwood_build_out_thickness_manually.code] == 'Y'">
+                      <VeeField  type="text"
+                        :name="`${order_data.outer_frame_gasket_thickness.code}.value`" class="form-control"
+                        :class="{ 'error': errors[`${order_data.outer_frame_gasket_thickness.code}.value`] }"
+                        v-model="data_val[order_data.outer_frame_gasket_thickness.code]"
+                        />
+                      <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`"
+                        value="0" />
+                    </div>
+                      <!-- select -->
+                    <div v-else>
+                      <VeeField  as="select" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`"
+                        id="outer_frame_gasket_thickness" class="form-select"
+                        :class="{ 'error': errors[`${order_data.outer_frame_gasket_thickness.code}.option_value_id`] }"
+                        v-model="data_id[order_data.outer_frame_gasket_thickness.code]" 
+                        @change="set_name(data,order_data.outer_frame_gasket_thickness.code)"
+                        rules="required">
+                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option v-for="data in order_data.outer_frame_gasket_thickness.option_values" :key="data.id"
+                        @change="order_fill_out_id.outer_frame_gasket_thickness =  data.id"
+                          :value="data.id">
+                          {{ data.name }}
+                        </option>
+                      </VeeField>
+                      <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.value`"
+                      v-model="data_val[order_data.outer_frame_gasket_thickness.code]" />
+                    </div>
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.name`"
+                      :value="order_data.outer_frame_gasket_thickness.name" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_id`"
+                      :value="order_data.outer_frame_gasket_thickness.id" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_code`"
+                      :value="order_data.outer_frame_gasket_thickness.code" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.type`"
+                      :value="order_data.outer_frame_gasket_thickness.type" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`" />
+                    <!-- 自行輸入checkbox -->
+                    <div v-if="is_wood" class="mt-2">
+                      <label>
+                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`] }"
+                          :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`"
+                          v-model="data_val[order_data.sldwood_build_out_thickness_manually.code]" value="Y"
+                          class="form-check-input" />
+                        {{ store.language_txt.order.text_enter_manually}}
+                        <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.name`" :value="order_data.sldwood_build_out_thickness_manually.name" />
+                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_id`" :value="order_data.sldwood_build_out_thickness_manually.id" />
+                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_code`" :value="order_data.sldwood_build_out_thickness_manually.code" />
+                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.type`" :value="order_data.sldwood_build_out_thickness_manually.type" />
+                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].option_value_id`" value="0"/>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <!-- 墊片位置 -->
+                <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_thickness.code]?.option_value_id !== 2202">
+                  <label class="label-set col-form-label col-sm-4 " for="">
+                    <span class="text-danger">*</span>
+                    {{ order_data.outer_frame_gasket_location.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" :name="`${order_data.outer_frame_gasket_location.code}.option_value_id`"
+                      id="outer_frame_gasket_location" class="form-select"
+                      :class="{ 'error': errors[`${order_data.outer_frame_gasket_location.code}.option_value_id`] }"
+                      v-model="data_id[order_data.outer_frame_gasket_location.code]"
+                      @change="set_name(option,order_data.outer_frame_gasket_location.code)"
+                      rules="required">
+                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option v-for="data in order_data.outer_frame_gasket_location.option_values" :key="data.id"
+                        @change="order_fill_out_id.outer_frame_gasket_location = data.id"
+                        :value="data.id">
+                        {{ data.name }}
+                      </option>
+                    </VeeField>
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.name`"
+                      :value="order_data.outer_frame_gasket_location.name" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.option_id`"
+                      :value="order_data.outer_frame_gasket_location.id" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.option_code`"
+                      :value="order_data.outer_frame_gasket_location.code" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.type`"
+                      :value="order_data.outer_frame_gasket_location.type" />
+                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.value`"
+                    v-model="data_val[order_data.outer_frame_gasket_location.code]"
+                      />
+                    <VeeErrorMessage class="error__label"
+                      :name="`${order_data.outer_frame_gasket_location.code}.option_value_id`" />
+                  </div>
+                </div>
+                <!-- 翅膀墊片厚度 -->
+                <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_location.code]?.option_value_id == 2219">
+                  <label class="label-set col-form-label col-sm-4" :for="order_data.wing_spacer_thickness.name">
+                    <span class="text-danger">*</span>
+                    {{ order_data.wing_spacer_thickness.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField type="text" class="form-control"
+                      :class="{ 'error': errors[`${order_data.wing_spacer_thickness.code}.value`]}"
+                      v-model="data_val[order_data.wing_spacer_thickness.code]"
+                      :id="order_data.wing_spacer_thickness.name" :name="`${order_data.wing_spacer_thickness.code}.value`"
+                      label="win_position" rules="required" />
+                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.name`"
+                      :value="order_data.wing_spacer_thickness.name" />
+                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_id`"
+                      :value="order_data.wing_spacer_thickness.id" />
+                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_code`"
+                      :value="order_data.wing_spacer_thickness.code" />
+                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.type`"
+                      :value="order_data.wing_spacer_thickness.type" />
+                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_value_id`" value="0" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.wing_spacer_thickness.code}.value`" />
+                  </div>
+                </div>
+                <!-- 底部墊片厚度 -->
+                <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_location.code]?.option_value_id == 2219">
+                  <label class="label-set col-form-label col-sm-4" :for="order_data.bottom_spacer_thickness.name">
+                    <span class="text-danger">*</span>
+                    {{ order_data.bottom_spacer_thickness.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField type="text" class="form-control"
+                      :class="{ 'error': errors[`${order_data.bottom_spacer_thickness.code}.value`]}"
+                      v-model="data_val[order_data.bottom_spacer_thickness.code]"
+                      :id="order_data.bottom_spacer_thickness.name" :name="`${order_data.bottom_spacer_thickness.code}.value`"
+                      label="win_position" rules="required" />
+                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.name`"
+                      :value="order_data.bottom_spacer_thickness.name" />
+                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_id`"
+                      :value="order_data.bottom_spacer_thickness.id" />
+                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_code`"
+                      :value="order_data.bottom_spacer_thickness.code" />
+                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.type`"
+                      :value="order_data.bottom_spacer_thickness.type" />
+                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_value_id`" value="0" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.bottom_spacer_thickness.code}.value`" />
+                  </div>
+                </div>
+                <!-- 鑽孔位置 -->
+                <div class="row mb-3" v-if="is_wood && is_pre_drilled_hole">
+                  <label class="label-set col-form-label col-sm-4" :for="order_data.desired_drilling_position.name">
+                    <span class="text-danger">*</span>
+                    {{ order_data.desired_drilling_position.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField type="text" class="form-control"
+                      :class="{ 'error': errors[`${order_data.desired_drilling_position.code}.value`]}"
+                      v-model="data_val[order_data.desired_drilling_position.code]"
+                      :id="order_data.desired_drilling_position.name" :name="`${order_data.desired_drilling_position.code}.value`"
+                      label="win_position" rules="required" />
+                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.name`"
+                      :value="order_data.desired_drilling_position.name" />
+                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_id`"
+                      :value="order_data.desired_drilling_position.id" />
+                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_code`"
+                      :value="order_data.desired_drilling_position.code" />
+                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.type`"
+                      :value="order_data.desired_drilling_position.type" />
+                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_value_id`" value="0" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.desired_drilling_position.code}.value`" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="doorSet" v-if="show_block">
+        <div class="container container-original">
+          <div class="block block3 mainForm">
+            <h2 class="title">
+              {{ store.language_txt.order.text_door }}
+              <span v-if="!is_track">{{ store.language_txt.order.helper_door_piece }}</span>
+            </h2>
+            <div class="row flex-auto col-12">
+            <!-- 拉桿 -->
+              <div class="col-12">
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-2 " :for="win_lever_data.id">
+                    <span class="text-danger">*</span>
+                    {{ win_lever_data.name }}
+                  </label>
+                  <div class="col-sm-10">
+                    <div :class="{ 'error': errors[`${win_lever_data.code}.option_value_id`] }"
+                      class="d-flex flex-wrap align-items-start  p-2 pt-0">
+                      <div class="picOption" v-for="(item, idx) in win_lever_data.option_values"
+                        :key="item.name + idx">
+                        <VeeField type="radio" :id="'win_lever_' + item.id" :name="`${win_lever_data.code}.option_value_id`"
+                          :value="item.id" 
+                          v-model="data_id[win_lever_data.code]"
+                          @change="set_name(item,win_lever_data.code)"
+                          :key="win_lever_data.code + 'option_value_id'"
+                          label="win_lever" rules="required" />
+                        <VeeField type="hidden" :name="`${win_lever_data.code}.name`"  :key="win_lever_data.code + 'name'"
+                          :value="win_lever_data.name" />
+                        <VeeField type="hidden" :name="`${win_lever_data.code}.option_id`"  :key="win_lever_data.code + 'option_id'"
+                          :value="win_lever_data.id" />
+                        <VeeField type="hidden" :name="`${win_lever_data.code}.option_code`"  :key="win_lever_data.code + 'option_code'"
+                          :value="win_lever_data.code" />
+                        <VeeField type="hidden" :name="`${win_lever_data.code}.type`"  :key="win_lever_data.code + 'type'"
+                          :value="win_lever_data.type" />
+                        <VeeField type="hidden" :name="`${win_lever_data.code}.value`"  :key="win_lever_data.code + 'value'"
+                        v-model="data_val[win_lever_data.code]"
+                         />
+                        <label :for="'win_lever_' + item.id">
+                          <img :src="item.thumb" :alt="item.name">
+                        </label>
+                        <p class="fs-xs">{{ item.name }}</p>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${win_lever_data.code}.option_value_id`" />
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <!-- left -->
+              <div class="col-md-6 flex-auto">
+                <!-- 尺寸 -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-4 " :for="blade_size_data.id">
+                    <span class="text-danger">*</span>
+                    {{ blade_size_data.name }}
+                  </label>
+                  <div class="col-sm-8">
+                    <VeeField as="select" 
+                    :name="`${blade_size_data.code}.option_value_id`" 
+                    :id="blade_size_data.id"
+                      class="form-select" 
+                      :class="{ 'error': errors[`${blade_size_data.code}.option_value_id`] }"
+                      v-model="data_id[blade_size_data.code]"
+                      @change="set_name(size,blade_size_data.code)"
+                      label="blade_size"
+                      :key="blade_size_data.code + 'option_value_id'"
+                      rules="required">
+                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option v-for="size in blade_size_data.option_values" :key="size.name + size.id" :value="size.id">
+                        {{ size.name }}
+                      </option>
+                    </VeeField>
+                    <VeeErrorMessage class="error__label" :name="`${blade_size_data.code}.option_value_id`" />
+                    <VeeField 
+                      type="hidden" 
+                      :name="`${blade_size_data.code}.name`"
+                      :key="blade_size_data.code + 'name'"
+                      :value="blade_size_data.name" />
+                    <VeeField 
+                      type="hidden" 
+                      :name="`${blade_size_data.code}.option_id`"
+                      :key="blade_size_data.code + 'option_id'"
+                      :value="blade_size_data.id" />
+                    <VeeField 
+                      type="hidden" 
+                      :name="`${blade_size_data.code}.option_code`"
+                      :key="blade_size_data.code + 'option_code'"
+                      :value="blade_size_data.code" />
+                    <VeeField 
+                      type="hidden" 
+                      :name="`${blade_size_data.code}.type`"
+                      :key="blade_size_data.code + 'type'"
+                      :value="blade_size_data.type" />
+                    <VeeField 
+                      type="hidden" 
+                      :name="`${blade_size_data.code}.value`"
+                      :key="blade_size_data.code + 'value'"
+                      v-model="data_val[blade_size_data.code]"
+                       />
+                  </div>
+                </div>
                 <!-- 數量 -->
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-4 " :for="order_data.blade_numbers.id">
@@ -544,1250 +1125,6 @@
                       </div>
                       <VeeErrorMessage class="error__label" :name="`${order_data.window_frame_type.code}.option_value_id`" />
                     </div>
-                  </div>
-                </div>
-              </div>
-              <!-- right -->
-              <div class="col-md-6 flex-auto">
-                <!-- wsms -->
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-4 position-relative " :for="order_data.wsms.name">
-                    <span class="text-danger">*</span>
-                    {{ order_data.wsms.name }}
-                    <i class="fas fa-question-circle"></i>
-                    <div class="info_box">
-                      {{ store.language_txt.order.helper_ms }}
-                    </div>
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" :name="`${order_data.wsms.code}.option_value_id`" :id="order_data.wsms.option_value_id"
-                      class="form-select" :class="{ 'error': errors[`${order_data.wsms.code}.option_value_id`] }"
-                      v-model="data_id[order_data.wsms.code]"
-                      @change="set_name(option,order_data.wsms.code)"
-                     label="wsms" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option :value="option.id" v-for="option in wsms_data">
-                        {{ option.name }}
-                      </option>
-                    </VeeField>
-                    <VeeField type="hidden" :name="`${order_data.wsms.code}.name`" :value="order_data.wsms.name" />
-                    <VeeField type="hidden" :name="`${order_data.wsms.code}.option_id`" :value="order_data.wsms.id" />
-                    <VeeField type="hidden" :name="`${order_data.wsms.code}.option_code`"
-                      :value="order_data.wsms.code" />
-                    <VeeField type="hidden" :name="`${order_data.wsms.code}.type`" :value="order_data.wsms.type" />
-                    <VeeField type="hidden" :name="`${order_data.wsms.code}.value`" v-model="data_val[order_data.wsms.code]"
-                    />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.wsms.code}.option_value_id`" />
-                  </div>
-                </div>
-                <!-- imom -->
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-4 position-relative" :for="order_data.imom.name">
-                    <span class="text-danger">*</span>
-                    {{ order_data.imom.name }}
-                    <i class="fas fa-question-circle"></i>
-                    <div class="info_box">
-                      <p>{{ store.language_txt.order.helper_om }}</p>
-                      <p>{{ store.language_txt.order.helper_im }}</p>
-                    </div>
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" :name="`${order_data.imom.code}.option_value_id`" :id="order_data.imom.name"
-                      class="form-select" :class="{ 'error': errors[`${order_data.imom.code}.option_value_id`] }"
-                      v-model="data_id[order_data.imom.code]"
-                      @change="set_name(option,order_data.imom.code)"
-                      label="imom" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option :value="option.id" v-for="option in order_data.imom.option_values" >
-                        {{ option.name }}
-                      </option>
-                    </VeeField>
-                    <VeeField type="hidden" :name="`${order_data.imom.code}.name`" :value="order_data.imom.name" />
-                    <VeeField type="hidden" :name="`${order_data.imom.code}.option_id`" :value="order_data.imom.id" />
-                    <VeeField type="hidden" :name="`${order_data.imom.code}.option_code`"
-                      :value="order_data.imom.code" />
-                    <VeeField type="hidden" :name="`${order_data.imom.code}.type`" :value="order_data.imom.type" />
-                    <VeeField type="hidden" :name="`${order_data.imom.code}.value`" 
-                    v-model="data_val[order_data.imom.code]" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.imom.code}.option_value_id`" />
-                  </div>
-                </div>
-                <!-- 軌道寬度 -->
-                <div class="row mb-3" v-if="is_track">
-                    <label class="label-set col-form-label col-sm-4 " for="">
-                      <span class="text-danger">*</span>
-                      {{ order_data.track_width.name }}
-                    </label>
-                    <div class="col-sm-8">
-                      <div class="input-group">
-                        <VeeField type="number" :name="`${order_data.track_width.code}.option_value_id`" id="track_width"
-                          class="form-control" :class="{ 'error': errors[`${order_data.track_width.code}.option_value_id`] }"
-                          v-model="data_val[order_data.track_width.code]"
-                          label="track_width" rules="required">
-                        </VeeField>
-                        <span class="input-group-text">mm</span>
-                      </div>
-                      <VeeField type="hidden" :name="`${order_data.track_width.code}.name`"
-                        :value="order_data.track_width.name" />
-                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_id`"
-                        :value="order_data.track_width.id" />
-                      <VeeField type="hidden" :name="`${order_data.track_width.code}.option_code`"
-                        :value="order_data.track_width.code" />
-                      <VeeField type="hidden" :name="`${order_data.track_width.code}.type`"
-                        :value="order_data.track_width.type" />
-                      <VeeField type="hidden" :name="`${order_data.track_width.code}.value`"
-                      v-model="data_val[order_data.track_width.code]"
-                      />
-                      <VeeErrorMessage class="error__label" :name="`${order_data.track_width.code}.option_value_id`" />
-                    <label class="mt-2">
-                      <VeeField type="checkbox"
-                        :name="`${order_data.track_to_window_width.code}.option_values[0].value`"
-                        v-model="data_val[order_data.track_to_window_width.code]" value="Y" class="form-check-input"
-                         />
-                      {{ order_data.track_to_window_width.name }}
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.name`"
-                        :value="order_data.track_to_window_width.name" />
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_id`"
-                        :value="order_data.track_to_window_width.id" />
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_code`"
-                        :value="order_data.track_to_window_width.code" />
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.type`"
-                        :value="order_data.track_to_window_width.type" />
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_values[0].option_value_id`" value="0" />
-                    </label>
-                    </div>
-              </div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-      </section>
-      <!-- 選項大區塊 -->
-      <section id="options" v-if="false">
-        <div class="container container-original">
-          <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_outer_frame }}</h2>
-            <div class="row flex-auto col-12">
-              <div class="col-12" v-if="!is_track">
-                <!-- T型式 -->
-                <div class="col-md-12" v-if="t_post_data ">
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-2" for="">
-                    <span class="text-danger">*</span>
-                    {{t_post_data.name}}
-                    <i class="fas fa-question-circle"></i>
-                    <div class="info_box">
-                      {{ store.language_txt.order.text_vertical_horizontal}}
-                    </div>
-                  </label>
-                  <div class="col-sm-10">
-                    <div class="d-flex align-items-center  p-2 pt-0"
-                      :class="{ 'error': errors[`${t_post_data.code}.option_value_id`] }">
-                      <div v-for="data in t_post_data.option_values" :key="data.id">
-                        <div class="picOption" v-if="show_t_post(data)">
-                          <VeeField type="radio" :id="'t_post' + data.id"
-                            :name="`${t_post_data.code}.option_value_id`" :value="data.id"
-                            v-model="data_id[t_post_data.code]"
-                            @change="set_name(data,t_post_data.code),select_T_post()"
-                            label="t_post" rules="required" />
-                          <VeeField type="hidden" :name="`${t_post_data.code}.name`"  :key="t_post_data.code + 'name'"
-                            :value="t_post_data.name" />
-                          <VeeField type="hidden" :name="`${t_post_data.code}.option_id`"  :key="t_post_data.code + 'option_id'"
-                            :value="t_post_data.id" />
-                          <VeeField type="hidden" :name="`${t_post_data.code}.option_code`"  :key="t_post_data.code + 'option_code'"
-                            :value="t_post_data.code" />
-                          <VeeField type="hidden" :name="`${t_post_data.code}.type`"  :key="t_post_data.code + 'type'"
-                            :value="t_post_data.type" />
-                          <VeeField type="hidden" :name="`${t_post_data.code}.value`"  :key="t_post_data.code + 'value'"
-                          v-model="data_val[t_post_data.code]"
-                            />
-                          <label :for="'t_post' + data.id">
-                            <img :src="data.thumb" :alt="data.name">
-                          </label>
-                          <p class="mb-3">
-                            {{ data.name }}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <VeeErrorMessage class="error__label" :name="`${t_post_data.code}.option_value_id`" />
-                    
-                  </div>
-                </div>
-                </div>
-                <!-- T位置 -->
-                <div class="d-none">
-                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.name`"
-                  :value="order_data.t_post_json.name" />
-                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_id`"
-                  :value="order_data.t_post_json.id" />
-                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_code`"
-                  :value="order_data.t_post_json.code" />
-                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.type`"
-                  :value="order_data.t_post_json.type" />
-                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_value_id`" value="0" />
-                </div>
-                <div class="col-md-12 row" v-if="t_post_json">
-                <div class="col-md-6 d-flex mb-3 position-relative" v-for="(item,idx) in t_post_json.t_post_height"
-                  :key="'T-POST_position' + idx +1">
-                  <label class="label-set col-form-label col-sm-4 pe-3" :for="'T-POST_position' + idx+1">
-                    <span class="text-danger">*</span>
-                    T{{ idx+1 }}{{ store.language_txt.order.text_position}}
-                  </label>
-                  <div class="col-xxl-8 col pe-3">
-                    <div class="input-group">
-                      <VeeField type="number"
-                      @keydown="clearInput"
-                      :name="`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`"
-                        :id="'T-POST_position' + idx +1" 
-                        class="form-control" 
-                        v-model="item.t_post_value" 
-                        rules="required"
-                        :disabled="!!t_post_json.t_post_average"
-                        :class="{ 'error': errors[`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`] }"
-                        label="T-POST_position" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeErrorMessage class="error__label"
-                      :name="`${order_data.t_post_json.code}.value.height[${idx}].t_post_value`" />
-                  </div>
-                  <div class="d-flex align-items-center">
-                    <button type="button" :disabled="show_corner && idx === 0" @click="del_json(order_data.t_post_json.code,idx)">
-                      <i class="fas fa-times  close_btn btn-right-2"></i>
-                    </button>
-                  </div>
-                </div>
-                </div>
-                <!-- 垂直T均分 -->
-                <div div class="col-md-6 d-flex align-items-center mt-3" v-if="t_post_json.t_post_height.length > 0">
-                <div class="col-4 label-set pe-2"></div>
-                <div class="col-8">
-                  <VeeField type="checkbox" :name="`${order_data.t_post_json.code}.value.t_post_average`"
-                    v-model="t_post_json.t_post_average"
-                    class="form-check-input" value="Y" />
-                  <label for=""
-                    class="col-8 label-set text-start ps-2">{{ store.language_txt.order.text_divide_equally}}</label>
-                </div>
-                </div>
-                <div class="col-12 text-center my-4">
-                  <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.t_post_json.code,t_post_obj)"></i>
-                </div>
-                <hr v-if="show_corner">
-                <!-- 轉角窗 -->
-                <div class="d-none" v-if="show_corner && corner_angle_data.length > 0">
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.name`"
-                    :value="order_data.corner_angle.name" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_id`"
-                    :value="order_data.corner_angle.id" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_code`"
-                    :value="order_data.corner_angle.code" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.type`"
-                    :value="order_data.corner_angle.type" />
-                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_value_id`"
-                    value="0" />
-                </div>
-                <div class="row col-md-8 col-12 mb-3" v-for="(data,idx) in corner_angle_data" :key="`corner_angle${idx +1}`" v-if="show_corner">
-                  <span class="col-sm-3" v-if="idx == 0">
-                    {{store.language_txt.order.text_corner_shutters}}
-                    <div class="col-12 text-center mt-4" v-if="show_corner">
-                      <button type="button" class="add_text_btn" @click="add_json(order_data.corner_angle.code,corner_angle_obj)">
-                        <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                        <span>{{order_data.corner_angle.name.replace(':num',corner_angle_data.length + 1) }}</span>
-                      </button>
-                    </div>
-                  </span>
-                  <span class="col-sm-3" v-else></span>
-                  <div class="col-sm-8 col-12 row position-relative ">
-                    <!-- 角度 -->
-                    <label class="label-set col-form-label col-sm-4" :for="order_data.corner_angle.name">
-                      <span class="text-danger">*</span>
-                      C{{idx + 1}}{{ order_data.corner_angle.name}}
-                    </label>
-                    <div class="col-sm-8 position-relative mb-3">
-                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`"
-                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`] }"
-                        @keydown="clearInput"
-                        v-model="data.corner_angle_value"
-                        :id="`${order_data.corner_angle.name}${idx + 1}`" class="form-control"
-                        :label="`corner_angle${idx + 1}`"
-                        rules="required"/>
-                        <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`" />
-                    </div>
-                    <!-- 位置 -->
-                    <label class="label-set col-form-label col-sm-4">
-                      <span class="text-danger">*</span>
-                      C{{idx + 1}}{{ store.language_txt.order.text_position}}
-                    </label>
-                    <div class="col-sm-8 position-relative mb-3">
-                      <div class="input-group">
-                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`"
-                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].position_value`] }"
-                        @keydown="clearInput"
-                        v-model="data.position_value"
-                         class="form-control"
-                        :label="`position_value${idx + 1}`"
-                        rules="required"/>
-                        <span class="input-group-text">mm</span>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`" />
-                    </div>
-                    <!-- item1 -->
-                    <label class="label-set col-form-label col-sm-4" v-if="idx === 0">
-                      <span class="text-danger">*</span>
-                      item {{idx+1}}
-                    </label>
-                    <div class="col-sm-8 position-relative mb-3 " v-if="idx === 0">
-                      <div class="input-group">
-                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`"
-                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`] }"
-                        @keydown="clearInput"
-                        v-model="data.corner_angle_item1"
-                         class="form-control"
-                        :label="`position_value${idx + 1}`"
-                        rules="required"/>
-                      <span class="input-group-text">mm</span>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`" />
-                    </div>
-                    <!-- item -->
-                    <label class="label-set col-form-label col-sm-4">
-                      <span class="text-danger">*</span>
-                      item {{idx+2}}
-                    </label>
-                    <div class="col-sm-8 position-relative mb-3 ">
-                      <div class="input-group">
-                        <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`"
-                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`] }"
-                        @keydown="clearInput"
-                        v-model="data.corner_angle_item"
-                         class="form-control"
-                        :label="`item${idx + 1}`"
-                        rules="required"/>
-                      <span class="input-group-text">mm</span>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`" />
-                    </div>
-                  </div>
-                   <div class="col position-relative ">
-                    <i class="fas fa-times close_btn close_btn_2" @click="del_json(order_data.corner_angle.code,idx)"></i>
-                   </div>
-                </div>
-                <hr v-if="show_multilayer || show_pelmet">
-                <!-- 多層窗&窗簾盒 -->
-                <div class="row col-12 mb-3">
-                  <!-- 多層窗 -->
-                  <div class="col-md-6 mb-3" v-if="show_multilayer">
-                <div class="row mb-3" v-if="show_multilayer">
-                  <p class="">{{store.language_txt.order.text_double_hung}}</p>
-                  <label class="label-set col-form-label col-sm-4" for="layers">
-                    <span class="text-danger">*</span>
-                    {{ store.language_txt.order.text_layers}}
-                    <!-- {{order_data.layer_json.name}} -->
-                  </label>
-                  <!-- 層數 -->
-                  <div class="col-sm-8">
-                    <VeeField 
-                      type="number" 
-                      @keydown="clearInput"
-                      class="form-control " 
-                      :name="`${order_data.layers_json.code}.value.layer`"
-                      :class="{ 'error': errors[`${order_data.layers_json.code}.value.layer`] }" 
-                      v-model="data_val[order_data.layers_json.code].layer"
-                      id="layers" rules="required" />
-                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.name`" :value="order_data.layers_json.name" />
-                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_id`" :value="order_data.layers_json.id" />
-                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_code`" :value="order_data.layers_json.code" />
-                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.type`" :value="order_data.layers_json.type" />
-                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_value_id`" value="0" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.layers_json.code}.value.layer`" />
-                  </div>
-                </div>
-                <!-- 水平T -->
-                <div class="row mb-3" v-for="(data,idx) in layers_value" :key="'T-POST-horizontal-' + idx" v-if="show_multilayer">
-                  <label class="label-set col-form-label col-sm-4" :for="'T_POST_horizontal' + idx">
-                    <span class="text-danger">*</span>
-                    {{ store.language_txt.order.text_vertical}}T{{idx+1}}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group">
-                      <VeeField 
-                        type="number" 
-                        @keydown="clearInput"
-                        class="form-control" 
-                        rules="required" 
-                        v-model="layers_value[idx]"
-                        :class="{ 'error': errors[`${order_data.layers_json.code}.value.layer_value[${idx}]`] }"
-                        :name="`${order_data.layers_json.code}.value.layer_value[${idx}]`" 
-                        :id="'layers_json.value' + idx" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeErrorMessage class="error__label" :name="`${order_data.layers_json.code}.value.layer_value[${idx}]`" />
-                  </div>
-                </div>
-                  </div>
-                  <!-- 窗簾盒 -->
-                  <div class="col-md-6 mb-3" v-if="show_pelmet">
-                    <div class="row mb-3">
-                      <p class="">{{store.language_txt.order.text_valance_box}}</p>
-                      <label class="label-set col-form-label col-sm-4" for="">
-                        <span class="text-danger">*</span>
-                        {{order_data.win_valance_box_plans.name}}
-                      </label>
-                      <div class="col-sm-8">
-                      <div class="d-flex align-items-center  p-2 pt-0"
-                        :class="{ 'error': errors[`${order_data.win_valance_box_plans.code}.option_value_id`] }">
-                        <div class="picOption" v-for="data in order_data.win_valance_box_plans.option_values">
-                          <VeeField type="radio" :id="'pelmet' + data.id"
-                            v-model="data_id[order_data.win_valance_box_plans.code]"
-                            @change="set_name(data,order_data.win_valance_box_plans.code)"
-                            :name="`${order_data.win_valance_box_plans.code}.option_value_id`"
-                            :value="data.id" label="pelmet"
-                            rules="required" />
-                          <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.name`"
-                            :value="order_data.win_valance_box_plans.name" />
-                          <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.option_id`"
-                            :value="order_data.win_valance_box_plans.id" />
-                          <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.option_code`"
-                            :value="order_data.win_valance_box_plans.code" />
-                          <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.type`"
-                            :value="order_data.win_valance_box_plans.type" />
-                          <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.value`"
-                            v-model="data_val[order_data.win_valance_box_plans.code]"
-                          />
-                          <label :for="'pelmet' + data.id">
-                            <img :src="data.thumb" :alt="data.name">
-                          </label>
-                          <p>
-                            {{ data.name }}
-                          </p>
-                        </div>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${order_data.win_valance_box_plans.code}.option_value_id`" />
-                      </div>
-                    </div>
-                    <!-- A -->
-                    <div class="row mb-3" v-if="show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
-                  <label class="label-set col-form-label col-sm-4" for="pelmet_A_width">
-                    <span class="text-danger">*</span>
-                    <!-- A方案 -->
-                    {{order_data.win_final_width.name}}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group" :class="{ 'error': errors[`${order_data.win_final_width.code}.value`] }">
-                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.win_final_width.code}.value`"
-                        v-model="data_val[order_data.win_final_width.code]" id="pelmet_A_width"
-                        rules="required" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.name`"
-                        :value="order_data.win_final_width.name" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_id`"
-                        :value="order_data.win_final_width.id" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_code`"
-                        :value="order_data.win_final_width.code" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.type`"
-                        :value="order_data.win_final_width.type" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_value_id`" value="0" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeErrorMessage class="error__label" :name="`${order_data.win_final_width.code}.value`" />
-                  </div>
-                    </div>
-                    <div class="row mb-3" v-if="show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
-                  <label class="label-set col-form-label col-sm-4" for="pelmet_A_hight">
-                    <!-- A方案 -->
-                    <span class="text-danger">*</span>
-                    {{order_data.win_final_height.name}}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group"  :class="{ 'error': errors[`${order_data.win_final_height.code}.value`] }">
-                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.win_final_height.code}.value`"
-                        v-model="data_val[order_data.win_final_height.code]" id="pelmet_A_hight" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.name`"
-                        :value="order_data.win_final_height.name" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_id`"
-                        :value="order_data.win_final_height.id" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_code`"
-                        :value="order_data.win_final_height.code" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.type`"
-                        :value="order_data.win_final_height.type" />
-                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_value_id`" value="0" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeErrorMessage class="error__label" :name="`${order_data.win_final_height.code}.value`" />
-                  </div>
-                    </div>
-                    <!-- B -->
-                    <div class="row mb-3" v-if="!show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
-                  <label class="label-set col-form-label col-sm-4" for="pelmet_B">
-                    <span class="text-danger">*</span>
-                    {{order_data.winbox_horizontal_t_position.name}}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group" :class="{ 'error': errors[`${order_data.winbox_horizontal_t_position.code}.value`] }">
-                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.winbox_horizontal_t_position.code}.value`"
-                        id="pelmet_B" v-model="data_val[order_data.winbox_horizontal_t_position.code]"
-                        rules="required" />
-                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.name`"
-                        :value="order_data.winbox_horizontal_t_position.name" />
-                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_id`"
-                        :value="order_data.winbox_horizontal_t_position.id" />
-                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_code`"
-                        :value="order_data.winbox_horizontal_t_position.code" />
-                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.type`"
-                        :value="order_data.winbox_horizontal_t_position.type" />
-                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_value_id`"
-                        value="0" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeErrorMessage class="error__label" name="winbox_horizontal_t_position.value" />
-                  </div>
-                    </div>
-                  </div>
-                  </div>
-              </div>
-              <hr/>
-              <!-- 中隔 -->
-              <div class="row flex-auto col-12">
-                <div class="position-relative mb-3">
-                {{ store.language_txt.order.text_option_section_dividers }}
-                <i class="fas fa-question-circle"></i>
-                <div class="info_box">
-                  {{ partitio_note }}
-                </div>
-                </div>
-                <!-- 拉桿分段需求 -->
-                <div class="col-md-12" v-if="show_add_lever && !is_none_win_lever">
-                <div class="d-none" v-if="lever_segmentation_note_data.length > 0">
-                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.name`"
-                    :value="order_data.lever_segmentation_note.name" />
-                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_id`"
-                    :value="order_data.lever_segmentation_note.id" />
-                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_code`"
-                    :value="order_data.lever_segmentation_note.code" />
-                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.type`"
-                    :value="order_data.lever_segmentation_note.type" />
-                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_value_id`"
-                    value="0" />
-                </div>
-                <div class="row mb-3" v-for="(data,idx) in lever_segmentation_note_data" :key="`lever_segmentation${idx +1}`">
-                  <label class="label-set col-form-label col-sm-2 " :for="order_data.lever_segmentation_note.name">
-                    {{ order_data.lever_segmentation_note.name }}{{idx + 1}}
-                  </label>
-                  <div class="col-sm-4 position-relative">
-                    <VeeField type="number" :name="`${order_data.lever_segmentation_note.code}.value[${idx}].lever_value`"
-                      @keydown="clearInput"
-                      v-model="data.lever_value"
-                      :id="`${order_data.lever_segmentation_note.name}${idx + 1}`" class="form-control"
-                      :label="`lever_segmentation${idx + 1}`"/>
-                      <i class="fas fa-times close_btn" @click="del_json(order_data.lever_segmentation_note.code,idx)"></i>
-                  </div>
-                </div>
-                </div>
-                <!-- input_hiiden -->
-                <div class="d-none" v-if="Divider_rail_data.length > 0">
-                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.name`"
-                  :value="order_data.dividers_json.name" />
-                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_id`"
-                  :value="order_data.dividers_json.id" />
-                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_code`"
-                  :value="order_data.dividers_json.code" />
-                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.type`"
-                  :value="order_data.dividers_json.type" />
-                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_value_id`" value="0" />
-                </div>
-                <div class="col-md-12 mb-4 border-bottom py-2  position-relative"
-                v-for="(data, idx) in Divider_rail_data" :key="`partitio_${idx +1}`">
-                <!-- 中隔 -->
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-2 " for="">
-                    <span class="text-danger">*</span>
-                    {{store.language_txt.order.text_dividers}}{{ idx + 1 }}
-                  </label>
-                  <div class="col-sm-4">
-                    <div class="d-flex mb-2">
-                      <div class="input-group">
-                        <VeeField type="number" :name="`${order_data.dividers_json.code}.value[${idx}].division_height`"
-                          @keydown="clearInput"
-                          class="form-control"
-                          @input="json_number_only($event,data.division_height)"
-                          :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].division_height`]}"
-                          :label="`dividers_json[${idx}].division_height`" v-model.number="data.division_height"
-                          rules="required" v-if="!!values.dividers_json" :disabled="data.division_center == 'Y'" />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                    </div>
-                    <VeeErrorMessage class="error__label"
-                      :name="`${order_data.dividers_json.code}.value[${idx}].division_height`" />
-                    <div class="d-flex gap-4">
-                      <div>
-                        <VeeField type="checkbox" class="form-check-input me-2" v-model="data.division_center" value="Y"
-                          :name="`${order_data.dividers_json.code}.value[${idx}].division_center`"
-                          :id="`dividers_json_center${idx +1 }`" />
-                        <label :for="`dividers_json_center${idx +1 }`">
-                          {{ store.language_txt.order.text_dividers_json_is_center}}
-                        </label>
-                      </div>
-                      <div>
-                        <VeeField type="checkbox" class="form-check-input me-2" v-model="data.division_no_move"
-                          value="Y" :name="`${order_data.dividers_json.code}.value[${idx}].division_no_move`"
-                          :id="`dividers_json_no_move${idx +1}`" />
-                        <label :for="`dividers_json_no_move${idx +1}`">
-                          {{ store.language_txt.order.text_dividers_json_is_fixed }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- 以上分段 -->
-                <div class="row me-0 d-inline-flex col-sm-6 mb-3">
-                  <label class="label-set col-form-label col-4" for="">
-                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
-                    }}<br>{{ store.language_txt.order.text_dividers_json_above_division}}
-                    
-                  </label>
-                  <div class="col-8 d-flex align-items-center ">
-                    <div class="col me-2 input-group">
-                      <VeeField type="text"
-                        :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division`"
-                        class="form-control" v-model="data.above_handle_division"
-                        :disabled="data.above_handle_division_center == 'Y'"
-                        :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].above_handle_division`]}"
-                        :label="`partitio[${idx}].name`" />
-                      <VeeErrorMessage class="error__label"
-                        :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division`" />
-                    </div>
-                    <VeeField type="checkbox"
-                      :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division_center`" value="Y"
-                      class="form-check-input mx-2" v-model="data.above_handle_division_center"
-                      :id="`above_handle_division_center${idx +1}`" />
-                    <label :for="`above_handle_division_center${idx +1}`">
-                      {{ store.language_txt.order.text_dividers_json_is_center}}
-                    </label>
-                  </div>
-                </div>
-                <!-- 以下分段 -->
-                <div class="row ms-0 d-inline-flex col-sm-6 mb-3" v-if="idx == 0">
-                  <label class="label-set col-form-label col-4" for="">
-                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
-                    }}<br>{{ store.language_txt.order.text_dividers_json_beneath_divide}}
-                  </label>
-                  <div class="col-sm-8 d-flex align-items-center">
-                    <div class="col me-2 input-group">
-                      <VeeField type="text"
-                        :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`"
-                        class="form-control" v-model="data.beneath_handle_division"
-                        :disabled="data.beneath_handle_division_center == 'Y'"
-                        :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`]}"
-                        :label="`partitio[${idx}].name`"
-                      />
-                    
-                      <VeeErrorMessage class="error__label"
-                        :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`" />
-                    </div>
-                    <VeeField type="checkbox" value="Y"
-                      :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division_center`"
-                      v-model="data.beneath_handle_division_center" class="form-check-input mx-2"
-                      :id="`beneath_handle_division_center${idx +1}`" />
-                    <label :for="`beneath_handle_division_center${idx +1}`">
-                      {{ store.language_txt.order.text_dividers_json_is_center}}
-                    </label>
-                  </div>
-                </div>
-                <i class="fas fa-times close_btn" @click="del_json(order_data.dividers_json.code,idx)"></i>
-                </div>
-                <div class="col-12 text-center mt-4 d-flex align-items-center justify-content-center gap-4">
-                  <button type="button" class="add_text_btn" @click="add_json(order_data.dividers_json.code,Divider_rail_obj)">
-                    <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                    <span>{{store.language_txt.order.text_dividers}}</span>
-                  </button>
-                  <button type="button" class="add_text_btn" v-if="show_add_lever && !is_none_win_lever" @click="add_json(order_data. lever_segmentation_note.code,lever_segmentation_obj)">
-                    <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                    <span>{{order_data.lever_segmentation_note.name}}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- 設計大區塊 -->
-      <section id="designSection" v-if="false">
-        <div class="container container-original">
-          <div class="block block3 mainForm">
-            <h2 class="title">
-              {{ store.language_txt.order.text_t_post}}
-            </h2>
-            <div class="row flex-auto">
-              <!-- 顏色 -->
-              <div class="col-12 mb-3">
-                <div class="row">
-                  <label class="label-set col-form-label col-sm-2 " for="">
-                    <span class="text-danger">*</span>
-                    {{material_color.name}}
-                  </label>
-                  <div class="col-sm-10">
-                    <div class="d-flex algin-items-center flex-wrap  p-2 pt-0"
-                      :class="{ 'error': errors[`${material_color.code}.option_value_id`] }">
-                      <div class="picOption" v-for="color in material_color.option_values">
-                        <VeeField type="radio" :id="'setting_color_' + color.id"
-                          :name="`${material_color.code}.option_value_id`"
-                          @change="set_custom_name(color,material_color.code)"
-                          v-model="data_id[material_color.code]"
-                          :value="color.id" label="setting_color" rules="required" />
-                        <VeeField type="hidden" :name="`${material_color.code}.name`"
-                          :value="material_color.name" />
-                        <VeeField type="hidden" :name="`${material_color.code}.option_id`"
-                          :value="material_color.id" />
-                        <VeeField type="hidden" :name="`${material_color.code}.code`"
-                          :value="material_color.code" />
-                        <VeeField type="hidden" :name="`${material_color.code}.type`"
-                          :value="material_color.type" />
-                        <VeeField type="hidden" :name="`${material_color.code}.value`" :value="color.code + ' ' + show_custom_name(color)"
-                        v-model="data_val[material_color.code]"
-                         />
-                        <label :for="'setting_color_' + color.id">
-                          <img :src="color.thumb" :alt="show_custom_name(color)">
-                        </label>
-
-                        <p class="color-code">{{ color.code }}</p>
-                        <p>{{ show_custom_name(color) }}</p>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${material_color.code}.option_value_id`" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- 外框 -->
-              <div class="col-12 row" v-if="!is_track">
-                <!-- 框型 -->
-                <div class="row flex-auto col-12" v-if="doorType_outerFrame">
-                  <div class="col-md-6 flex-auto">
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-2 " for="">
-                      <span class="text-danger">*</span>
-                      {{ doorType_outerFrame.name }}
-                    </label>
-                    <div class="col-sm-10">
-                      <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
-                        :class="{ 'error': errors[`${doorType_outerFrame.code}.option_value_id`] }">
-                        <div class="picOption" v-for="(item, idx) in doorType_outerFrame.option_values"
-                          :key="'outerFrame' + item.id">
-                          <VeeField type="radio" :id="'outerFrame' + item.id"
-                            v-model="data_id[doorType_outerFrame.code]"
-                            @change="set_custom_name(item,doorType_outerFrame.code)"
-                            :name="`${doorType_outerFrame.code}.option_value_id`" :value="item.id" rules="required" />
-                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.name`"
-                            :value="doorType_outerFrame.name" />
-                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.option_id`"
-                            :value="doorType_outerFrame.id" />
-                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.option_code`"
-                            :value="doorType_outerFrame.code" />
-                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.type`"
-                            :value="doorType_outerFrame.type" />
-                          <VeeField type="hidden" :name="`${doorType_outerFrame.code}.value`"
-                          v-model="data_val[doorType_outerFrame.code]"
-                           />
-                          <label :for="'outerFrame' + item.id">
-                            <img :src="item.thumb" :alt="show_custom_name(item)">
-                          </label>
-                          <p class="fs-xs">{{ show_custom_name(item)}}</p>
-                        </div>
-                        <VeeErrorMessage class="error__label" :name="`${doorType_outerFrame.code}.option_value_id`" />
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                </div>
-                <!-- left -->
-                <div class="col-md-6 flex-auto">
-                  <!-- 邊數 -->
-                  <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-4 " for="">
-                    <span class="text-danger">*</span>
-                    {{ order_data.outer_frame_sides.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" :name="`${order_data.outer_frame_sides.code}.option_value_id`" id="" class="form-select"
-                      rules="required" :class="{ 'error': errors[`${order_data.outer_frame_sides.code}.option_value_id`] }"
-                      v-model="data_id[order_data.outer_frame_sides.code]"
-                      @change="set_name(data,order_data.outer_frame_sides.code)"
-                      >
-                      <option value="" disabled>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option v-for="data in order_data.outer_frame_sides.option_values" :key="data.id" @change="order_fill_out_id.outer_frame_sides = data.id"
-                        :value="data.id">
-                        {{ data.name }}
-                      </option>
-                    </VeeField>
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.name`"
-                      :value="order_data.outer_frame_sides.name" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.option_id`"
-                      :value="order_data.outer_frame_sides.id" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.option_code`"
-                      :value="order_data.outer_frame_sides.code" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.type`"
-                      :value="order_data.outer_frame_sides.type" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_sides.code}.value`"
-                    v-model="data_val[order_data.outer_frame_sides.code]"
-                     />
-
-                    <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_sides.code}.option_value_id`" />
-                  </div>
-                  </div>
-                  <!-- 切窗台 -->
-                  <div class="row mb-3" v-if="!is_track">
-                  <label class="label-set col-form-label col-sm-4 " for="">
-                    <span class="text-danger">*</span>
-                    {{ order_data.outer_frame_cut_position.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="d-flex align-items-center gap-3 flex-wrap p-2"
-                      :class="{ 'error': errors[`${order_data.outer_frame_cut_position.code}.option_value_id`] }">
-                      <template v-for="(data,idx) in order_data.outer_frame_cut_position.option_values" :key="data.id" >
-                        <label :for="'outer_frame_cut_position' + data.id">
-                          <VeeField
-                            v-if="!is_track" 
-                            type="checkbox" 
-                            :name="`${order_data.outer_frame_cut_position.code}.option_value_id`" 
-                            :value="data.id"
-                            class="form-check-input" 
-                            :id="'outer_frame_cut_position' + data.id"
-                            label="outer_frame_cut_position"
-                            :disabled="none_frame_cut && data.id !== 2222"
-                            @change="change_none_frame_cut(data.id,values.outer_frame_cut_position.option_value_id)"
-                            rules="required" 
-                          />
-                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.name`"
-                            :value="order_data.outer_frame_cut_position.name" />
-                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.option_id`"
-                            :value="order_data.outer_frame_cut_position.id" />
-                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.option_code`"
-                            :value="order_data.outer_frame_cut_position.code" />
-                          <VeeField type="hidden" :name="`${order_data.outer_frame_cut_position.code}.type`"
-                            :value="order_data.outer_frame_cut_position.type" />
-                          <span class="ms-2">{{ data.name }}</span>
-                        </label>
-                      </template>
-                        <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_cut_position.code}.option_value_id`" />
-                    </div>
-                  </div>
-                  </div>
-                  <!-- 鑽孔 -->
-                  <div class="row mb-3" v-if="is_wood">
-                  <label class="label-set col-form-label col-sm-4 " for="">
-                    <span class="text-danger">*</span>
-                    {{ order_data.sldwood_pre_drilled_hole.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`" id="" class="form-select"
-                      rules="required" :class="{ 'error': errors[`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`] }"
-                      v-model="data_id[order_data.sldwood_pre_drilled_hole.code]"
-                      @change="set_name(data,order_data.sldwood_pre_drilled_hole.code)"
-                     >
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option v-for="data in order_data.sldwood_pre_drilled_hole.option_values" :key="data.id"
-                        :value="data.id">
-                        {{ data.name }}
-                      </option>
-                    </VeeField>
-                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.name`"
-                      :value="order_data.sldwood_pre_drilled_hole.name" />
-                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_id`"
-                      :value="order_data.sldwood_pre_drilled_hole.id" />
-                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_code`"
-                      :value="order_data.sldwood_pre_drilled_hole.code" />
-                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.type`"
-                      :value="order_data.sldwood_pre_drilled_hole.type" />
-                    <VeeField type="hidden" :name="`${order_data.sldwood_pre_drilled_hole.code}.value`"
-                    v-model="data_val[order_data.sldwood_pre_drilled_hole.code]"
-                     />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.sldwood_pre_drilled_hole.code}.option_value_id`" />
-                  </div>
-                  </div>
-                </div>
-                <!-- right -->  
-                <div class="col-md-6 flex-auto">
-                  <!-- 墊片厚度 -->
-                  <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-4 " for="">
-                    <span class="text-danger">*</span>
-                    {{ order_data.outer_frame_gasket_thickness.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <!-- text -->
-                    <div v-if="data_val[order_data.sldwood_build_out_thickness_manually.code] == 'Y'">
-                      <div class="input-group">
-                        <VeeField  type="text"
-                          :name="`${order_data.outer_frame_gasket_thickness.code}.value`" class="form-control"
-                          :class="{ 'error': errors[`${order_data.outer_frame_gasket_thickness.code}.value`] }"
-                          v-model="data_val[order_data.outer_frame_gasket_thickness.code]"
-                        />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                      <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`"
-                        value="0" />
-                    </div>
-                      <!-- select -->
-                    <div v-else>
-                      <div class="input-group">
-                      <VeeField  as="select" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`"
-                        id="outer_frame_gasket_thickness" class="form-select"
-                        :class="{ 'error': errors[`${order_data.outer_frame_gasket_thickness.code}.option_value_id`] }"
-                        v-model="data_id[order_data.outer_frame_gasket_thickness.code]" 
-                        @change="set_name(data,order_data.outer_frame_gasket_thickness.code)"
-                        rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                        <option v-for="data in order_data.outer_frame_gasket_thickness.option_values" :key="data.id"
-                        @change="order_fill_out_id.outer_frame_gasket_thickness =  data.id"
-                          :value="data.id">
-                          {{ data.name }}
-                        </option>
-                      </VeeField>
-                      <span class="input-group-text">mm</span>
-
-                      </div>
-                      <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.value`"
-                      v-model="data_val[order_data.outer_frame_gasket_thickness.code]" />
-                    </div>
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.name`"
-                      :value="order_data.outer_frame_gasket_thickness.name" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_id`"
-                      :value="order_data.outer_frame_gasket_thickness.id" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.option_code`"
-                      :value="order_data.outer_frame_gasket_thickness.code" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_thickness.code}.type`"
-                      :value="order_data.outer_frame_gasket_thickness.type" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.outer_frame_gasket_thickness.code}.option_value_id`" />
-                    <!-- 自行輸入checkbox -->
-                    <div v-if="is_wood" class="mt-2">
-                      <label>
-                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`] }"
-                          :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`"
-                          v-model="data_val[order_data.sldwood_build_out_thickness_manually.code]" value="Y"
-                          class="form-check-input" />
-                        {{ store.language_txt.order.text_enter_manually}}
-                        <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.name`" :value="order_data.sldwood_build_out_thickness_manually.name" />
-                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_id`" :value="order_data.sldwood_build_out_thickness_manually.id" />
-                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_code`" :value="order_data.sldwood_build_out_thickness_manually.code" />
-                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.type`" :value="order_data.sldwood_build_out_thickness_manually.type" />
-                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].option_value_id`" value="0"/>
-                      </label>
-                    </div>
-                  </div>    
-                  </div>
-                  <!-- 墊片位置 -->
-                  <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_thickness.code]?.option_value_id !== 2202">
-                  <label class="label-set col-form-label col-sm-4 " for="">
-                    <span class="text-danger">*</span>
-                    {{ order_data.outer_frame_gasket_location.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" :name="`${order_data.outer_frame_gasket_location.code}.option_value_id`"
-                      id="outer_frame_gasket_location" class="form-select"
-                      :class="{ 'error': errors[`${order_data.outer_frame_gasket_location.code}.option_value_id`] }"
-                      v-model="data_id[order_data.outer_frame_gasket_location.code]"
-                      @change="set_name(option,order_data.outer_frame_gasket_location.code)"
-                      rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option v-for="data in order_data.outer_frame_gasket_location.option_values" :key="data.id"
-                        @change="order_fill_out_id.outer_frame_gasket_location = data.id"
-                        :value="data.id">
-                        {{ data.name }}
-                      </option>
-                    </VeeField>
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.name`"
-                      :value="order_data.outer_frame_gasket_location.name" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.option_id`"
-                      :value="order_data.outer_frame_gasket_location.id" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.option_code`"
-                      :value="order_data.outer_frame_gasket_location.code" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.type`"
-                      :value="order_data.outer_frame_gasket_location.type" />
-                    <VeeField type="hidden" :name="`${order_data.outer_frame_gasket_location.code}.value`"
-                    v-model="data_val[order_data.outer_frame_gasket_location.code]"
-                      />
-                    <VeeErrorMessage class="error__label"
-                      :name="`${order_data.outer_frame_gasket_location.code}.option_value_id`" />
-                  </div>
-                  </div>
-                  <!-- 翅膀墊片厚度 -->
-                  <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_location.code]?.option_value_id == 2221">
-                  <label class="label-set col-form-label col-sm-4" :for="order_data.wing_spacer_thickness.name">
-                    <span class="text-danger">*</span>
-                    {{ order_data.wing_spacer_thickness.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group">
-                      <VeeField type="text" class="form-control"
-                        :class="{ 'error': errors[`${order_data.wing_spacer_thickness.code}.value`]}"
-                        v-model="data_val[order_data.wing_spacer_thickness.code]"
-                        :id="order_data.wing_spacer_thickness.name" :name="`${order_data.wing_spacer_thickness.code}.value`"
-                        label="win_position" rules="required" />
-                        <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.name`"
-                      :value="order_data.wing_spacer_thickness.name" />
-                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_id`"
-                      :value="order_data.wing_spacer_thickness.id" />
-                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_code`"
-                      :value="order_data.wing_spacer_thickness.code" />
-                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.type`"
-                      :value="order_data.wing_spacer_thickness.type" />
-                    <VeeField type="hidden" :name="`${order_data.wing_spacer_thickness.code}.option_value_id`" value="0" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.wing_spacer_thickness.code}.value`" />
-                  </div>
-                  </div>
-                  <!-- 底部墊片厚度 -->
-                  <div class="row mb-3" v-if="values[order_data.outer_frame_gasket_location.code]?.option_value_id == 2221">
-                  <label class="label-set col-form-label col-sm-4" :for="order_data.bottom_spacer_thickness.name">
-                    <span class="text-danger">*</span>
-                    {{ order_data.bottom_spacer_thickness.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <div class="input-group">
-                      <VeeField type="text" class="form-control"
-                        :class="{ 'error': errors[`${order_data.bottom_spacer_thickness.code}.value`]}"
-                        v-model="data_val[order_data.bottom_spacer_thickness.code]"
-                        :id="order_data.bottom_spacer_thickness.name" :name="`${order_data.bottom_spacer_thickness.code}.value`"
-                        label="win_position" rules="required" />
-                      <span class="input-group-text">mm</span>
-                    </div>
-                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.name`"
-                      :value="order_data.bottom_spacer_thickness.name" />
-                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_id`"
-                      :value="order_data.bottom_spacer_thickness.id" />
-                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_code`"
-                      :value="order_data.bottom_spacer_thickness.code" />
-                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.type`"
-                      :value="order_data.bottom_spacer_thickness.type" />
-                    <VeeField type="hidden" :name="`${order_data.bottom_spacer_thickness.code}.option_value_id`" value="0" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.bottom_spacer_thickness.code}.value`" />
-                  </div>
-                  </div>
-                  <!-- 鑽孔位置 -->
-                  <div class="row mb-3" v-if="is_wood && is_pre_drilled_hole">
-                  <label class="label-set col-form-label col-sm-4" :for="order_data.desired_drilling_position.name">
-                    <span class="text-danger">*</span>
-                    {{ order_data.desired_drilling_position.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField type="text" class="form-control"
-                      :class="{ 'error': errors[`${order_data.desired_drilling_position.code}.value`]}"
-                      v-model="data_val[order_data.desired_drilling_position.code]"
-                      :id="order_data.desired_drilling_position.name" :name="`${order_data.desired_drilling_position.code}.value`"
-                      label="win_position" rules="required" />
-                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.name`"
-                      :value="order_data.desired_drilling_position.name" />
-                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_id`"
-                      :value="order_data.desired_drilling_position.id" />
-                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_code`"
-                      :value="order_data.desired_drilling_position.code" />
-                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.type`"
-                      :value="order_data.desired_drilling_position.type" />
-                    <VeeField type="hidden" :name="`${order_data.desired_drilling_position.code}.option_value_id`" value="0" />
-                    <VeeErrorMessage class="error__label" :name="`${order_data.desired_drilling_position.code}.value`" />
-                  </div>
-                  </div>
-                </div>
-              </div>
-              <!-- 輔料需求 -->
-              <div class="col-12">
-                <div class="position-relative my-3 fs-6">
-                  {{ order_data.auxiliaries.name }}
-                  <i class="fas fa-info-circle" @click="show_info_img($event)">
-                    <div class="nav-img">
-                      <img src="@/assets/images/auxiliary_info_img.jpg" alt="auxiliary_info_img">
-                    </div>
-                  </i>
-                </div>
-                <div class="d-none" v-if="auxiliary_data.length > 0">
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.name`"
-                  :value="order_data.auxiliaries.name" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_id`"
-                  :value="order_data.auxiliaries.id" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_code`"
-                  :value="order_data.auxiliaries.code" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.type`"
-                  :value="order_data.auxiliaries.type" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_value_id`"
-                  value="0" />
-                </div>
-                <div class="row position-relative border-bottom p-2" v-for="(item, idx) in auxiliary_data"
-                :key="`title` + idx">
-                <div>
-                  <p class="col-lg-1  text-lg-end">{{order_data.auxiliaries.name}} {{ idx + 1 }}</p>
-                </div>
-                <div class="col-md-6 flex-auto">
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 " for="">
-                      {{ order_data.auxiliary_length.name }}
-                    </label>
-                    <div class="col-sm-8">
-                      <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
-                        :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
-                        class="form-select" rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                        <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
-                          :value="data.name">
-                          {{ data.name }}
-                        </option>
-                      </VeeField>
-                    </div>
-                  </div>
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 " :for="`auxiliary_width${idx + 1 }`">
-                      {{order_data.auxiliary_width.name}}
-                    </label>
-                    <div class="col-sm-8">
-                      <div class="input-group">
-                        <VeeField type="number" 
-                        @keydown="clearInput"
-                        rules="required"
-                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_width`"
-                          :id="`auxiliary_width${idx + 1 }`" v-model="item.auxiliary_width"
-                          class="form-control" />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 flex-auto">
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_height${idx +1}`">{{ store.language_txt.order.text_height}}</label>
-                    <div class="col-sm-8">
-                      <div class="input-group">
-                        <VeeField type="number" 
-                        @keydown="clearInput"
-                        rules="required"
-                          :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_height`"
-                          :id="`auxiliary_height${idx +1}`" v-model="item.auxiliary_height"
-                          class="form-control" />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_count${ idx +1}`">{{ store.language_txt.order.text_quantity}}</label>
-                    <div class="col-sm-8">
-                      <VeeField type="number" 
-                      @keydown="clearInput"
-                      rules="required"
-                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_quantity`"
-                        v-model="item.auxiliary_quantity" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <i class="fas fa-times  close_btn btn-right" @click="del_json(order_data.auxiliaries.code,idx)"></i>
-                </div>
-                <div class="col-12 text-center mt-4">
-                  <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.auxiliaries.code,auxiliary_obj)"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <!-- 設計擴充大區塊 -->
-      <section id="additionalDesigns" v-if="show_block">
-        <div class="container container-original">
-          <div class="block block3 mainForm">
-            <h2 class="title">
-              {{ store.language_txt.order.text_door }}
-              <span v-if="!is_track">{{ store.language_txt.order.helper_door_piece }}</span>
-            </h2>
-            <div class="row flex-auto col-12">
-            <!-- 拉桿 -->
-              <div class="col-12">
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-2 " :for="win_lever_data.id">
-                    <span class="text-danger">*</span>
-                    {{ win_lever_data.name }}
-                  </label>
-                  <div class="col-sm-10">
-                    <div :class="{ 'error': errors[`${win_lever_data.code}.option_value_id`] }"
-                      class="d-flex flex-wrap align-items-start  p-2 pt-0">
-                      <div class="picOption" v-for="(item, idx) in win_lever_data.option_values"
-                        :key="item.name + idx">
-                        <VeeField type="radio" :id="'win_lever_' + item.id" :name="`${win_lever_data.code}.option_value_id`"
-                          :value="item.id" 
-                          v-model="data_id[win_lever_data.code]"
-                          @change="set_name(item,win_lever_data.code)"
-                          :key="win_lever_data.code + 'option_value_id'"
-                          label="win_lever" rules="required" />
-                        <VeeField type="hidden" :name="`${win_lever_data.code}.name`"  :key="win_lever_data.code + 'name'"
-                          :value="win_lever_data.name" />
-                        <VeeField type="hidden" :name="`${win_lever_data.code}.option_id`"  :key="win_lever_data.code + 'option_id'"
-                          :value="win_lever_data.id" />
-                        <VeeField type="hidden" :name="`${win_lever_data.code}.option_code`"  :key="win_lever_data.code + 'option_code'"
-                          :value="win_lever_data.code" />
-                        <VeeField type="hidden" :name="`${win_lever_data.code}.type`"  :key="win_lever_data.code + 'type'"
-                          :value="win_lever_data.type" />
-                        <VeeField type="hidden" :name="`${win_lever_data.code}.value`"  :key="win_lever_data.code + 'value'"
-                        v-model="data_val[win_lever_data.code]"
-                         />
-                        <label :for="'win_lever_' + item.id">
-                          <img :src="item.thumb" :alt="item.name">
-                        </label>
-                        <p class="fs-xs">{{ item.name }}</p>
-                      </div>
-                      <VeeErrorMessage class="error__label" :name="`${win_lever_data.code}.option_value_id`" />
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-              <!-- left -->
-              <div class="col-md-6 flex-auto">
-                <!-- 尺寸 -->
-                <div class="row mb-3">
-                  <label class="label-set col-form-label col-sm-4 " :for="blade_size_data.id">
-                    <span class="text-danger">*</span>
-                    {{ blade_size_data.name }}
-                  </label>
-                  <div class="col-sm-8">
-                    <VeeField as="select" 
-                    :name="`${blade_size_data.code}.option_value_id`" 
-                    :id="blade_size_data.id"
-                      class="form-select" 
-                      :class="{ 'error': errors[`${blade_size_data.code}.option_value_id`] }"
-                      v-model="data_id[blade_size_data.code]"
-                      @change="set_name(size,blade_size_data.code)"
-                      label="blade_size"
-                      :key="blade_size_data.code + 'option_value_id'"
-                      rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                      <option v-for="size in blade_size_data.option_values" :key="size.name + size.id" :value="size.id">
-                        {{ size.name }}
-                      </option>
-                    </VeeField>
-                    <VeeErrorMessage class="error__label" :name="`${blade_size_data.code}.option_value_id`" />
-                    <VeeField 
-                      type="hidden" 
-                      :name="`${blade_size_data.code}.name`"
-                      :key="blade_size_data.code + 'name'"
-                      :value="blade_size_data.name" />
-                    <VeeField 
-                      type="hidden" 
-                      :name="`${blade_size_data.code}.option_id`"
-                      :key="blade_size_data.code + 'option_id'"
-                      :value="blade_size_data.id" />
-                    <VeeField 
-                      type="hidden" 
-                      :name="`${blade_size_data.code}.option_code`"
-                      :key="blade_size_data.code + 'option_code'"
-                      :value="blade_size_data.code" />
-                    <VeeField 
-                      type="hidden" 
-                      :name="`${blade_size_data.code}.type`"
-                      :key="blade_size_data.code + 'type'"
-                      :value="blade_size_data.type" />
-                    <VeeField 
-                      type="hidden" 
-                      :name="`${blade_size_data.code}.value`"
-                      :key="blade_size_data.code + 'value'"
-                      v-model="data_val[blade_size_data.code]"
-                       />
                   </div>
                 </div>
                 <!-- 吸鐵 -->
@@ -1940,32 +1277,32 @@
                   </div>
                 </div>
                 <!-- 把手顏色 -->
-                <div class="row mb-3" v-if="!!handle_color?.option_group_suboption_values && !is_none_handle && !is_aluminum">
+                <div class="row mb-3" v-if="!!handle_color && !is_none_handle && !is_aluminum">
                   <label class="label-set col-form-label col-sm-4 " :for="order_data.door_handle_color.name">
                     <span class="text-danger">*</span>
                     {{ order_data.door_handle_color.name }}
                   </label>
                   <div class="col-sm-8">
                     <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
-                      :class="{ 'error': errors[`${handle_color.option_code}.option_value_id`] }">
-                      <div class="picOption" v-for="color in handle_color.option_group_suboption_values">
+                      :class="{ 'error': errors[`${order_data.door_handle_color.code}.option_value_id`] }">
+                      <div class="picOption" v-for="color in handle_color">
                         <VeeField type="radio" :id="'lockHandle_color' + color.id"
-                          :name="`${handle_color.option_code}.option_value_id`"
-                          v-model="data_id[handle_color.option_code]" 
-                          @change="set_name(color,handle_color.option_code)"
+                          :name="`${order_data.door_handle_color.code}.option_value_id`"
+                          v-model="data_id[order_data.door_handle_color.code]" 
+                          @change="set_name(color,order_data.door_handle_color.code)"
                           :value="color.option_value_id"
                            label="lockHandle_color"
                           rules="required" />
-                        <VeeField type="hidden" :name="`${handle_color.option_code}.name`"
-                          :value="handle_color.option_name" />
-                        <VeeField type="hidden" :name="`${handle_color.option_code}.option_id`"
-                          :value="handle_color.option_id" />
-                        <VeeField type="hidden" :name="`${handle_color.option_code}.option_code`"
-                          :value="handle_color.option_code" />
-                        <VeeField type="hidden" :name="`${handle_color.option_code}.type`"
-                          :value="handle_color.option_type" />
-                        <VeeField type="hidden" :name="`${handle_color.option_code}.value`"
-                        v-model="data_val[handle_color.option_code]"
+                        <VeeField type="hidden" :name="`${order_data.door_handle_color.code}.name`"
+                          :value="order_data.door_handle_color.name" />
+                        <VeeField type="hidden" :name="`${order_data.door_handle_color.code}.option_id`"
+                          :value="order_data.door_handle_color.id" />
+                        <VeeField type="hidden" :name="`${order_data.door_handle_color.code}.option_code`"
+                          :value="order_data.door_handle_color.code" />
+                        <VeeField type="hidden" :name="`${order_data.door_handle_color.code}.type`"
+                          :value="order_data.door_handle_color.type" />
+                        <VeeField type="hidden" :name="`${order_data.door_handle_color.code}.value`"
+                        v-model="data_val[order_data.door_handle_color.code]"
                          />
 
                         <label :for="'lockHandle_color' + color.id">
@@ -1973,7 +1310,7 @@
                         </label>
                         <p class="fs-xs">{{ color.name }}</p>
                       </div>
-                      <VeeErrorMessage class="error__label" :name="`${handle_color.option_code}.option_value_id`" />
+                      <VeeErrorMessage class="error__label" :name="`${order_data.door_handle_color.code}.option_value_id`" />
                     </div>
                   </div>
                 </div>
@@ -2105,34 +1442,34 @@
                   </div>
                 </div>
                 <!-- 鎖的顏色 -->
-                <div class="row mb-3" v-if="lock_color?.option_group_suboption_values?.length > 0 && !is_none_lock && !is_track && !is_aluminum">
+                <div class="row mb-3" v-if="lock_color.length > 0 && !is_none_lock && !is_track && !is_aluminum">
                   <label class="label-set col-form-label col-sm-4 " :for="order_data.door_lock_color.id">
                     <span class="text-danger">*</span>
                     {{ order_data.door_lock_color.name }}
                   </label>
                   <div class="col-sm-8">
                     <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
-                      :class="{ 'error': errors[`${lock_color.option_code}.option_value_id`] }">
-                      <div class="picOption" v-for="color in lock_color.option_group_suboption_values" :key="color.id">
+                      :class="{ 'error': errors[`${order_data.door_lock_color.code}.option_value_id`] }">
+                      <div class="picOption" v-for="color in lock_color" :key="color.id">
                         <VeeField 
                         type="radio" 
                         :id="color.id" 
-                        :name="`${lock_color.option_code}.option_value_id`"
-                        v-model="data_id[lock_color.option_code]"  
-                        @change="set_name(color,lock_color.option_code)"
+                        :name="`${order_data.door_lock_color.code}.option_value_id`"
+                        v-model="data_id[order_data.door_lock_color.code]"  
+                        @change="set_name(color,order_data.door_lock_color.code)"
                         :value="color.option_value_id"
                         label="lock_color"
                         rules="required" />
-                        <VeeField type="hidden" :name="`${lock_color.option_code}.name`"
+                        <VeeField type="hidden" :name="`${order_data.door_lock_color.code}.name`"
                           :value="order_data.door_lock_color.name" />
-                        <VeeField type="hidden" :name="`${lock_color.option_code}.option_id`"
+                        <VeeField type="hidden" :name="`${order_data.door_lock_color.code}.option_id`"
                           :value="order_data.door_lock_color.id" />
-                        <VeeField type="hidden" :name="`${lock_color.option_code}.option_code`"
-                          :value="lock_color.option_code" />
-                        <VeeField type="hidden" :name="`${lock_color.option_code}.type`"
+                        <VeeField type="hidden" :name="`${order_data.door_lock_color.code}.option_code`"
+                          :value="order_data.door_lock_color.code" />
+                        <VeeField type="hidden" :name="`${order_data.door_lock_color.code}.type`"
                           :value="order_data.door_lock_color.type" />
-                        <VeeField type="hidden" :name="`${lock_color.option_code}.value`"
-                        v-model="data_val[lock_color.option_code]"
+                        <VeeField type="hidden" :name="`${order_data.door_lock_color.code}.value`"
+                        v-model="data_val[order_data.door_lock_color.code]"
                         />
                         <label :for="color.id">
                           <img :src="color.thumb" :alt="color.name">
@@ -2140,7 +1477,7 @@
                         <p class="fs-xs">{{ color.name }}</p>
                       </div>
 
-                      <VeeErrorMessage class="error__label" :name="`${lock_color.option_code}.option_value_id`" />
+                      <VeeErrorMessage class="error__label" :name="`${order_data.door_lock_color.code}.option_value_id`" />
                     </div>
 
                   </div>
@@ -2235,7 +1572,171 @@
           </div>
         </div>
       </section>
-
+      <section id="partitio" v-if="show_block">
+        <div class="container container-original">
+          <div class="block block3 mainForm">
+            <h2 class="title position-relative">
+              {{ store.language_txt.order.text_option_section_dividers }}
+              <i class="fas fa-question-circle"></i>
+              <div class="info_box">
+                {{ partitio_note }}
+              </div>
+            </h2>
+            <div class="row flex-auto col-12">
+              <!-- 拉桿分段需求 -->
+              <div class="col-md-12" v-if="show_add_lever && !is_none_win_lever">
+                <div class="d-none" v-if="lever_segmentation_note_data.length > 0">
+                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.name`"
+                    :value="order_data.lever_segmentation_note.name" />
+                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_id`"
+                    :value="order_data.lever_segmentation_note.id" />
+                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_code`"
+                    :value="order_data.lever_segmentation_note.code" />
+                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.type`"
+                    :value="order_data.lever_segmentation_note.type" />
+                  <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_value_id`"
+                    value="0" />
+                </div>
+                <div class="row mb-3" v-for="(data,idx) in lever_segmentation_note_data" :key="`lever_segmentation${idx +1}`">
+                  <label class="label-set col-form-label col-sm-2 " :for="order_data.lever_segmentation_note.name">
+                    {{ order_data.lever_segmentation_note.name }}{{idx + 1}}
+                  </label>
+                  <div class="col-sm-4 position-relative">
+                    <VeeField type="number" :name="`${order_data.lever_segmentation_note.code}.value[${idx}].lever_value`"
+                      @keydown="clearInput"
+                      v-model="data.lever_value"
+                      :id="`${order_data.lever_segmentation_note.name}${idx + 1}`" class="form-control"
+                      :label="`lever_segmentation${idx + 1}`"/>
+                      <i class="fas fa-times close_btn" @click="del_json(order_data.lever_segmentation_note.code,idx)"></i>
+                  </div>
+                </div>
+              </div>
+              <!-- input_hiiden -->
+              <div class="d-none" v-if="Divider_rail_data.length > 0">
+                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.name`"
+                  :value="order_data.dividers_json.name" />
+                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_id`"
+                  :value="order_data.dividers_json.id" />
+                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_code`"
+                  :value="order_data.dividers_json.code" />
+                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.type`"
+                  :value="order_data.dividers_json.type" />
+                <VeeField type="hidden" :name="`${order_data.dividers_json.code}.option_value_id`" value="0" />
+              </div>
+              <div class="col-md-12 mb-4 border-bottom py-2  position-relative"
+                v-for="(data, idx) in Divider_rail_data" :key="`partitio_${idx +1}`">
+                <!-- 中隔 -->
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-2 " for="">
+                    <span class="text-danger">*</span>
+                    {{store.language_txt.order.text_dividers}}{{ idx + 1 }}
+                  </label>
+                  <div class="col-sm-4">
+                    <div class="d-flex mb-2">
+                      <div class="input-group">
+                        <VeeField type="number" :name="`${order_data.dividers_json.code}.value[${idx}].division_height`"
+                          @keydown="clearInput"
+                          class="form-control"
+                          @input="json_number_only($event,data.division_height)"
+                          :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].division_height`]}"
+                          :label="`dividers_json[${idx}].division_height`" v-model.number="data.division_height"
+                          rules="required" v-if="!!values.dividers_json" :disabled="data.division_center == 'Y'" />
+                        <span class="input-group-text">mm</span>
+                      </div>
+                    </div>
+                    <VeeErrorMessage class="error__label"
+                      :name="`${order_data.dividers_json.code}.value[${idx}].division_height`" />
+                    <div class="d-flex gap-4">
+                      <div>
+                        <VeeField type="checkbox" class="form-check-input me-2" v-model="data.division_center" value="Y"
+                          :name="`${order_data.dividers_json.code}.value[${idx}].division_center`"
+                          :id="`dividers_json_center${idx +1 }`" />
+                        <label :for="`dividers_json_center${idx +1 }`">
+                          {{ store.language_txt.order.text_dividers_json_is_center}}
+                        </label>
+                      </div>
+                      <div>
+                        <VeeField type="checkbox" class="form-check-input me-2" v-model="data.division_no_move"
+                          value="Y" :name="`${order_data.dividers_json.code}.value[${idx}].division_no_move`"
+                          :id="`dividers_json_no_move${idx +1}`" />
+                        <label :for="`dividers_json_no_move${idx +1}`">
+                          {{ store.language_txt.order.text_dividers_json_is_fixed }}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 以上分段 -->
+                <div class="row me-0 d-inline-flex col-sm-6 mb-3">
+                  <label class="label-set col-form-label col-4" for="">
+                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
+                    }}<br>{{ store.language_txt.order.text_dividers_json_above_division}}
+                    
+                  </label>
+                  <div class="col-8 d-flex align-items-center ">
+                    <div class="col me-2 input-group">
+                      <VeeField type="text"
+                        :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division`"
+                        class="form-control" v-model="data.above_handle_division"
+                        :disabled="data.above_handle_division_center == 'Y'"
+                        :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].above_handle_division`]}"
+                        :label="`partitio[${idx}].name`" />
+                      <VeeErrorMessage class="error__label"
+                        :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division`" />
+                    </div>
+                    <VeeField type="checkbox"
+                      :name="`${order_data.dividers_json.code}.value[${idx}].above_handle_division_center`" value="Y"
+                      class="form-check-input mx-2" v-model="data.above_handle_division_center"
+                      :id="`above_handle_division_center${idx +1}`" />
+                    <label :for="`above_handle_division_center${idx +1}`">
+                      {{ store.language_txt.order.text_dividers_json_is_center}}
+                    </label>
+                  </div>
+                </div>
+                <!-- 以下分段 -->
+                <div class="row ms-0 d-inline-flex col-sm-6 mb-3" v-if="idx == 0">
+                  <label class="label-set col-form-label col-4" for="">
+                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
+                    }}<br>{{ store.language_txt.order.text_dividers_json_beneath_divide}}
+                  </label>
+                  <div class="col-sm-8 d-flex align-items-center">
+                    <div class="col me-2 input-group">
+                      <VeeField type="text"
+                        :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`"
+                        class="form-control" v-model="data.beneath_handle_division"
+                        :disabled="data.beneath_handle_division_center == 'Y'"
+                        :class="{ 'error':errors[`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`]}"
+                        :label="`partitio[${idx}].name`"
+                      />
+                    
+                      <VeeErrorMessage class="error__label"
+                        :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division`" />
+                    </div>
+                    <VeeField type="checkbox" value="Y"
+                      :name="`${order_data.dividers_json.code}.value[${idx}].beneath_handle_division_center`"
+                      v-model="data.beneath_handle_division_center" class="form-check-input mx-2"
+                      :id="`beneath_handle_division_center${idx +1}`" />
+                    <label :for="`beneath_handle_division_center${idx +1}`">
+                      {{ store.language_txt.order.text_dividers_json_is_center}}
+                    </label>
+                  </div>
+                </div>
+                <i class="fas fa-times close_btn" @click="del_json(order_data.dividers_json.code,idx)"></i>
+              </div>
+              <div class="col-12 text-center mt-4 d-flex align-items-center justify-content-center gap-4">
+                <button type="button" class="add_text_btn" @click="add_json(order_data.dividers_json.code,Divider_rail_obj)">
+                  <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
+                  <span>{{store.language_txt.order.text_dividers}}</span>
+                </button>
+                <button type="button" class="add_text_btn" v-if="show_add_lever && !is_none_win_lever" @click="add_json(order_data.lever_segmentation_note.code,lever_segmentation_obj)">
+                  <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
+                  <span>{{order_data.lever_segmentation_note.name}}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section id="track_style" v-if="show_block && is_track">
         <div class="container container-original">
           <div class="block block3 mainForm">
@@ -2945,7 +2446,495 @@
           </div>
         </div>
       </section>
-      
+      <section id="T-POST" v-if="show_block && !is_track">
+        <div class="container container-original">
+          <div class="block block3 mainForm">
+            <h2 class="title">
+              {{ store.language_txt.order.text_t_post}}
+            </h2>
+            <div class="row flex-auto">
+              <!-- T型式 -->
+              <div class="col-md-12" v-if="t_post_data">
+                <div class="row mb-3">
+                  <label class="label-set col-form-label col-sm-2" for="">
+                    <span class="text-danger">*</span>
+                    {{t_post_data.name}}
+                    <i class="fas fa-question-circle"></i>
+                    <div class="info_box">
+                      {{ store.language_txt.order.text_vertical_horizontal}}
+                    </div>
+                  </label>
+                  <div class="col-sm-10">
+                    <div class="d-flex align-items-center  p-2 pt-0"
+                      :class="{ 'error': errors[`${t_post_data.code}.option_value_id`] }">
+                      <div v-for="data in t_post_data.option_values" :key="data.id">
+                        <div class="picOption" v-if="show_t_post(data)">
+                          <VeeField type="radio" :id="'t_post' + data.id"
+                            :name="`${t_post_data.code}.option_value_id`" :value="data.id"
+                            v-model="data_id[t_post_data.code]"
+                            @change="set_name(data,t_post_data.code),select_T_post()"
+                            label="t_post" rules="required" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.name`"  :key="t_post_data.code + 'name'"
+                            :value="t_post_data.name" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.option_id`"  :key="t_post_data.code + 'option_id'"
+                            :value="t_post_data.id" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.option_code`"  :key="t_post_data.code + 'option_code'"
+                            :value="t_post_data.code" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.type`"  :key="t_post_data.code + 'type'"
+                            :value="t_post_data.type" />
+                          <VeeField type="hidden" :name="`${t_post_data.code}.value`"  :key="t_post_data.code + 'value'"
+                          v-model="data_val[t_post_data.code]"
+                            />
+                          <label :for="'t_post' + data.id">
+                            <img :src="data.thumb" :alt="data.name">
+                          </label>
+                          <p class="mb-3">
+                            {{ data.name }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <VeeErrorMessage class="error__label" :name="`${t_post_data.code}.option_value_id`" />
+                    
+                  </div>
+                </div>
+              </div>
+              <!-- T位置 -->
+              <div class="d-none">
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.name`"
+                  :value="order_data.t_post_json.name" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_id`"
+                  :value="order_data.t_post_json.id" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_code`"
+                  :value="order_data.t_post_json.code" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.type`"
+                  :value="order_data.t_post_json.type" />
+                <VeeField type="hidden" :name="`${order_data.t_post_json.code}.option_value_id`" value="0" />
+              </div>
+              <div class="col-md-12 row" v-if="t_post_json">
+                <div class="col-md-6 d-flex mb-3 position-relative" v-for="(item,idx) in t_post_json.t_post_height"
+                  :key="'T-POST_position' + idx +1">
+                  <label class="label-set col-form-label col-sm-4 pe-3" :for="'T-POST_position' + idx+1">
+                    <span class="text-danger">*</span>
+                    T{{ idx+1 }}{{ store.language_txt.order.text_position}}
+                  </label>
+                  <div class="col-xxl-8 col pe-3">
+                    <div class="input-group">
+                      <VeeField type="number"
+                      @keydown="clearInput"
+                      :name="`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`"
+                        :id="'T-POST_position' + idx +1" 
+                        class="form-control" 
+                        v-model="item.t_post_value" 
+                        rules="required"
+                        :disabled="!!t_post_json.t_post_average"
+                        :class="{ 'error': errors[`${order_data.t_post_json.code}.value.t_post_height[${idx}].t_post_value`] }"
+                        label="T-POST_position" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label"
+                      :name="`${order_data.t_post_json.code}.value.height[${idx}].t_post_value`" />
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <button type="button" :disabled="show_corner && idx === 0" @click="del_json(order_data.t_post_json.code,idx)">
+                      <i class="fas fa-times  close_btn btn-right-2"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- 垂直T均分 -->
+              <div class="col-md-6 d-flex align-items-center mt-3" v-if="t_post_json.t_post_height.length > 0">
+                <div class="col-4 label-set pe-2"></div>
+                <div class="col-8">
+                  <VeeField type="checkbox" :name="`${order_data.t_post_json.code}.value.t_post_average`"
+                    v-model="t_post_json.t_post_average"
+                    class="form-check-input" value="Y" />
+                  <label for=""
+                    class="col-8 label-set text-start ps-2">{{ store.language_txt.order.text_divide_equally}}</label>
+                </div>
+              </div>
+              <div class="col-12 text-center my-4">
+                <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.t_post_json.code,t_post_obj)"></i>
+              </div>
+              <hr v-if="show_corner">
+              <!-- 轉角窗 -->
+              <div class="d-none" v-if="show_corner && corner_angle_data.length > 0">
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.name`"
+                    :value="order_data.corner_angle.name" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_id`"
+                    :value="order_data.corner_angle.id" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_code`"
+                    :value="order_data.corner_angle.code" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.type`"
+                    :value="order_data.corner_angle.type" />
+                  <VeeField type="hidden" :name="`${order_data.corner_angle.code}.option_value_id`"
+                    value="0" />
+              </div>
+              <div class="row col-md-8 col-12 mb-3" v-for="(data,idx) in corner_angle_data" :key="`corner_angle${idx +1}`" v-if="show_corner">
+                  <span class="col-sm-3" v-if="idx == 0">
+                    {{store.language_txt.order.text_corner_shutters}}
+                    <div class="col-12 text-center mt-4" v-if="show_corner">
+                      <button type="button" class="add_text_btn" @click="add_json(order_data.corner_angle.code,corner_angle_obj)">
+                        <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
+                        <span>{{order_data.corner_angle.name.replace(':num',corner_angle_data.length + 1) }}</span>
+                      </button>
+                    </div>
+                  </span>
+                  <span class="col-sm-3" v-else></span>
+                  <div class="col-sm-8 col-12 row position-relative ">
+                    <!-- 角度 -->
+                    <label class="label-set col-form-label col-sm-4" :for="order_data.corner_angle.name">
+                      <span class="text-danger">*</span>
+                      C{{idx + 1}}{{ order_data.corner_angle.name}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_value"
+                        :id="`${order_data.corner_angle.name}${idx + 1}`" class="form-control"
+                        :label="`corner_angle${idx + 1}`"
+                        rules="required"/>
+                        <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_value`" />
+                    </div>
+                    <!-- 位置 -->
+                    <label class="label-set col-form-label col-sm-4">
+                      <span class="text-danger">*</span>
+                      C{{idx + 1}}位置
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3">
+                      <div class="input-group">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].position_value`] }"
+                        @keydown="clearInput"
+                        v-model="data.position_value"
+                         class="form-control"
+                        :label="`position_value${idx + 1}`"
+                        rules="required"/>
+                        <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].position_value`" />
+                    </div>
+                    <!-- item1 -->
+                    <label class="label-set col-form-label col-sm-4" v-if="idx === 0">
+                      <span class="text-danger">*</span>
+                      item {{idx+1}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3 " v-if="idx === 0">
+                      <div class="input-group">
+                      <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_item1"
+                         class="form-control"
+                        :label="`position_value${idx + 1}`"
+                        rules="required"/>
+                      <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item1`" />
+                    </div>
+                    <!-- item -->
+                    <label class="label-set col-form-label col-sm-4">
+                      <span class="text-danger">*</span>
+                      item {{idx+2}}
+                    </label>
+                    <div class="col-sm-8 position-relative mb-3 ">
+                      <div class="input-group">
+                        <VeeField type="number" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`"
+                        :class="{ 'error': errors[`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`] }"
+                        @keydown="clearInput"
+                        v-model="data.corner_angle_item"
+                         class="form-control"
+                        :label="`item${idx + 1}`"
+                        rules="required"/>
+                      <span class="input-group-text">mm</span>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`${order_data.corner_angle.code}.value[${idx}].corner_angle_item`" />
+                    </div>
+                  </div>
+                   <div class="col position-relative ">
+                    <i class="fas fa-times close_btn close_btn_2" @click="del_json(order_data.corner_angle.code,idx)"></i>
+                   </div>
+              </div>
+              <hr v-if="show_multilayer || show_pelmet">
+              <!-- 多層窗&窗簾盒 -->
+              <div class="row col-12 mb-3">
+                <!-- 多層窗 -->
+              <div class="col-md-6 mb-3" v-if="show_multilayer">
+                <div class="row mb-3" v-if="show_multilayer">
+                  <span class="col-sm-2">{{store.language_txt.order.text_double_hung}}</span>
+                  <label class="label-set col-form-label col-sm-4" for="layers">
+                    <span class="text-danger">*</span>
+                    {{ store.language_txt.order.text_layers}}
+                    <!-- {{order_data.layer_json.name}} -->
+                  </label>
+                  <!-- 層數 -->
+                  <div class="col-sm-6">
+                    <VeeField 
+                      type="number" 
+                      @keydown="clearInput"
+                      class="form-control " 
+                      :name="`${order_data.layers_json.code}.value.layer`"
+                      :class="{ 'error': errors[`${order_data.layers_json.code}.value.layer`] }" 
+                      v-model="data_val[order_data.layers_json.code].layer"
+                      id="layers" rules="required" />
+                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.name`" :value="order_data.layers_json.name" />
+                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_id`" :value="order_data.layers_json.id" />
+                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_code`" :value="order_data.layers_json.code" />
+                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.type`" :value="order_data.layers_json.type" />
+                    <VeeField type="hidden" :name="`${order_data.layers_json.code}.option_value_id`" value="0" />
+                    <VeeErrorMessage class="error__label" :name="`${order_data.layers_json.code}.value.layer`" />
+                  </div>
+                </div>
+                <!-- 水平T -->
+                <div class="row mb-3" v-for="(data,idx) in layers_value" :key="'T-POST-horizontal-' + idx" v-if="show_multilayer">
+                  <span class="col-sm-2"></span>
+                  <label class="label-set col-form-label col-sm-4" :for="'T_POST_horizontal' + idx">
+                    <span class="text-danger">*</span>
+                    {{ store.language_txt.order.text_vertical}}T{{idx+1}}
+                  </label>
+                  <div class="col-sm-6">
+                    <div class="input-group">
+                      <VeeField 
+                        type="number" 
+                        @keydown="clearInput"
+                        class="form-control" 
+                        rules="required" 
+                        v-model="layers_value[idx]"
+                        :class="{ 'error': errors[`${order_data.layers_json.code}.value.layer_value[${idx}]`] }"
+                        :name="`${order_data.layers_json.code}.value.layer_value[${idx}]`" 
+                        :id="'layers_json.value' + idx" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label" :name="`${order_data.layers_json.code}.value.layer_value[${idx}]`" />
+                  </div>
+                </div>
+              </div>
+              <!-- 窗簾盒 -->
+              <div class="col-md-6 mb-3" v-if="show_pelmet">
+                <div class="row mb-3">
+                  <span class="col-sm-2">{{store.language_txt.order.text_valance_box}}</span>
+                  <label class="label-set col-form-label col-sm-4" for="">
+                    <span class="text-danger">*</span>
+                    {{order_data.win_valance_box_plans.name}}
+                  </label>
+                  <div class="col-sm-6">
+                    <div class="d-flex align-items-center  p-2 pt-0"
+                      :class="{ 'error': errors[`${order_data.win_valance_box_plans.code}.option_value_id`] }">
+                      <div class="picOption" v-for="data in order_data.win_valance_box_plans.option_values">
+                        <VeeField type="radio" :id="'pelmet' + data.id"
+                          :name="`${order_data.win_valance_box_plans.code}.option_value_id`"
+                          v-model="data_id[order_data.win_valance_box_plans.code]"
+                          @change="set_name(data,order_data.win_valance_box_plans.code)"
+                          :value="data.id" label="pelmet"
+                          rules="required" />
+                        <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.name`"
+                          :value="order_data.win_valance_box_plans.name" />
+                        <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.option_id`"
+                          :value="order_data.win_valance_box_plans.id" />
+                        <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.option_code`"
+                          :value="order_data.win_valance_box_plans.code" />
+                        <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.type`"
+                          :value="order_data.win_valance_box_plans.type" />
+                        <VeeField type="hidden" :name="`${order_data.win_valance_box_plans.code}.value`"
+                        v-model="data_val[order_data.win_valance_box_plans.code]"
+                         />
+                        <label :for="'pelmet' + data.id">
+                          <img :src="data.thumb" :alt="data.name">
+                        </label>
+                        <p>
+                          {{ data.name }}
+                        </p>
+                      </div>
+                    </div>
+                    <VeeErrorMessage class="error__label" :name="`${order_data.win_valance_box_plans.code}.option_value_id`" />
+                  </div>
+                </div>
+                <!-- A -->
+                <div class="row mb-3" v-if="show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
+                    <span class="col-sm-2"></span>
+                  <label class="label-set col-form-label col-sm-4" for="pelmet_A_width">
+                    <span class="text-danger">*</span>
+                    <!-- A方案 -->
+                    {{order_data.win_final_width.name}}
+                  </label>
+                  <div class="col-sm-6">
+                    <div class="input-group" :class="{ 'error': errors[`${order_data.win_final_width.code}.value`] }">
+                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.win_final_width.code}.value`"
+                        v-model="data_val[order_data.win_final_width.code]" id="pelmet_A_width"
+                        rules="required" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.name`"
+                        :value="order_data.win_final_width.name" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_id`"
+                        :value="order_data.win_final_width.id" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_code`"
+                        :value="order_data.win_final_width.code" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.type`"
+                        :value="order_data.win_final_width.type" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_width.code}.option_value_id`" value="0" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label" :name="`${order_data.win_final_width.code}.value`" />
+                  </div>
+                </div>
+                <div class="row mb-3" v-if="show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
+                  <span class="col-sm-2"></span>
+                  <label class="label-set col-form-label col-sm-4" for="pelmet_A_hight">
+                    <!-- A方案 -->
+                    <span class="text-danger">*</span>
+                    {{order_data.win_final_height.name}}
+                  </label>
+                  <div class="col-sm-6">
+                    <div class="input-group"  :class="{ 'error': errors[`${order_data.win_final_height.code}.value`] }">
+                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.win_final_height.code}.value`"
+                        v-model="data_val[order_data.win_final_height.code]" id="pelmet_A_hight" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.name`"
+                        :value="order_data.win_final_height.name" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_id`"
+                        :value="order_data.win_final_height.id" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_code`"
+                        :value="order_data.win_final_height.code" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.type`"
+                        :value="order_data.win_final_height.type" />
+                      <VeeField type="hidden" :name="`${order_data.win_final_height.code}.option_value_id`" value="0" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label" :name="`${order_data.win_final_height.code}.value`" />
+                  </div>
+                </div>
+                <!-- B -->
+                <div class="row mb-3" v-if="!show_pelmet_plan_A && data_id[order_data.win_valance_box_plans.code]">
+                  <label class="label-set col-form-label col-sm-4" for="pelmet_B">
+                    <span class="text-danger">*</span>
+                    {{order_data.winbox_horizontal_t_position.name}}
+                  </label>
+                  <div class="col-sm-8">
+                    <div class="input-group" :class="{ 'error': errors[`${order_data.winbox_horizontal_t_position.code}.value`] }">
+                      <VeeField type="number"  @keydown="clearInput" class="form-control " :name="`${order_data.winbox_horizontal_t_position.code}.value`"
+                        id="pelmet_B" v-model="data_val[order_data.winbox_horizontal_t_position.code]"
+                        rules="required" />
+                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.name`"
+                        :value="order_data.winbox_horizontal_t_position.name" />
+                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_id`"
+                        :value="order_data.winbox_horizontal_t_position.id" />
+                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_code`"
+                        :value="order_data.winbox_horizontal_t_position.code" />
+                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.type`"
+                        :value="order_data.winbox_horizontal_t_position.type" />
+                      <VeeField type="hidden" :name="`${order_data.winbox_horizontal_t_position.code}.option_value_id`"
+                        value="0" />
+                      <span class="input-group-text">mm</span>
+                    </div>
+                    <VeeErrorMessage class="error__label" name="winbox_horizontal_t_position.value" />
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="auxiliary" v-if="show_block">
+        <div class="container container-original">
+          <div class="block block3 mainForm">
+            <h2 class="title">
+              {{ order_data.auxiliaries.name }}
+              <i class="fas fa-info-circle" @click="show_info_img($event)">
+                <div class="nav-img">
+                  <img src="@/assets/images/auxiliary_info_img.jpg" alt="auxiliary_info_img">
+                </div>
+              </i>
+            </h2>
+            <div class="flex-auto">
+              <div class="d-none" v-if="auxiliary_data.length > 0">
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.name`"
+                  :value="order_data.auxiliaries.name" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_id`"
+                  :value="order_data.auxiliaries.id" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_code`"
+                  :value="order_data.auxiliaries.code" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.type`"
+                  :value="order_data.auxiliaries.type" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_value_id`"
+                  value="0" />
+              </div>
+              <div class="row position-relative border-bottom p-2" v-for="(item, idx) in auxiliary_data"
+                :key="`title` + idx">
+                <div>
+                  <p class="col-lg-1  text-lg-end">{{order_data.auxiliaries.name}} {{ idx + 1 }}</p>
+                </div>
+                <div class="col-md-6 flex-auto">
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 " for="">
+                      {{ order_data.auxiliary_length.name }}
+                    </label>
+                    <div class="col-sm-8">
+                      <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
+                        :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
+                        class="form-select" rules="required">
+                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
+                          :value="data.name">
+                          {{ data.name }}
+                        </option>
+                      </VeeField>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 " :for="`auxiliary_width${idx + 1 }`">
+                      {{order_data.auxiliary_width.name}}
+                    </label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField type="number" 
+                        @keydown="clearInput"
+                        rules="required"
+                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_width`"
+                          :id="`auxiliary_width${idx + 1 }`" v-model="item.auxiliary_width"
+                          class="form-control" />
+                        <span class="input-group-text">mm</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 flex-auto">
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 "
+                      :for="`auxiliary_height${idx +1}`">{{ store.language_txt.order.text_height}}</label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField type="number" 
+                        @keydown="clearInput"
+                        rules="required"
+                          :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_height`"
+                          :id="`auxiliary_height${idx +1}`" v-model="item.auxiliary_height"
+                          class="form-control" />
+                        <span class="input-group-text">mm</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 "
+                      :for="`auxiliary_count${ idx +1}`">{{ store.language_txt.order.text_quantity}}</label>
+                    <div class="col-sm-8">
+                      <VeeField type="number" 
+                      @keydown="clearInput"
+                      rules="required"
+                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_quantity`"
+                        v-model="item.auxiliary_quantity" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <i class="fas fa-times  close_btn btn-right" @click="del_json(order_data.auxiliaries.code,idx)"></i>
+              </div>
+              <div class="col-12 text-center mt-4">
+                <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.auxiliaries.code,auxiliary_obj)"></i>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
       <section id="other" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
@@ -3115,11 +3104,13 @@ const link_items = ref({
   ],
   windows:[
     { id: "material", title: store.language_txt.order.text_option_section_material },
-    { id: "style", title: store.language_txt.order.text_option_section_style },
-    { id: "sizeSection", title:  store.language_txt.order.text_basicsetting },
-    { id: "options", title: store.language_txt.order.text_outer_frame},
-    { id: "designSection", title: store.language_txt.order.text_t_post },
-    { id: "additionalDesigns", title: store.language_txt.order.text_door },
+    { id: "design", title: store.language_txt.order.text_option_section_style },
+    { id: "setting", title: store.language_txt.order.text_option_section_basicsetting },
+    { id: "outerFrame", title: store.language_txt.order.text_option_section_frame },
+    { id: "doorSet", title: store.language_txt.order.text_option_section_door },
+    { id: "partitio", title: store.language_txt.order.text_option_section_dividers },
+    { id: "T-POST", title: store.language_txt.order.text_option_section_tpost },
+    { id: "auxiliary", title: store.language_txt.order.text_option_section_packer },
     { id: "other", title:store.language_txt.order.text_option_section_other },
     { id: "note", title: store.language_txt.order.text_option_section_note },
   ]
@@ -3170,6 +3161,7 @@ const remove_style = async()=>{
   // 窗型類型驗證沒辦法被刪除
   // 所以強制重置並賦予材質的id(值)&value值
   order_form.value.resetForm();
+  console.log();
   
   console.log(order_form.value.errors);
   
@@ -3209,7 +3201,7 @@ const set_win_stdwin_subtype = (value) => {
 
 // 設置選項value的值
 const set_name = (item,code)=>{
-  // console.log(code,item);
+  console.log(code,item);
   if(item?.name){
     data_val.value[code] = item.name
   }else{
@@ -3701,17 +3693,17 @@ const none_frame_cut = computed(()=>{
 })
 
 const change_none_frame_cut = (id,value)=>{
-  let valuesArray = Array.isArray(value) ? value : [value]; 
+  
   if (id == 2222) {
-    if (valuesArray.includes(2222)) {
-      valuesArray = [2222];
+    if (value.includes(2222)) {
+      value = [2222];
     } else {
-      valuesArray = valuesArray.filter(item => item !== 2222);
+      value = value.filter(item => item !== 2222);
     }
   }
   // 同時更新 order_form 的表單值
-  order_form.value.setFieldValue("outer_frame_cut_position.option_value_id", valuesArray);
-  data_id.value[order_data.value.outer_frame_cut_position.code] = valuesArray
+  order_form.value.setFieldValue("outer_frame_cut_position.option_value_id", value);
+  data_id.value[order_data.value.outer_frame_cut_position.code] = value
 }
 
 // 鎖的類型
@@ -4007,7 +3999,7 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 const get_order_data = async()=>{
   const url = `${store.baseUrl}api/v2/catalog/options/list?lang=${store.language}&limit=0`
   const data = await store.get_api(url)
-  // console.log(data);
+  console.log(data);
   
   order_data.value = data.data
 
@@ -4173,13 +4165,11 @@ const get_handle_color = async (e) => {
   const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${selectedId}`
   const data = await store.get_api(url)
   if(!data.error){
-    // const handleColorValue = Object.keys(data.option_group_suboptions)
-    //   .filter(key => key.startsWith('door_handle_color'))
-    //   .map(key => data.option_group_suboptions[key].option_group_suboption_values)
-    //   .find(value => value !== undefined);
+    const handleColorValue = Object.keys(data.option_group_suboptions)
+      .filter(key => key.startsWith('door_handle_color'))
+      .map(key => data.option_group_suboptions[key].option_group_suboption_values)
+      .find(value => value !== undefined);
 
-    const handleColorValue = Object.values(data.option_group_suboptions)[0]
-    
     if (handleColorValue) {
       handle_color.value = handleColorValue;
     }
@@ -4201,9 +4191,10 @@ const get_lock_color = async (e) => {
     //   .map(key => data.option_group_suboptions[key].option_group_suboption_values)
     //   .find(value => value !== undefined);
 
-    const lockColorValue = Object.values(data.option_group_suboptions)[0]
+    const lockColorValue = Object.values(data.option_group_suboptions)
 
     if (lockColorValue) {
+      console.log(lockColorValue)
         lock_color.value = lockColorValue;
     }
 
@@ -4365,7 +4356,7 @@ const onSubmit = async(values) => {
     const key_id = key  // 保留key值，後續使用
     return {
         ...values[key],
-        // order_id,
+        order_id,
         key_id
     }
   });
@@ -4417,36 +4408,19 @@ const onSubmit = async(values) => {
 
   const submit_data = {
     order_id:order_id,
-    // material:material_code.value,
+    material:material_code.value,
     name:new_values.win_material.value + new_values.win_type.value + new_values[selected_win_style.value].value,
-    // quantity,
-    // note,
+    quantity,
+    note,
+    sqm,
     order_product_options:new_values
-    // sqm,
   }
   if(product_id){
-    submit_data.order_product_id = product_id
+    submit_data.id = product_id
   }
-  const news_form_data = store.jsonToFormData(submit_data)
-  // console.log(submit_data);
-  // await store.add_product(submit_data)
-  // router.push(`/order-list/item?id=${order_id}`)
-  const url = `${store.baseUrl}api/v2/sales/orders/product/save`
-      try {
-          const res = await fetch(url, {
-              method: "POST",
-              headers: {
-                  "Authorization": "Bearer " + store.userData.jwtToken
-              },
-              body: news_form_data
-          })
-          const data = await res.json()
-          if(res.ok){
-            console.log(data);
-          }
-      } catch (err) {
-          console.log('error', err);
-      }
+  console.log(submit_data);
+  await store.add_product(submit_data)
+  router.push(`/order-list/item?id=${order_id}`)
 };
 
 

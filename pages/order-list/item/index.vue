@@ -72,7 +72,7 @@
                                 <td class="col-2" v-if="is_Draft">
                                     <button type="button" class="method-btn btn-s" @click="copy_product(item)">{{store.language_txt.default.text_copy}}</button>
                                     <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{ store.language_txt.default.text_edit }}</nuxtLink>
-                                    <button type="button" class="method-btn btn-s" @click="delete_product(idx)">{{ store.language_txt.default.text_delete }}</button>
+                                    <button type="button" class="method-btn btn-s" @click="delete_product(item)">{{ store.language_txt.default.text_delete }}</button>
                                 </td>
                                 <td class="col-2" v-else>
                                     <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`" class="method-btn btn-s">{{ store.language_txt.default.text_view }}</nuxtLink>
@@ -225,69 +225,80 @@ const show_data = computed(()=>{
 
 // 複製
 const copy_product = async(item)=>{
-    const confirmed =  confirm(store.language_txt.order?.text_confirm_copy)
-    if(confirmed){
-        store.show_loading(true)
-         // 深層複製
-         const copy_item = JSON.parse(JSON.stringify(item));
-
-        // 刪除id & 時間
-        delete copy_item.created_at
-        delete copy_item.updated_at
-        delete copy_item.sort_order
-        delete copy_item.id
-        // 選項刪除id & 時間
-        Object.keys(copy_item.order_product_options).forEach(key => {
-            delete copy_item.order_product_options[key].id;
-            delete copy_item.order_product_options[key].order_product_id;
-            delete copy_item.order_product_options[key].sort_order;
-            delete copy_item.order_product_options[key].created_at;
-            delete copy_item.order_product_options[key].updated_at;
-            if(copy_item.order_product_options[key].type == 'checkbox' || copy_item.order_product_options[key].type == 'images'){
-                Object.values(copy_item.order_product_options[key].option_values).map(option =>{
-                    delete option.id
-                    delete option.sort_order
-                })
+    const url = `${store.baseUrl}api/v2/sales/orders/copyOrderProduct/${item.id}`
+        try {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + store.userData.jwtToken
+                },
+                body: ""
+            })
+            const data = await res.json()
+            // console.log(res);
+            // console.log(data);
+            if(res.ok){
+                alert(data.success)
             }
-        });
-        // 上傳
-        await up_date(copy_item)
-        console.log(copy_item);
-        
-        store.show_loading(false)
-    }
+        } catch (err) {
+            console.log('error', err);
+        }
+        await get_data()
 }
 
 // 刪除
-const delete_product = async(idx)=>{
+
+const delete_product = async(item)=>{
     const confirmed =  confirm(store.language_txt.order?.text_confirm_delete)
     if(confirmed && is_Draft.value){
         store.show_loading(true)
-        if(idx !== undefined){
-            // 刪除該品項
-            list_data.value.splice(idx, 1)
-            // console.log(list_data.value);
-        // 多選
-        }else{
-            // 篩出有勾選的品項
-            const del_item_idx = list_data.value.reduce((acc, item, idx) => {
-                // 如有被勾選擇帶出id
-                if (checkboxes.value[idx]) {
-                    acc.push(item.id);
-                }
-                return acc;
-            }, []);
-            // 刪除該品項
-            del_item_idx.map(del_id => {
-                const index = list_data.value.findIndex(data => data.id === del_id);
-                if (index !== -1) {
-                    list_data.value.splice(index, 1);
-                }
-            });
+        const url = `${store.baseUrl}api/v2/sales/orders/deleteOrderProduct/${order_id}/${item.id}`
+        try {
+            const res = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + store.userData.jwtToken
+                },
+                body: ""
+            })
+            const data = await res.json()
+            if(res.ok){
+                alert(data.success)
+            }
+        } catch (err) {
+            console.log('error', err);
         }
-        // POST資料庫
-        await up_date('delete')
+        await get_data()
         store.show_loading(false)
+
+
+
+        // if(idx !== undefined){
+        //     // 刪除該品項
+        //     list_data.value.splice(idx, 1)
+        //     // console.log(list_data.value);
+        // // 多選
+        // }else{
+        //     // 篩出有勾選的品項
+        //     const del_item_idx = list_data.value.reduce((acc, item, idx) => {
+        //         // 如有被勾選擇帶出id
+        //         if (checkboxes.value[idx]) {
+        //             acc.push(item.id);
+        //         }
+        //         return acc;
+        //     }, []);
+        //     // 刪除該品項
+        //     del_item_idx.map(del_id => {
+        //         const index = list_data.value.findIndex(data => data.id === del_id);
+        //         if (index !== -1) {
+        //             list_data.value.splice(index, 1);
+        //         }
+        //     });
+        // }
+        // POST資料庫
+        // await up_date('delete')
     }
 }
 

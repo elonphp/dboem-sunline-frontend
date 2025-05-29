@@ -33,8 +33,9 @@ input[type=radio]:disabled, input[type=checkbox]:disabled {
   opacity: 0.5;
   border-color: #AEAEAE;
 }
-input[type=radio]:disabled + label, input[type=checkbox]:disabled + label {
+input[type=radio]:disabled ~ label, input[type=radio]:disabled ~ span, input[type=checkbox]:disabled ~ label, input[type=checkbox]:disabled ~ span {
   color: #AEAEAE;
+  opacity: 0.5;
 }
 
 .form-check-input {

@@ -1,7 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { 
+    enabled: true
+   },
+   devServer: process.env.HTTPS === 'true' ? {
+    https: {
+      key: './https/server.key',
+      cert: './https/server.crt',
+    },
+  } : {},
   // runtimeConfig: {
   //   // 服務器端專用
   //   apiSecret: 'test',

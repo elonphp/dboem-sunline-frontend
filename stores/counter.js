@@ -6,8 +6,8 @@ export const useStore = defineStore('counter', () => {
     const router = useRouter()
     const userData = ref('')
     const role = ref({})
-    const pageKey = ref(1)    // 換語言重新渲染用Key
-    const baseUrl = ref('')
+    const pageKey = ref(1)    // 換語言重新渲染用的key
+    const baseUrl = ref('')   
     const user_loaded = ref(false)
     const loading = ref(false)
     const language = ref('zh_Hant')
@@ -17,17 +17,16 @@ export const useStore = defineStore('counter', () => {
     const textMap = ref(null) //匯出excel的json_header
 
     const set_token = async (data) => {
-        localStorage.setItem('token', JSON.stringify(data))
+        localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
         userData.value = data
         await get_user_data()
-        // router.push('/home')
     }
 
     const logout = async () => {
-        const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
-        const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
-        const expTime = userData.value.jwtExpireAt
-        // 沒過期透過api消除 過期則直接刪除
+        const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)       // 現在時間UTC+8
+        const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)  // 轉格式(YYYY-MM-DD HH:MM:SS)
+        const expTime = userData.value.jwtExpireAt                            // 取得目前使用者 JWT（JSON Web Token）過期時間
+        // 沒過期透過api(登出)消除 過期則直接刪除
         if (nowTime < expTime) {
             const url = `${baseUrl.value}api/v2/logout/${userData.value.refreshToken}`
             try {
@@ -44,27 +43,33 @@ export const useStore = defineStore('counter', () => {
                 console.log(err)
             }
         }
-        router.push('/')
-        localStorage.removeItem('token')
-        userData.value = ''
+        router.push('/')  // 返回登入頁
+        localStorage.removeItem('token')  // 刪除localStorage
+        userData.value = ''              
         role.value = {}
         user_loaded.value = false
     }
 
     const get_user = async () => {
+         // 從 localStorage 中取出儲存的 token 並解析為 JSON 物件
         const data = JSON.parse(localStorage.getItem('token'))
+         // 如果 token 存在
         if (data) {
             userData.value = data
+            language.value = data.locale
             await get_user_data()
             const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
             const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
             const expTime = userData.value.jwtExpireAt
-            // const expTime = "2024-05-29 09:26:09"
+
+            // 如果現在時間已超過 token 的過期時間，表示登入已逾時
             if (nowTime > expTime) {
+                 // 執行登出動作（如清除 token、導向登入頁）
                 await logout()
                 alert('連線逾時，請重新登入')
             }
         } else {
+            // 若無 token，清空使用者資料
             userData.value = ''
         }
     }
@@ -85,6 +90,7 @@ export const useStore = defineStore('counter', () => {
                 role.value = data.response.roles
                 //  上級
                 userData.value.parent_id = data.response.parent_id
+               
                 return data.response
             } else {
                 //  console.log(res);
@@ -93,7 +99,8 @@ export const useStore = defineStore('counter', () => {
             console.log(err)
         }
     }
-
+    
+    // 驗證 JWT token 是否已過期
     const token_validation = async () => {
         const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
         const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
@@ -101,22 +108,30 @@ export const useStore = defineStore('counter', () => {
         // console.log("現在時刻" + nowTime);
         // console.log("過期時刻" + expTime);
         // console.log(`過期：${nowTime > expTime}`);
+
+        // 如果現在時間已超過過期時間，表示 token 已過期
         if (nowTime > expTime) {
+            // 嘗試刷新 token
             await refresh_token()
             return
         }
     }
 
+    // 刷新 access token
     const refresh_token = () => {
+        // 從使用者資料中取得 refresh token
         const refresh_token = userData.value.refreshToken
+
+        // 如果 refresh token
         if (refresh_token) {
             fetch(`${baseUrl.value}api/v2/newAccessToken/${refresh_token}`)
                 .then((res) => res.json())
                 .then((res) => {
-                    // console.log(res);
+                     // 如果後端回傳錯誤（例如 token 已失效），執行登出
                     if (res.error) {
                         logout()
                     }
+                     // 否則儲存新的 token 資訊
                     set_token(res)
                     // console.log("刷新");
                 })
@@ -126,14 +141,19 @@ export const useStore = defineStore('counter', () => {
         }
     }
 
+    // api網域位置
     const set_baseUrl = () => {
         if (process.env.NODE_ENV === 'production') {
+            // 取得目前網站的通訊協定（http: 或 https:）
             const protocol = window.location.protocol
-            const host = window.location.host
+            // 取得目前網站的主機名稱與埠號（例如：www.example.com 或 localhost:3000）
+            const host = window.location.host 
             baseUrl.value = `${protocol}//${host}/`
         } else {
+            // 開發環境，使用指定的測試 API 網址
             baseUrl.value = 'http://sunline.dboem.com:8088/';
-            // baseUrl.value = 'http://sunline.local/'
+            // baseUrl.value = 'https://sunlinedev.elonphp.tw/';
+            
         }
     }
 
@@ -174,11 +194,12 @@ export const useStore = defineStore('counter', () => {
         return formData
     }
 
-    const add_product = (item) => {
-        temporarily_product.value = item
-    }
 
-    // tag顏色
+    // const add_product = (item) => {
+    //     temporarily_product.value = item
+    // }
+
+    // tag狀態顏色
     const status_colors = (status) => {
         switch (status) {
             case 'Draft': //草稿
@@ -242,6 +263,7 @@ export const useStore = defineStore('counter', () => {
       }
     }
 
+    // json選項標題語言文字
     const json_headers_language = (data) => {
         // 放各個json格式裡面的標題
         let headers = []
@@ -300,20 +322,29 @@ export const useStore = defineStore('counter', () => {
         return headers
     }
 
+    // json選項設定值
     const json_body_value = (data, header) => {
         let match_value = null
+
         data.forEach((item) => {
+            // 如果 item 不是陣列，表示是物件資料
             if (!Array.isArray(item)) {
                 Object.keys(item).forEach((k) => {
+                    // 比對textMap的文字欄位
                     if (textMap.value[k] === header) {
-                        match_value = item[k] || ''
-                    } else if (Array.isArray(item[k])) {
+                        match_value = item[k] || ''    // 沒有值就給空字串
+                    }
+                    // 如果item[k]是陣列
+                    else if (Array.isArray(item[k])) {
                         item[k].forEach((v, i) => {
+                            // 顯示文字 形式如：欄位名稱1、欄位名稱2...
                             if (textMap.value[k] + (i + 1) === header) {
-                                match_value = v || ''
+                                match_value = v || ''   
                             } else {
+                                // 針對陣列中是物件的情況，抓出 key 跟 value
                                 const key = Object.keys(v)[0]
                                 const textMapValue = textMap.value[key]
+                                // 如果 textMap 中的對應欄位有設定 idx，例如：欄位idx → 替換成欄位1、欄位2
                                 if (textMapValue && textMapValue.replace('idx', i + 1) === header) {
                                     match_value = Object.values(v)[0] || ''
                                 }
@@ -321,18 +352,23 @@ export const useStore = defineStore('counter', () => {
                         })
                     }
                 })
-            } else {
+            } 
+            // 如果 item 是陣列
+            else {
                 item.forEach((obj, idx) => {
                     Object.keys(obj).forEach((k) => {
                         let index = idx + 1
                         let replace = 'idx'
+
+                        // 處理 textMap 用的是 :num 的格式（例如欄位:num）
                         if(textMap.value[k].includes(':num')){
                             replace = ':num'
                         }
+                        // corner_angle_item 這個欄位特別處理，index +2
                         if(k === 'corner_angle_item'){
                             index = idx +2
                         }
-                        
+                        // 比對處理後的欄位名稱是與 header 是否一致
                         if (textMap.value[k].replace(replace, index) === header) {
                             match_value = obj[k]
                         }
@@ -340,6 +376,7 @@ export const useStore = defineStore('counter', () => {
                 })
             }
         })
+        // 如果值是空字串，預設填入 'N'
         if (match_value == '') {
             match_value = 'N'
         }
@@ -767,7 +804,7 @@ export const useStore = defineStore('counter', () => {
         method_nav,
         baseUrl,
         userData,
-        add_product,
+        // add_product,
         temporarily_product,
         set_token,
         logout,

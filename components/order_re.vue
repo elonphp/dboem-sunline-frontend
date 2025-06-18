@@ -664,7 +664,7 @@
         </div>
       </section>
       <!-- 選項大區塊 -->
-      <section id="options" v-if="false">
+      <section id="options" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">{{ store.language_txt.order.text_outer_frame }}</h2>
@@ -1211,7 +1211,7 @@
         </div>
       </section>
       <!-- 設計大區塊 -->
-      <section id="designSection" v-if="false">
+      <section id="designSection" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">
@@ -1223,7 +1223,7 @@
                 <div class="row">
                   <label class="label-set col-form-label col-sm-2 " for="">
                     <span class="text-danger">*</span>
-                    {{material_color.name}}
+                    {{material_color.translations[store.language]}}
                   </label>
                   <div class="col-sm-10">
                     <div class="d-flex algin-items-center flex-wrap  p-2 pt-0"
@@ -1265,7 +1265,7 @@
                   <div class="row mb-3">
                     <label class="label-set col-form-label col-sm-2 " for="">
                       <span class="text-danger">*</span>
-                      {{ doorType_outerFrame.name }}
+                      {{ doorType_outerFrame.translations[store.language] }}
                     </label>
                     <div class="col-sm-10">
                       <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
@@ -4005,7 +4005,7 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 
 // API ------------------------------------------------>
 const get_order_data = async()=>{
-  const url = `${store.baseUrl}api/v2/catalog/options/list?lang=${store.language}&limit=0`
+  const url = `${store.baseUrl}api/v2/catalog/options/list?lang=${store.language}&limit=0&details=1`
   const data = await store.get_api(url)
   // console.log(data);
   
@@ -4140,9 +4140,11 @@ const default_val = ()=>{
 // 材質顏色
 const get_material_color = async ()=>{
   const code = material_code.value + '_color' //取的材質的code來抓對應的材質顏色
-  const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+  // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+  const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
   const data = await store.get_api(url)
-  const colors = Object.values(data.data).find(item => item.code == code)
+  // const colors = Object.values(data.data).find(item => item.code == code)
+  const colors = data
   if(colors){
     material_color.value = colors
   }else{
@@ -4152,13 +4154,13 @@ const get_material_color = async ()=>{
 // 外框
 const get_outer_frame = async ()=>{
   const code = material_code.value + '_win_frame' //取的材質的code來抓對應的材質顏色
-  const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+  // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+  const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
   const data = await store.get_api(url)
-  console.log(data);
-  
-  const outer_frames = Object.values(data.data).find(item => item.code == code)
+  // const outer_frames = Object.values(data.data).find(item => item.code == code)
+  const outer_frames = data
   if(outer_frames){
-    doorType_outerFrame.value = Object.values(data.data).find(item => item.code == code)
+    doorType_outerFrame.value = outer_frames
   }else{
     alert('該材質外框未授權')
   }
@@ -4231,6 +4233,7 @@ const get_product_data = async () => {
 
   if (order_id && product_id) {
     const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`;
+    // const url = `${store.baseUrl}api/v2/sales/orders/products/info/${order_id}`;
     const data = await store.get_api(url);
     const order = data.order_products.find(item => item.id == product_id);  // 查找商品資料
 
@@ -4393,7 +4396,8 @@ const onSubmit = async(values) => {
               value:item.name
             }
           })
-          item.option_values = data
+          // item.option_values = data
+          item.values = data
           delete item.option_value_id
         }
     } else if(is_image){
@@ -4417,12 +4421,12 @@ const onSubmit = async(values) => {
 
   const submit_data = {
     order_id:order_id,
-    // material:material_code.value,
+    material:material_code.value,
     name:new_values.win_material.value + new_values.win_type.value + new_values[selected_win_style.value].value,
-    // quantity,
-    // note,
-    order_product_options:new_values
-    // sqm,
+    quantity,
+    note,
+    order_product_options:new_values,
+    sqm,
   }
   if(product_id){
     submit_data.order_product_id = product_id
@@ -4430,7 +4434,6 @@ const onSubmit = async(values) => {
   const news_form_data = store.jsonToFormData(submit_data)
   // console.log(submit_data);
   // await store.add_product(submit_data)
-  // router.push(`/order-list/item?id=${order_id}`)
   const url = `${store.baseUrl}api/v2/sales/orders/product/save`
       try {
           const res = await fetch(url, {
@@ -4443,6 +4446,7 @@ const onSubmit = async(values) => {
           const data = await res.json()
           if(res.ok){
             console.log(data);
+            router.push(`/order-list/item?id=${order_id}`)
           }
       } catch (err) {
           console.log('error', err);

@@ -455,106 +455,29 @@ const delete_order = async()=>{
 }
 
 // 更新資料
-const up_date = async (copy_item) => {
-    const temp = store.temporarily_product || copy_item
-    console.log('複製出來的或是新增的',temp)
-    const url = `${store.baseUrl}api/v2/sales/orders/save?locale=${store.language}&return=1`
-    const url2 = `${store.baseUrl}api/v2/sales/orders/save?locale=${store.language}`
-    const products = [...list_data.value]
-    if (temp) {
-        // let sqm =  parseFloat(+total_sqm.value)
-        // let quantity =  parseFloat(+total_quantity.value)
-        let sqm
-        let quantity
-        let material =  order_info.value.material || temp.material
-        sqm = products.reduce((acc, item) => {
-            acc += +item.sqm
-            return acc
-        }, 0)
-        quantity = products.reduce((acc, item) => {
-            acc += +item.quantity
-            return acc
-        }, 0)
-        // 把新的商品移到最後面
-        if (temp.id) {
-            const product_idx = products.findIndex(x => x.id == temp.id)
-            products.splice(product_idx, 1)
-            console.log(products)
-        }
-        if (products.length < 1) {
-            material = temp.material
-            // console.log(material);
-        }
-        if(temp !== 'delete'){
-            temp.tax = order_info.value.tax;
-            products.push(temp);
-            material = order_info.value.material || temp.material
-            sqm = products.reduce((acc,item)=>{
-                acc += +item.sqm
-                return acc
-            },0)
-            quantity = products.reduce((acc,item)=>{
-                acc += +item.quantity
-                return acc
-            },0)
-
-            // quantity += parseFloat(temp.quantity)
-            // temp.price = 0;
-            // temp.total = 0;
-        }
-        console.log('把複製跟原本加在一起的',products)
-        const submit_data = {
-            order_id: order_id,
-            // 業務
-            salesperson_id:order_info.value.salesperson_id || "",
-            salesperson_first_name: order_info.value.salesperson_first_name || "",
-            salesperson_last_name: order_info.value.salesperson_last_name || "",
-            salesperson_email: order_info.value.salesperson_email || "",
-            salesperson_telephone: order_info.value.salesperson_telephone || "",
-            salesperson_mobile: order_info.value.salesperson_mobile || "",
-            shipping_address1: order_info.value.shipping_address1 || "",
-            shipping_address2: order_info.value.shipping_address2 || "",
-            // 經銷商
-            dealer_id:order_info.value.dealer_id,
-            dealer_name:order_info.value.dealer_name,
-            // 顧客
-            customer_first_name: order_info.value.customer_first_name || "",
-            customer_last_name: order_info.value.customer_last_name || "",
-            customer_email: order_info.value.customer_email || "",
-            delivery_method:order_info.value.delivery_method || "",
-            sqm: sqm,
-            quantity: quantity,
-            note:order_info.value.note,
-            side_mark: order_info.value.side_mark,
-            material:material,
-            status_code:order_info.value.status_code,
-            order_products: products
-        }
-        // console.log('submit',submit_data);
-
-        const news_form_data = store.jsonToFormData(submit_data)
-
-        try {
-            const res = await fetch(url2, {
-                method: "POST",
-                headers: {
-                    // "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
-                },
-                body: news_form_data
-                // body: JSON.stringify(submit_data)
-            })
-            const data = await res.json()
-            if (res.ok) {
-                alert(data.success || data.error)
-            }
-        } catch (err) {
-            console.log('error', err);
-        }
-        await get_data()
-        store.temporarily_product = ""
+const up_date = async () => {
+    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${store.language}`
+    const data = order_info.value
+    delete data.sqm
+    delete data.total
+    delete data.order_products
+    try{
+        const res = await fetch(url,{
+            method:"POST",
+            headers:{
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + store.userData.jwtToken
+            },
+            body:JSON.stringify()
+        })
+        const res_data = await res.json()
+        console.log(res);
+        console.log(res_data);
+    }catch(err){
+        console.log(err);
     }
 }
+
 
 const get_data = async()=>{
     const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
@@ -593,7 +516,7 @@ store.show_loading(true)
 
 onMounted(async()=>{
     await get_data()
-    await up_date()
+    // await up_date()
     store.show_loading(false)
     
 })

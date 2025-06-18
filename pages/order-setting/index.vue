@@ -31,7 +31,7 @@
                             <tr v-for="(item,idx) in show_data" :key="'data_' + idx">
                                 <td>{{ item.name }}</td>
                                 <td class="justify-content-end  pe-5">
-                                    <nuxt-link :to="`/order-setting/${item.id}`" class="method-btn large">{{ store.language_txt.default?.text_setting }}</nuxt-link>
+                                    <nuxt-link :to="`/order-setting/${item.id}?code=${item.code}`" class="method-btn large">{{ store.language_txt.default?.text_setting }}</nuxt-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -171,11 +171,10 @@ const get_data = async()=>{
         })
         // console.log(res);
         const res_data = await res.json()
+        console.log(res_data)
         // console.log(res_data);
         if(res.ok){
-            // console.log(res_data);
-            data.value = Object.values(res_data.response.data).filter(item=> item.option_values)
-            // console.log(data.value);
+            data.value = res_data.response.data
         }
     }catch (err) {
         console.log(err);

@@ -25,46 +25,46 @@
                                 <td>
                                     <VeeField 
                                         type="text"
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_dealers.en.name`"
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.en`"
                                         class="form-control w-50 m-auto text-center" 
-                                        :value="item.custom_translations?.en || item.translations?.en" />
+                                        :value="item.option_value_dealer?.en || item.translations?.en" />
                                     <!-- <VeeField 
                                         type="hidden"
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_dealers.en.id`" 
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.en.id`" 
                                         class="form-control w-50 m-auto text-center" 
                                         :value="item.option_value_dealers?.en?.id || null" /> -->
                                 </td>
                                 <td>
                                     <VeeField 
                                         type="text" 
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_dealers.zh_Hant.name`"
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.zh_Hant`"
                                         class="form-control w-50 m-auto text-center" 
-                                        :value="item.custom_translations?.zh_Hant || item.translations?.zh_Hant"/>
+                                        :value="item.option_value_dealer?.zh_Hant || item.translations?.zh_Hant"/>
                                     <!-- <VeeField 
                                         type="hidden" 
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_dealers.zh_Hant.id`"
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.zh_Hant.id`"
                                         class="form-control w-50 m-auto text-center" 
                                         :value="item.option_value_dealers?.zh_Hant?.id || null"/> -->
                                 </td>
                                 <td v-show="false">
                                     <VeeField 
                                         type="hidden"
-                                        :name="`options.${data.code}.option_id`"
+                                        :name="`options.win_${data.code}.option_id`"
                                         class="form-control w-50 m-auto text-center" 
                                         :value="data.id"/>
                                     <VeeField 
                                         type="hidden"
-                                        :name="`options.${data.code}.option_name`"
+                                        :name="`options.win_${data.code}.option_name`"
                                         class="form-control w-50 m-auto text-center" 
                                         :value="data.name"/>
                                     <VeeField 
                                         type="hidden"
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_name`"
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_name`"
                                         class="form-control w-50 m-auto text-center" 
                                         :value="item.name"/>
                                     <VeeField 
                                         type="hidden"
-                                        :name="`options.${data.code}.option_values[${idx}].option_value_id`"
+                                        :name="`options.win_${data.code}.option_values[${idx}].option_value_id`"
                                         class="form-control w-50 m-auto text-center" 
                                         :value="item.id"/>
                                 </td>
@@ -90,6 +90,7 @@
 const store = useStore()
 const route = useRoute()
 const id = route.params.id
+const option_code = route.query.code
 
 const data = ref()
 const colors = ref([])
@@ -103,7 +104,8 @@ const another_language = computed(()=>{
 
 
 const get_data = async()=>{
-    const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+    // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${option_code}`
     try{
         const res = await fetch(url,{
             headers:{
@@ -112,7 +114,7 @@ const get_data = async()=>{
         })
         if(res.ok){
             const res_data =await res.json()
-            data.value = Object.values(res_data.response.data).find(item=> item.id == id && item.option_values)
+            data.value = res_data.response
             // console.log(data.value);
         }
     }catch(err){
@@ -125,11 +127,13 @@ const get_data = async()=>{
 const onSubmit = async(values)=>{
     store.show_loading(true)
     submit_btn_close.value = true
+    console.log(store.userData);
     const submit_data = {
         dealer_id:store.userData.employer_company_id,
         options:values.options
+        // option_id:values.option_id,
+        // option_values:values.option_values
     }
-   
     try{
         const url = `${store.baseUrl}api/v2/dealers/option/saveMany`
         const res = await fetch(url,{
@@ -143,7 +147,7 @@ const onSubmit = async(values)=>{
 
         const res_data = await res.json()
         if(res.ok && !res_data.error){
-            alert(res_data.success)
+            alert(res_data.message)
             await get_data()
             data_page.value++
             store.show_loading(false)

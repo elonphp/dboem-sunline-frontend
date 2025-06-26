@@ -78,7 +78,7 @@
                                     <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`" class="method-btn btn-s">{{ store.language_txt.default.text_view }}</nuxtLink>
                                     <nuxtLink v-if="(is_pending && store.is_dealer)" :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{store.language_txt.default.text_edit}}</nuxtLink>
                                     <button type="button" class="method-btn btn-s" v-if="is_pending && store.is_dealer" @click="copy_product(item)">{{ store.language_txt.default.text_copy }}</button>
-                                    <button v-if="(is_pending && store.is_dealer)" type="button" class="method-btn btn-s" @click="delete_product(idx)">{{ store.language_txt.default.text_delete }}</button>
+                                    <button v-if="(is_pending && store.is_dealer)" type="button" class="method-btn btn-s" @click="delete_product(item)">{{ store.language_txt.default.text_delete }}</button>
                                 </td>
                             </tr>
                                
@@ -225,6 +225,7 @@ const show_data = computed(()=>{
 
 // 複製
 const copy_product = async(item)=>{
+    store.show_loading(true)
     const url = `${store.baseUrl}api/v2/sales/orders/copyOrderProduct/${item.id}`
         try {
             const res = await fetch(url, {
@@ -236,10 +237,10 @@ const copy_product = async(item)=>{
                 body: ""
             })
             const data = await res.json()
-            // console.log(res);
-            // console.log(data);
             if(res.ok){
                 alert(data.success)
+                await up_date()
+                store.show_loading(false)
             }
         } catch (err) {
             console.log('error', err);
@@ -250,11 +251,35 @@ const copy_product = async(item)=>{
 // 刪除
 
 const delete_product = async(item)=>{
-    const confirmed =  confirm(store.language_txt.order?.text_confirm_delete)
-    if(confirmed && is_Draft.value){
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/deleteOrderProduct/${order_id}/${item.id}`
+    // 顯示確認視窗，詢問是否要刪除
+    const confirmed = confirm(store.language_txt.order?.text_confirm_delete);
+    if (!confirmed) return;
+
+    // 顯示 loading 畫面
+    store.show_loading(true);
+
+    // 儲存要刪除的商品 ID
+    let del_item_ids = [];
+
+    // 如果沒有傳入 item，表示是多選刪除
+    if (!item) {
+        del_item_ids = list_data.value.reduce((acc, curr, idx) => {
+            if (checkboxes.value[idx]) acc.push(curr.id); // 有勾選就加入陣列
+            return acc;
+        }, []);
+    } else {
+        // 單筆刪除的情況
+        del_item_ids.push(item.id);
+    }
+
+    let lastSuccessMessage = ""; // 儲存最後一筆成功的訊息
+
+    // 逐筆執行刪除
+    for (const id of del_item_ids) {
+        const url = `${store.baseUrl}api/v2/sales/orders/deleteOrderProduct/${order_id}/${id}`;
+
         try {
+            // 發送 POST 請求進行刪除
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -262,45 +287,36 @@ const delete_product = async(item)=>{
                     "Authorization": "Bearer " + store.userData.jwtToken
                 },
                 body: ""
-            })
-            const data = await res.json()
-            if(res.ok){
-                alert(data.success)
+            });
+
+            const data = await res.json();
+            
+
+            // 若成功，顯示一次成功訊息（可視需求取消或修改）
+            if (res.ok && data.success) {
+                // alert(data.success);
+                lastSuccessMessage = data.success;
+            }else {
+                lastSuccessMessage = data.message;
             }
+            
         } catch (err) {
-            console.log('error', err);
+            // 發生錯誤時印出錯誤訊息到 console（開發用）
+            console.error('刪除失敗', err);
         }
-        await get_data()
-        store.show_loading(false)
-
-
-
-        // if(idx !== undefined){
-        //     // 刪除該品項
-        //     list_data.value.splice(idx, 1)
-        //     // console.log(list_data.value);
-        // // 多選
-        // }else{
-        //     // 篩出有勾選的品項
-        //     const del_item_idx = list_data.value.reduce((acc, item, idx) => {
-        //         // 如有被勾選擇帶出id
-        //         if (checkboxes.value[idx]) {
-        //             acc.push(item.id);
-        //         }
-        //         return acc;
-        //     }, []);
-        //     // 刪除該品項
-        //     del_item_idx.map(del_id => {
-        //         const index = list_data.value.findIndex(data => data.id === del_id);
-        //         if (index !== -1) {
-        //             list_data.value.splice(index, 1);
-        //         }
-        //     });
-        // }
-        // POST資料庫
-        // await up_date('delete')
     }
-}
+
+    // 刪除完成後重新取得資料
+    await up_date()
+
+    // 關閉 loading 畫面
+    store.show_loading(false);
+
+    if (lastSuccessMessage) {
+        alert(lastSuccessMessage);
+    }
+    }
+
 
 // 審核
 const submit_review = async () => {
@@ -456,31 +472,51 @@ const delete_order = async()=>{
 
 // 更新資料
 const up_date = async () => {
+    await get_data()
     const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${store.language}`
-    const data = order_info.value
-    delete data.sqm
-    delete data.total
+    const data = {...order_info.value}
+    console.log(data);
+    // 如果目前沒有材質則從網址路徑抓
+    if(!data.material){
+        data.material = route.query.material
+    }
+    // 如果沒有資料的話清空
+    else if(data.order_products.length <= 0){
+        data.material = ""
+    }
+    
+    data.order_id = data.id
+    data.quantity = total_quantity.value
+
     delete data.order_products
+
+    
     try{
         const res = await fetch(url,{
             method:"POST",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.jwtToken,
+                "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
-            body:JSON.stringify()
+            body:JSON.stringify(data)
         })
         const res_data = await res.json()
-        console.log(res);
-        console.log(res_data);
+        // 更新完如果網址路徑還有材質的code則清空網址路徑
+        if(route.query.material){
+            router.push(`/order-list/item?id=${order_id}`)
+        }
+        
     }catch(err){
         console.log(err);
     }
+    await get_data()
 }
 
 
 const get_data = async()=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
+    // const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
+    const url = `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${store.language}`
     try{
         const res = await fetch(url,{
             headers:{
@@ -488,8 +524,6 @@ const get_data = async()=>{
             }
         })
         const data = await res.json()
-        // console.log(res);
-        // console.log(data);
         if(res.ok){ 
                 order_info.value = data.response
                 list_data.value = data.response.order_products
@@ -502,6 +536,7 @@ const get_data = async()=>{
         console.log('error',err);
         // router.push('/error')
     }
+    
 }
 
 const exportTable = ()=>{
@@ -516,7 +551,7 @@ store.show_loading(true)
 
 onMounted(async()=>{
     await get_data()
-    // await up_date()
+    await up_date()
     store.show_loading(false)
     
 })

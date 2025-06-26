@@ -25,7 +25,7 @@
           <!-- <button
             class="g-recaptcha login_btn"
             :disabled="submit_btn"
-            data-sitekey="6Ldm1BEqAAAAAGlTiAcnDEstJ3h3lKLStxXmA2dx"
+            data-sitekey="6LeqtGMrAAAAAJ61fJAqz70NFuEfvyjXR1zWu-6t"
             data-action="login"
             data-callback="recaptcha ">
             {{ store.language_txt?.text_login }}
@@ -114,9 +114,6 @@ const recaptcha  = async()=>{
 const login = async () =>{
   const sha256_PW = sha256(login_password.value.toString())
   let url = `${store.baseUrl}api/v2/login?email=${login_email.value}&password=${sha256_PW}`
-  if (process.env.NODE_ENV !== 'production') {
-    url = url + '&DBOEM_SITE_KEY=HyXhszevB02OmN2vwZ6AI26QB4U2dUNzRonGoodJob'
-  } 
   const form_data = {
     'google-recaptcha-v3-token':recaptchaToken.value
   }
@@ -126,8 +123,6 @@ const login = async () =>{
       body: store.jsonToFormData(form_data)
     });
     const data = await res.json();
-    // console.log(res);
-    // console.log(data);
     if(res.ok && !data.error){
        await store.set_token(data)
        router.push('/home')
@@ -171,7 +166,6 @@ const send_reset_pw = async () =>{
 
 onMounted(async()=>{
   store.show_loading(false)
-  
 })
 
 </script>

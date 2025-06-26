@@ -20,14 +20,14 @@
                         <tbody>
                             <tr v-for="(item,idx) in data.option_values" :key="'item_' + idx">
                                 <td>{{ item.code }}</td>
-                                <td>{{item.translations?.en}}</td>
-                                <td>{{item.translations?.zh_Hant}}</td>
+                                <td>{{item.translations[0].name}}</td>
+                                <td>{{item.translations[1].name}}</td>
                                 <td>
                                     <VeeField 
                                         type="text"
                                         :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.en`"
                                         class="form-control w-50 m-auto text-center" 
-                                        :value="item.option_value_dealer?.en || item.translations?.en" />
+                                        :value="item.option_value_dealers?.en || item.translations?.en" />
                                     <!-- <VeeField 
                                         type="hidden"
                                         :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.en.id`" 
@@ -39,7 +39,7 @@
                                         type="text" 
                                         :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.zh_Hant`"
                                         class="form-control w-50 m-auto text-center" 
-                                        :value="item.option_value_dealer?.zh_Hant || item.translations?.zh_Hant"/>
+                                        :value="item.option_value_dealers?.zh_Hant || item.translations?.zh_Hant"/>
                                     <!-- <VeeField 
                                         type="hidden" 
                                         :name="`options.win_${data.code}.option_values[${idx}].option_value_dealers.zh_Hant.id`"
@@ -140,14 +140,15 @@ const onSubmit = async(values)=>{
             method: "POST",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.jwtToken,
+                "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body: JSON.stringify(submit_data)
         })
 
         const res_data = await res.json()
         if(res.ok && !res_data.error){
-            alert(res_data.message)
+            alert(res_data.success)
             await get_data()
             data_page.value++
             store.show_loading(false)

@@ -14,8 +14,6 @@
     </div>
   </div>
   
-
-
   <VeeForm  @submit="onSubmit" @invalid-submit="onInvalidSubmit" v-slot="{ errors,values }" ref="order_form"> 
     <div class="alart_box" v-if="show_alart_box">
       <i class="fas fa-times" @click="show_alart_box = false,pleace_input_height = false"></i>
@@ -236,8 +234,8 @@
 
                     </div>
                     <label v-if="show_corner_hint">
-                      <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.confirm_by_window.code}.option_values[0].value`] }"
-                        :name="`${order_data.confirm_by_window.code}.option_values[0].value`"
+                      <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.confirm_by_window.code}.values[0].value`] }"
+                        :name="`${order_data.confirm_by_window.code}.values[0].value`"
                         v-model="data_val[order_data.confirm_by_window.code]" value="Y" class="form-check-input"
                          />
                       {{ order_data.confirm_by_window.name }}
@@ -249,7 +247,7 @@
                         :value="order_data.confirm_by_window.code" />
                       <VeeField type="hidden" :name="`${order_data.confirm_by_window.code}.type`"
                         :value="order_data.confirm_by_window.type" />
-                      <VeeField type="hidden" :name="`${order_data.confirm_by_window.code}.option_values[0].option_value_id`" value="0" />
+                      <VeeField type="hidden" :name="`${order_data.confirm_by_window.code}.values[0].option_value_id`" value="0" />
                     </label>
                     <!-- <VeeErrorMessage v-if="show_corner_hint" class="error__label" :name="`${order_data.confirm_by_window.code}.option_values[0].value`" /> -->
                   </div>
@@ -430,9 +428,9 @@
                     </div>
                     <div v-if="show_not_warranty">
                       <label>
-                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.confirm_width_limit.code}.option_values[0].value`] }"
-                          :name="`${order_data.confirm_width_limit.code}.option_values[0].value`"
-                          v-model="data_id[order_data.confirm_width_limit]" value="Y"
+                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.confirm_width_limit.code}.values[0].value`] }"
+                          :name="`${order_data.confirm_width_limit.code}.values[0].value`"
+                          v-model="data_val[order_data.confirm_width_limit.code]" value="Y"
                           class="form-check-input" rules="required" />
                         {{ order_data.confirm_width_limit.name }}
                         <VeeField type="hidden" :name="`${order_data.confirm_width_limit.code}.name`"
@@ -443,10 +441,10 @@
                           :value="order_data.confirm_width_limit.code" />
                         <VeeField type="hidden" :name="`${order_data.confirm_width_limit.code}.type`"
                           :value="order_data.confirm_width_limit.type" />
-                        <VeeField type="hidden" :name="`${order_data.confirm_width_limit.code}.option_values[0].option_value_id`"
+                        <VeeField type="hidden" :name="`${order_data.confirm_width_limit.code}.values[0].option_value_id`"
                           value="0" />
                       </label>
-                      <VeeErrorMessage class="error__label" :name="`confirm_width_limit.option_values[0].value`" />
+                      <VeeErrorMessage class="error__label" :name="`confirm_width_limit.values[0].value`" />
                     </div>
                   </div>
                 </div>
@@ -641,7 +639,7 @@
                       <VeeErrorMessage class="error__label" :name="`${order_data.track_width.code}.option_value_id`" />
                     <label class="mt-2">
                       <VeeField type="checkbox"
-                        :name="`${order_data.track_to_window_width.code}.option_values[0].value`"
+                        :name="`${order_data.track_to_window_width.code}.values[0].value`"
                         v-model="data_val[order_data.track_to_window_width.code]" value="Y" class="form-check-input"
                          />
                       {{ order_data.track_to_window_width.name }}
@@ -653,7 +651,7 @@
                         :value="order_data.track_to_window_width.code" />
                       <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.type`"
                         :value="order_data.track_to_window_width.type" />
-                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.option_values[0].option_value_id`" value="0" />
+                      <VeeField type="hidden" :name="`${order_data.track_to_window_width.code}.values[0].option_value_id`" value="0" />
                     </label>
                     </div>
               </div>
@@ -667,7 +665,7 @@
       <section id="options" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_outer_frame }}</h2>
+            <h2 class="title">{{ store.language_txt.order.text_option }}</h2>
             <div class="row flex-auto col-12">
               <div class="col-12" v-if="!is_track">
                 <!-- T型式 -->
@@ -1057,7 +1055,7 @@
                 </div>
                 <!-- 拉桿分段需求 -->
                 <div class="col-md-12" v-if="show_add_lever && !is_none_win_lever">
-                <div class="d-none" v-if="lever_segmentation_note_data.length > 0">
+                  <div class="d-none" v-if="lever_segmentation_note_data.length > 0">
                   <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.name`"
                     :value="order_data.lever_segmentation_note.name" />
                   <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_id`"
@@ -1068,20 +1066,20 @@
                     :value="order_data.lever_segmentation_note.type" />
                   <VeeField type="hidden" :name="`${order_data.lever_segmentation_note.code}.option_value_id`"
                     value="0" />
-                </div>
-                <div class="row mb-3" v-for="(data,idx) in lever_segmentation_note_data" :key="`lever_segmentation${idx +1}`">
-                  <label class="label-set col-form-label col-sm-2 " :for="order_data.lever_segmentation_note.name">
-                    {{ order_data.lever_segmentation_note.name }}{{idx + 1}}
-                  </label>
-                  <div class="col-sm-4 position-relative">
-                    <VeeField type="number" :name="`${order_data.lever_segmentation_note.code}.value[${idx}].lever_value`"
-                      @keydown="clearInput"
-                      v-model="data.lever_value"
-                      :id="`${order_data.lever_segmentation_note.name}${idx + 1}`" class="form-control"
-                      :label="`lever_segmentation${idx + 1}`"/>
-                      <i class="fas fa-times close_btn" @click="del_json(order_data.lever_segmentation_note.code,idx)"></i>
                   </div>
-                </div>
+                  <div class="row mb-3" v-for="(data,idx) in lever_segmentation_note_data" :key="`lever_segmentation${idx +1}`">
+                    <label class="label-set col-form-label col-sm-2 " :for="order_data.lever_segmentation_note.name">
+                      {{ order_data.lever_segmentation_note.name }}{{idx + 1}}
+                    </label>
+                    <div class="col-sm-4 position-relative">
+                      <VeeField type="number" :name="`${order_data.lever_segmentation_note.code}.value[${idx}].lever_value`"
+                        @keydown="clearInput"
+                        v-model="data.lever_value"
+                        :id="`${order_data.lever_segmentation_note.name}${idx + 1}`" class="form-control"
+                        :label="`lever_segmentation${idx + 1}`"/>
+                        <i class="fas fa-times close_btn" @click="del_json(order_data.lever_segmentation_note.code,idx)"></i>
+                    </div>
+                  </div>
                 </div>
                 <!-- input_hiiden -->
                 <div class="d-none" v-if="Divider_rail_data.length > 0">
@@ -1139,7 +1137,7 @@
                   </div>
                 </div>
                 <!-- 以上分段 -->
-                <div class="row me-0 d-inline-flex col-sm-6 mb-3">
+                <div class="row me-0 d-inline-flex col-sm-6 mb-3" v-if="lever_segmentation_note_data[idx]">
                   <label class="label-set col-form-label col-4" for="">
                     {{ store.language_txt.order.text_dividers}}{{ idx + 1
                     }}<br>{{ store.language_txt.order.text_dividers_json_above_division}}
@@ -1166,7 +1164,7 @@
                   </div>
                 </div>
                 <!-- 以下分段 -->
-                <div class="row ms-0 d-inline-flex col-sm-6 mb-3" v-if="idx == 0">
+                <div class="row ms-0 d-inline-flex col-sm-6 mb-3" v-if="idx == 0 && lever_segmentation_note_data[idx]">
                   <label class="label-set col-form-label col-4" for="">
                     {{ store.language_txt.order.text_dividers}}{{ idx + 1
                     }}<br>{{ store.language_txt.order.text_dividers_json_beneath_divide}}
@@ -1223,7 +1221,7 @@
                 <div class="row">
                   <label class="label-set col-form-label col-sm-2 " for="">
                     <span class="text-danger">*</span>
-                    {{material_color.translations[store.language]}}
+                    {{show_custom_name(material_color)}}
                   </label>
                   <div class="col-sm-10">
                     <div class="d-flex algin-items-center flex-wrap  p-2 pt-0"
@@ -1260,12 +1258,12 @@
               <!-- 外框 -->
               <div class="col-12 row" v-if="!is_track">
                 <!-- 框型 -->
-                <div class="row flex-auto col-12" v-if="doorType_outerFrame">
+                <div class="row flex-auto col-12" v-if="doorType_outerFrame?.option_values.length > 0">
                   <div class="col-md-6 flex-auto">
                   <div class="row mb-3">
                     <label class="label-set col-form-label col-sm-2 " for="">
                       <span class="text-danger">*</span>
-                      {{ doorType_outerFrame.translations[store.language] }}
+                      {{show_custom_name(doorType_outerFrame)}}
                     </label>
                     <div class="col-sm-10">
                       <div class="d-flex flex-wrap align-items-start  p-2 pt-0"
@@ -1460,8 +1458,8 @@
                     <!-- 自行輸入checkbox -->
                     <div v-if="is_wood" class="mt-2">
                       <label>
-                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`] }"
-                          :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].value`"
+                        <VeeField type="checkbox" :class="{ 'error': errors[`${order_data.sldwood_build_out_thickness_manually.code}.values[0].value`] }"
+                          :name="`${order_data.sldwood_build_out_thickness_manually.code}.values[0].value`"
                           v-model="data_val[order_data.sldwood_build_out_thickness_manually.code]" value="Y"
                           class="form-check-input" />
                         {{ store.language_txt.order.text_enter_manually}}
@@ -1469,7 +1467,7 @@
                       <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_id`" :value="order_data.sldwood_build_out_thickness_manually.id" />
                       <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_code`" :value="order_data.sldwood_build_out_thickness_manually.code" />
                       <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.type`" :value="order_data.sldwood_build_out_thickness_manually.type" />
-                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_values[0].option_value_id`" value="0"/>
+                      <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.values[0].option_value_id`" value="0"/>
                       </label>
                     </div>
                   </div>    
@@ -1587,101 +1585,6 @@
                     <VeeErrorMessage class="error__label" :name="`${order_data.desired_drilling_position.code}.value`" />
                   </div>
                   </div>
-                </div>
-              </div>
-              <!-- 輔料需求 -->
-              <div class="col-12">
-                <div class="position-relative my-3 fs-6">
-                  {{ order_data.auxiliaries.name }}
-                  <i class="fas fa-info-circle" @click="show_info_img($event)">
-                    <div class="nav-img">
-                      <img src="@/assets/images/auxiliary_info_img.jpg" alt="auxiliary_info_img">
-                    </div>
-                  </i>
-                </div>
-                <div class="d-none" v-if="auxiliary_data.length > 0">
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.name`"
-                  :value="order_data.auxiliaries.name" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_id`"
-                  :value="order_data.auxiliaries.id" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_code`"
-                  :value="order_data.auxiliaries.code" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.type`"
-                  :value="order_data.auxiliaries.type" />
-                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_value_id`"
-                  value="0" />
-                </div>
-                <div class="row position-relative border-bottom p-2" v-for="(item, idx) in auxiliary_data"
-                :key="`title` + idx">
-                <div>
-                  <p class="col-lg-1  text-lg-end">{{order_data.auxiliaries.name}} {{ idx + 1 }}</p>
-                </div>
-                <div class="col-md-6 flex-auto">
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 " for="">
-                      {{ order_data.auxiliary_length.name }}
-                    </label>
-                    <div class="col-sm-8">
-                      <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
-                        :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
-                        class="form-select" rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
-                        <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
-                          :value="data.name">
-                          {{ data.name }}
-                        </option>
-                      </VeeField>
-                    </div>
-                  </div>
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 " :for="`auxiliary_width${idx + 1 }`">
-                      {{order_data.auxiliary_width.name}}
-                    </label>
-                    <div class="col-sm-8">
-                      <div class="input-group">
-                        <VeeField type="number" 
-                        @keydown="clearInput"
-                        rules="required"
-                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_width`"
-                          :id="`auxiliary_width${idx + 1 }`" v-model="item.auxiliary_width"
-                          class="form-control" />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6 flex-auto">
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_height${idx +1}`">{{ store.language_txt.order.text_height}}</label>
-                    <div class="col-sm-8">
-                      <div class="input-group">
-                        <VeeField type="number" 
-                        @keydown="clearInput"
-                        rules="required"
-                          :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_height`"
-                          :id="`auxiliary_height${idx +1}`" v-model="item.auxiliary_height"
-                          class="form-control" />
-                        <span class="input-group-text">mm</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mb-3">
-                    <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_count${ idx +1}`">{{ store.language_txt.order.text_quantity}}</label>
-                    <div class="col-sm-8">
-                      <VeeField type="number" 
-                      @keydown="clearInput"
-                      rules="required"
-                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_quantity`"
-                        v-model="item.auxiliary_quantity" class="form-control" />
-                    </div>
-                  </div>
-                </div>
-                <i class="fas fa-times  close_btn btn-right" @click="del_json(order_data.auxiliaries.code,idx)"></i>
-                </div>
-                <div class="col-12 text-center mt-4">
-                  <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.auxiliaries.code,auxiliary_obj)"></i>
                 </div>
               </div>
             </div>
@@ -2558,7 +2461,7 @@
                             v-model="data_id[doorType_track.option_code]" 
                             @change="set_name(data,doorType_track.option_code)"
                             :value="data.option_value_id"
-                            class="form-check-input" :id="'bottom_track' + data?.option_value?.id" label="bottom_track"
+                            class="form-check-input" :id="'bottom_track' + data?.option_value_id" label="bottom_track"
                             rules="required" />
                           <VeeField type="hidden" :name="`${doorType_track.option_code}.name`"
                             :value="doorType_track.option_name" />
@@ -2802,7 +2705,7 @@
                     </div>
                     <div class="mt-2">
                         <VeeField type="checkbox"
-                          :name="`${order_data.decorative_pane_height_manually.code}.option_values[0].value`"
+                          :name="`${order_data.decorative_pane_height_manually.code}.values[0].value`"
                           v-model="data_val[order_data.decorative_pane_height_manually.code]" value="Y"
                           class="form-check-input" id="bottom_Partition_Cut" />
                         <VeeField type="hidden" :name="`${order_data.decorative_pane_height_manually.code}.name`"
@@ -2814,7 +2717,7 @@
                         <VeeField type="hidden" :name="`${order_data.decorative_pane_height_manually.code}.type`"
                           :value="order_data.decorative_pane_height_manually.type" />
                         <VeeField type="hidden"
-                          :name="`${order_data.decorative_pane_height_manually.code}.option_values[0]option_value_id`"
+                          :name="`${order_data.decorative_pane_height_manually.code}.values[0].option_value_id`"
                           value="0" />
                       <label class="ms-2">{{order_data.decorative_pane_height_manually.option_values[0].name}}</label>
                     </div>
@@ -2889,7 +2792,7 @@
                     </div>
                     <div class="mt-2">
                       <VeeField type="checkbox"
-                          :name="`${order_data.decorative_pane_top_depth_manually.code}.option_values[0].value`"
+                          :name="`${order_data.decorative_pane_top_depth_manually.code}.values[0].value`"
                           v-model="data_val[order_data.decorative_pane_top_depth_manually.code]" 
                           value="Y"
                           class="form-check-input" id="bottom_Partition_Cut" />
@@ -2902,7 +2805,7 @@
                         <VeeField type="hidden" :name="`${order_data.decorative_pane_top_depth_manually.code}.type`"
                           :value="order_data.decorative_pane_top_depth_manually.type" />
                         <VeeField type="hidden"
-                          :name="`${order_data.decorative_pane_top_depth_manually.code}.option_values[0]option_value_id`"
+                          :name="`${order_data.decorative_pane_top_depth_manually.code}.values[0].option_value_id`"
                           value="0" />
                       <label class="ms-2">{{order_data.decorative_pane_top_depth_manually.option_values[0].name}}</label>
                     </div>
@@ -2951,6 +2854,103 @@
           <div class="block block3 mainForm">
             <h2 class="title">{{ store.language_txt.order.text_other}}</h2>
             <div class="row flex-auto">
+              <!-- 輔料需求 -->
+              <div class="col-12 mb-4 row">
+                <div class="position-relative fs-6 col-sm-2 text-end">
+                  {{ order_data.auxiliaries.name }}
+                  <i class="fas fa-info-circle" @click="show_info_img($event)">
+                    <div class="nav-img nav-img-2">
+                      <img src="@/assets/images/auxiliary_info_img.jpg" alt="auxiliary_info_img">
+                    </div>
+                  </i>
+                </div>
+                <div class="col-sm-10">
+                <div class="d-none" v-if="auxiliary_data.length > 0">
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.name`"
+                  :value="order_data.auxiliaries.name" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_id`"
+                  :value="order_data.auxiliaries.id" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_code`"
+                  :value="order_data.auxiliaries.code" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.type`"
+                  :value="order_data.auxiliaries.type" />
+                <VeeField type="hidden" :name="`${order_data.auxiliaries.code}.option_value_id`"
+                  value="0" />
+                </div>
+                <div class="row position-relative border-bottom p-2 mb-3" v-for="(item, idx) in auxiliary_data"
+                :key="`title` + idx">
+                <div class="mb-3">{{order_data.auxiliaries.name}} {{ idx + 1 }}</div>
+                <div class="col-md-6 flex-auto">
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 " for="">
+                      {{ order_data.auxiliary_length.name }}
+                    </label>
+                    <div class="col-sm-8">
+                      <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
+                        :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
+                        class="form-select" rules="required">
+                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
+                          :value="data.name">
+                          {{ data.name }}
+                        </option>
+                      </VeeField>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 " :for="`auxiliary_width${idx + 1 }`">
+                      {{order_data.auxiliary_width.name}}
+                    </label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField type="number" 
+                        @keydown="clearInput"
+                        rules="required"
+                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_width`"
+                          :id="`auxiliary_width${idx + 1 }`" v-model="item.auxiliary_width"
+                          class="form-control" />
+                        <span class="input-group-text">mm</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 flex-auto">
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 "
+                      :for="`auxiliary_height${idx +1}`">{{ store.language_txt.order.text_height}}</label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField type="number" 
+                        @keydown="clearInput"
+                        rules="required"
+                          :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_height`"
+                          :id="`auxiliary_height${idx +1}`" v-model="item.auxiliary_height"
+                          class="form-control" />
+                        <span class="input-group-text">mm</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <label class="label-set col-form-label col-sm-4 "
+                      :for="`auxiliary_count${ idx +1}`">{{ store.language_txt.order.text_quantity}}</label>
+                    <div class="col-sm-8">
+                      <VeeField type="number" 
+                      @keydown="clearInput"
+                      rules="required"
+                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_quantity`"
+                        v-model="item.auxiliary_quantity" class="form-control" />
+                    </div>
+                  </div>
+                </div>
+                <i class="fas fa-times  close_btn btn-right" @click="del_json(order_data.auxiliaries.code,idx)"></i>
+                </div>
+                <div class="col-12 text-center mt-4">
+                  <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.auxiliaries.code,auxiliary_obj)"></i>
+                </div>
+
+                </div>
+              </div>
+              <hr>
               
               <!-- 圖片 -->
               <div class="col-md-12 row mt-3">
@@ -2964,22 +2964,24 @@
                     :value="order_data.attached_images.code" />
                   <VeeField type="hidden" :name="`${order_data.attached_images.code}.type`" :value="order_data.attached_images.type" />
                 </div>
-                <div class="col-sm-10 mb-3 row">
-                  <div class="col-sm-6 special_img mb-3" v-for="(item,idx) in attached_images">
-                    <div class="special_img_box"
-                      :class="{'no-img':!item.image && !item.value},{'error':errors[`${order_data.attached_images.code}.option_values[${idx}].file`]}">
-                      <VeeField type="file" :name="`${order_data.attached_images.code}.option_values[${idx}].file`" class="upload-img"
-                        accept="image/png,image/jpeg,image/jpg"
-                        @change="Preview_img(values.attached_images.option_values[idx].file,idx)" />
-                      <VeeField type="hidden" :name="`${order_data.attached_images.code}.option_values[${idx}].value`"
-                        v-model="item.value" />
-                      <img :src="show_Preview_img(item,$imgUrl(item.value))" alt="">
+                <div class="col-sm-10 mb-3">
+                  <div class="row">
+                    <div class="col-sm-6 special_img mb-3" v-for="(item,idx) in attached_images">
+                      <div class="special_img_box"
+                        :class="{'no-img':!item.image && !item.value},{'error':errors[`${order_data.attached_images.code}.values[${idx}].file`]}">
+                        <VeeField type="file" :name="`${order_data.attached_images.code}.values[${idx}].file`" class="upload-img"
+                          accept="image/png,image/jpeg,image/jpg"
+                          @change="Preview_img(values.attached_images.values[idx].file,idx)" />
+                        <VeeField type="hidden" :name="`${order_data.attached_images.code}.values[${idx}].value`"
+                          v-model="item.value" />
+                        <img :src="show_Preview_img(item,$imgUrl(item.value))" alt="">
+                      </div>
+                      <div class="special_img_close">
+                        <i class="fas fa-times close_btn none_position"
+                          @click="del_json(order_data.attached_images.code,idx)"></i>
+                      </div>
+                      <VeeErrorMessage class="error__label" :name="`attached_images.option_values[${idx}].file`" />
                     </div>
-                    <div class="special_img_close">
-                      <i class="fas fa-times close_btn none_position"
-                        @click="del_json(order_data.attached_images.code,idx)"></i>
-                    </div>
-                    <VeeErrorMessage class="error__label" :name="`attached_images.option_values[${idx}].file`" />
                   </div>
                   <div class="col-12 text-center mt-4">
                     <i class="fa-solid fa-circle-plus fs-3 add_btn" @click="add_json(order_data.attached_images.code,attached_images_obj)"></i>
@@ -3043,9 +3045,6 @@ const store = useStore()
 const order_id = route.query.id 
 const edit_mode = ref(false)
 const show_alart_box = ref(false)
-
-
-
 const order_form = ref()
 const order_data = ref();
 const design_data = ref({
@@ -3065,7 +3064,6 @@ const data_id = ref({
 const data_val = ref({
  
 })
-
 
 
 // method------------------------------------------------>
@@ -3117,7 +3115,7 @@ const link_items = ref({
     { id: "material", title: store.language_txt.order.text_option_section_material },
     { id: "style", title: store.language_txt.order.text_option_section_style },
     { id: "sizeSection", title:  store.language_txt.order.text_basicsetting },
-    { id: "options", title: store.language_txt.order.text_outer_frame},
+    { id: "options", title: store.language_txt.order.text_option},
     { id: "designSection", title: store.language_txt.order.text_t_post },
     { id: "additionalDesigns", title: store.language_txt.order.text_door },
     { id: "other", title:store.language_txt.order.text_option_section_other },
@@ -3163,22 +3161,16 @@ const handleScroll = () => {
   if (!found) currentItem.value = "";
 };
 
-
 const remove_style = async()=>{
   data_id.value[selected_win_style.value] = ""
   // 重置表單
   // 窗型類型驗證沒辦法被刪除
   // 所以強制重置並賦予材質的id(值)&value值
   order_form.value.resetForm();
-  
-  console.log(order_form.value.errors);
-  
   order_form.value.setFieldValue(`${order_data.value.win_material?.code}.option_value_id`,data_id.value[order_data.value.win_material?.code]);
   order_form.value.setFieldValue(`${order_data.value.win_material?.code}.value`,data_val.value[order_data.value.win_material?.code]);
   
 }
-
-
 
 // 窗型類型選項顯示
 const show_win_stdwin_subtype = (id) =>{
@@ -3204,8 +3196,6 @@ const set_win_stdwin_subtype = (value) => {
   // 更新data_id
   data_id.value[order_data.value.win_stdwin_subtype.code] = finalValue;
 };
-
-
 
 // 設置選項value的值
 const set_name = (item,code)=>{
@@ -3264,16 +3254,17 @@ const max_hight_setting = () => {
 
 // 驗證葉片組數量與寬度
 const validateWidth = () => {
-  const width = +data_val.value[order_data.value.win_width.code];
-  const bladeNumbers = +data_val.value[order_data.value.blade_numbers.code];
-  const maxWidth = width / bladeNumbers;
-
+  if (!is_track.value) return true; // 非軌道類型直接通過
+  
+  const width = +data_val.value[order_data.value.win_width.code];   // 寬度
+  const bladeNumbers = +data_val.value[order_data.value.blade_numbers.code];  // 葉片組數量
+  const maxWidth = +width / +bladeNumbers;   // 最大寬度
+  
   if (!bladeNumbers) return store.language_txt.order?.text_required; // 必填檢查
 
-  if (!is_track.value) return true; // 非軌道類型直接通過
+  const exceededMessage = store.language_txt.order?.helper_selected_number_of_blades_exceeded;  // 錯誤訊息
 
-  const exceededMessage = store.language_txt.order?.helper_selected_number_of_blades_exceeded;
-  const isChecked = data_id.value[order_data.value.confirm_width_limit]
+  const isChecked = data_val.value[order_data.value.confirm_width_limit.code] == 'Y'  // 無保固確認
   
 
   // 摺疊門不小於228不大於508
@@ -3286,7 +3277,7 @@ const validateWidth = () => {
     if (maxWidth <= 228) return exceededMessage
     if (maxWidth >= 1092) {
       show_not_warranty.value = true;
-      return isChecked? true:true
+      return isChecked? true:false
     }
   }
   
@@ -3298,8 +3289,8 @@ const validateWidth = () => {
 // 顯示語言自訂名字(外框&顏色)
 const show_custom_name = (item)=>{
   // 檢查 translations 是否存在且具有所需的語言
-  const customName = item.custom_translations && item.custom_translations[store.language];
-  const defaultName = item.name
+  const customName = item.option_value_dealers && item.option_value_dealers[store.language];
+  const defaultName = item.translations.find(option => option.locale == store.language).name
   return customName || defaultName
 }
 
@@ -3392,11 +3383,7 @@ const Preview_img = (file,idx)=>{
       reader.readAsDataURL(result);
       reader.onload = () => {
         // 將壓縮後的圖像數據設置到 compressedImage 變數中，以在模板中顯示
-        console.log(attached_images.value);
-        
         attached_images.value[idx].image = reader.result;
-        console.log(attached_images.value);
-        
       };
     },
     error(err) {
@@ -3495,8 +3482,6 @@ const selected_win_style = computed(() => {
 // 顯示各個選項
 const show_block = computed(()=>{
   return data_id.value[selected_win_style.value] && design_data.value.type
-  // return false
-  
 })
 
 // 全鋁
@@ -3820,13 +3805,17 @@ const doorType_height_value  = computed(() => {
 
   if (is_folding_door.value) {
     if (is_im) {
+      data_id.value[doorType_height.value.option_code] = hasTopPartition ? VALUE_53 : VALUE_32
       return findOptionName(hasTopPartition ? VALUE_53 : VALUE_32);
     } else if (isPlane) {
+      data_id.value[doorType_height.value.option_code] = VALUE_150
       return findOptionName(VALUE_150);
     } else if (isPattern) {
+      data_id.value[doorType_height.value.option_code] = VALUE_140
       return findOptionName(VALUE_140);
     }
   } else {
+    data_id.value[doorType_height.value.option_code] = isPlane ? VALUE_150 : VALUE_140
     return findOptionName(isPlane ? VALUE_150 : VALUE_140);
   }
 });
@@ -3901,6 +3890,13 @@ watch(() => data_val.value[order_data.value?.win_width?.code],debounce(async (ne
     if (newVal && newVal !== oldVal && oldVal !== "") {
       order_form.value.validateField(`${order_data.value?.blade_numbers?.code}.value`);  //觸發葉片組驗證
       track_to_window_width() // 軌道總寬與窗同寬
+      
+      if (t_post_json.value.t_post_height.length > 0 && t_post_json.value.t_post_average == 'Y') {
+        // 調整所有垂直T的均分值
+        t_post_json.value.t_post_height.forEach((item, idx) => {
+          calculate_T_POST(idx)
+        });
+      }
     }
   }, 300)
 );
@@ -3941,7 +3937,7 @@ watch(() => data_val.value[order_data.value?.win_height?.code], debounce((newVal
   if (newVal > 1800 && Divider_rail_data.value.length < 1) {
     add_json(order_data.value.dividers_json.code,Divider_rail_obj.value)
   }
-  if(Divider_rail_data.value?.length < 1){
+  if(Divider_rail_data.value){
     // 根據新的高度調整所有中隔的位置
     Divider_rail_data.value.forEach((item, idx) => {
       if (item.division_center === "Y" && newVal > 0) {
@@ -4007,8 +4003,7 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 const get_order_data = async()=>{
   const url = `${store.baseUrl}api/v2/catalog/options/list?lang=${store.language}&limit=0&details=1`
   const data = await store.get_api(url)
-  // console.log(data);
-  
+
   order_data.value = data.data
 
   // 把所有選項的code賦予空值，綁定v-model雙向控制
@@ -4023,8 +4018,7 @@ const get_order_data = async()=>{
   data_val.value[order_data.value.t_post_json.code] = {t_post_average:"",t_post_height:[]}  //垂直T
   data_val.value[order_data.value.layers_json.code] = {layer:"",value:[]}  //水平T
   data_val.value[order_data.value.corner_angle.code] = []   // 轉角窗角度
-  // 多選checkbox
-  // data_id.value[order_data.value.win_stdwin_subtype.code] = []   //類型窗
+
   // 圖片
   data_val.value[order_data.value.attached_images.code] = []
 }
@@ -4082,112 +4076,64 @@ const get_design_data = async (id) => {
     default_val()
 };
 
-// 默認首選
+// 預設值
 const default_val = ()=>{
-  // // 共用
-  // console.log(data_id.value[order_data.value.outer_frame_sides.code]);
-  
-  // data_id.value[order_data.value.outer_frame_sides.code] == ""? 2217:data_id.value[order_data.value.outer_frame_sides.code];  // 外框邊數
-  // data_id.value[order_data.value.outer_frame_gasket_thickness.code] == ""? 2202:data_id.value[order_data.value.outer_frame_gasket_thickness.code];  // 墊片厚度
-  // data_id.value[order_data.value.door_handle_type.code] = 2215  // 無把手
-  // data_id.value[order_data.value.window_frame_type.code] = 2199
-  
-  // if(is_aluminum.value){
-  //   data_id.value[door_lock_type_data.value.code] == ""? 10027:  data_id.value[door_lock_type_data.value.code]         // 鎖
-  //   data_id.value[magnetic_data.value.code] = 2313
-  //   data_id.value[hinge_color_data.value.code] == ""? 10028:data_id.value[hinge_color_data.value.code]	
-  // }else if(is_wood.value){
-  //   data_id.value[door_lock_type_data.value.code] = 2214            // 鎖
-  //   data_id.value[magnetic_data.value.code] = 2347                  // 吸鐵
-  //   data_id.value[hinge_color_data.value.code] = 2100         // 絞鍊
-  // }else{
-  //   data_id.value[door_lock_type_data.value.code] = 2214            // 鎖
-  //   data_id.value[magnetic_data.value.code] = 2101                  // 吸鐵
-  //   data_id.value[hinge_color_data.value.code] = 2100         // 絞鍊
-  // }
-  // // 一次設定名稱
-  // [
-  //   order_data.value.outer_frame_sides.code,
-  //   order_data.value.outer_frame_gasket_thickness.code,
-  //   order_data.value.door_handle_type.code,
-  //   door_lock_type_data.value.code,
-  //   magnetic_data.value.code,
-  //   hinge_color_data.value.code
-  // ].forEach(code => set_name(0, code));
-
-  // 20250423 更改為後台設定預設值
   // 所有選項中的選項值的is_default 是否為 1
-  // 是的話 給予data_id值並設定name
-  // 如果本身有值不覆蓋
   Object.values(order_data.value).forEach(item => {
     if (item.option_values) {
       const defaultOption = Object.values(item.option_values).find(option => option.is_default == 1);
       if (defaultOption) {
+        // 如果該選項為空值再帶入預設值
+        // 否則在編輯的狀態下會以該筆資料的值為優先
         if(data_id.value[item.code] == ""){
           data_id.value[item.code] = defaultOption.id;
         }
-        // console.log(item);
         
+        // 給予data_id值並設定選項的value值(文字)
+        // 如win_material.value = 實木
         set_name(0, item.code);
       }
     }
   });
-
-
-  
 }
 
 // 材質顏色
 const get_material_color = async ()=>{
   const code = material_code.value + '_color' //取的材質的code來抓對應的材質顏色
-  // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
   const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
   const data = await store.get_api(url)
-  // const colors = Object.values(data.data).find(item => item.code == code)
   const colors = data
   if(colors){
     material_color.value = colors
   }else{
-    alert('該材質顏色未授權')
+    alert('該材質顏色未授權\n You are not permitted to use this material color.')
   }
 }
 // 外框
 const get_outer_frame = async ()=>{
   const code = material_code.value + '_win_frame' //取的材質的code來抓對應的材質顏色
-  // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
   const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
   const data = await store.get_api(url)
-  // const outer_frames = Object.values(data.data).find(item => item.code == code)
   const outer_frames = data
   if(outer_frames){
     doorType_outerFrame.value = outer_frames
   }else{
-    alert('該材質外框未授權')
+    // alert('該材質外框未授權')
   }
 }
 // 把手顏色
 const get_handle_color = async (e) => {
-  // if (!e?.target?.value) {
-  //   return;
-  // }
   const selectedId = e?.target?.value || e;
   handle_color.value = []
   const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${selectedId}`
   const data = await store.get_api(url)
   if(!data.error){
-    // const handleColorValue = Object.keys(data.option_group_suboptions)
-    //   .filter(key => key.startsWith('door_handle_color'))
-    //   .map(key => data.option_group_suboptions[key].option_group_suboption_values)
-    //   .find(value => value !== undefined);
-
     const handleColorValue = Object.values(data.option_group_suboptions)[0]
     
     if (handleColorValue) {
       handle_color.value = handleColorValue;
     }
-    // handle_color.value = Object.values(data.option_group_suboptions).flatMap(suboption => suboption.option_group_suboption_values);
 
-    
   }
 };
 // 鎖顏色
@@ -4197,23 +4143,15 @@ const get_lock_color = async (e) => {
   const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${selectedId}`;
   const data = await store.get_api(url)
   if(!data.error){
-    // lock_color.value = data.option_group_suboptions.door_lock_color.option_group_suboption_values 
-    // const lockColorValue = Object.keys(data.option_group_suboptions)
-    //   .filter(key => key.startsWith('door_lock_color'))
-    //   .map(key => data.option_group_suboptions[key].option_group_suboption_values)
-    //   .find(value => value !== undefined);
-
     const lockColorValue = Object.values(data.option_group_suboptions)[0]
 
     if (lockColorValue) {
         lock_color.value = lockColorValue;
     }
-
-    // console.log(data_id.value);
     
   }
 };
-// 下軌道顏色
+// 下軌道顏色 && 飾板高度
 const get_door_track = async () => {
   const design = data_id.value[selected_win_style.value]
   const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${design}`;
@@ -4232,8 +4170,7 @@ const get_product_data = async () => {
   
 
   if (order_id && product_id) {
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`;
-    // const url = `${store.baseUrl}api/v2/sales/orders/products/info/${order_id}`;
+    const url =  `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${store.language}`
     const data = await store.get_api(url);
     const order = data.order_products.find(item => item.id == product_id);  // 查找商品資料
 
@@ -4246,10 +4183,7 @@ const get_product_data = async () => {
 
       // 更新 data_id
       data_id.value[key] = option.type === 'checkbox'? option.option_values.map(item => item.option_value_id):option.option_value_id;
-
-      // console.log(data_id.value);
       
-
       // 處理選項值類型
       if(option.type == 'checkbox'){
         data_val.value[key] = option.option_values[0].value
@@ -4344,6 +4278,7 @@ const show_errors = (errors) => {
 
 // 未通過驗證
 const onInvalidSubmit = ({ values, errors, results }) =>{
+  console.log(doorType_depth)
   if(errors){
     console.log(errors);
     
@@ -4357,18 +4292,20 @@ const onSubmit = async(values) => {
   await store.token_validation();  //驗證token
   const order_id = route.query.id   //訂單ID
   const product_id = route.query.product  //商品ID
-  const quantity = values.quantity
-  const note = values.note || ""
-  const sqm = +values.win_width.value * values.win_height.value / 1000000
+  const quantity = values.quantity     // 數量
+  const note = values.note || ""      // 備註
+  const sqm = +values.win_width.value * values.win_height.value / 1000000  // SQM 
+
+  // 刪除values的數量及備註(上面已有保留)
+  // 因要另外處理資料
   delete values.quantity
   delete values.note
 
-  // 將values轉成陣列並加入id
+  // 將values轉成陣列
   const arr_values = Object.keys(values).map((key, idx) => {
     const key_id = key  // 保留key值，後續使用
     return {
         ...values[key],
-        // order_id,
         key_id
     }
   });
@@ -4381,9 +4318,12 @@ const onSubmit = async(values) => {
     const is_checkbox = item.type == 'checkbox'
     const is_image = item.type == 'images'
 
+    // json則value值轉json格式
     if (is_json) {
-      item.value = JSON.stringify(item.value) //type是json則轉json格式
-    } else if (is_checkbox) {
+      item.value = JSON.stringify(item.value) 
+    }
+    // checkbox多選另外把值的名字加進去
+    else if (is_checkbox) {
         if(item.option_value_id) { 
           //多選checkbox 篩選以選擇的id的原資料
           const filteredValues = order_data.value[item.option_code].option_values.filter(option => 
@@ -4396,16 +4336,16 @@ const onSubmit = async(values) => {
               value:item.name
             }
           })
-          // item.option_values = data
           item.values = data
           delete item.option_value_id
         }
-    } else if(is_image){
-        // 圖片非必填，所以只保留有value(舊圖)或是新圖，都沒有則跳過
-        if(item.option_values){
-          item.option_values = item.option_values.filter(item => item.file?.size || item.value)
+    } 
+    else if(is_image){
+        // 保留有舊圖或是新圖，都沒有則跳過
+        if(item.values){
+          item.values = item.values.filter(item => item.file?.size || item.value)
         }
-        if(!item.option_values || item.option_values.length <= 0 ) {
+        if(!item.values || item.values.length <= 0 ) {
           return new_obj;
         }
     }
@@ -4428,25 +4368,28 @@ const onSubmit = async(values) => {
     order_product_options:new_values,
     sqm,
   }
+  // 有id則帶入id
   if(product_id){
     submit_data.order_product_id = product_id
   }
+  // 轉成formdata
   const news_form_data = store.jsonToFormData(submit_data)
-  // console.log(submit_data);
-  // await store.add_product(submit_data)
+  
   const url = `${store.baseUrl}api/v2/sales/orders/product/save`
       try {
           const res = await fetch(url, {
               method: "POST",
               headers: {
-                  "Authorization": "Bearer " + store.userData.jwtToken
+                  "Authorization": "Bearer " + store.userData.jwtToken,
+                  "X-CLIENT-IPV4":store.userData.loginIpAddress
               },
               body: news_form_data
           })
           const data = await res.json()
           if(res.ok){
             console.log(data);
-            router.push(`/order-list/item?id=${order_id}`)
+            // material=${submit_data.material} 是列表頁要更新主要材質用的
+            router.push(`/order-list/item?id=${order_id}&material=${submit_data.material}`)
           }
       } catch (err) {
           console.log('error', err);

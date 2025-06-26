@@ -10,15 +10,17 @@ export const useStore = defineStore('counter', () => {
     const baseUrl = ref('')   
     const user_loaded = ref(false)
     const loading = ref(false)
-    const language = ref('zh_Hant')
+    const language = ref('en')  // zh_Hant en
     const language_txt = ref({})
     const method_nav = ref(false)
     const temporarily_product = ref()
     const textMap = ref(null) //匯出excel的json_header
 
     const set_token = async (data) => {
+        // data.id = await get_ip()
         localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
         userData.value = data
+        await update_local(data)
         await get_user_data()
     }
 
@@ -51,13 +53,16 @@ export const useStore = defineStore('counter', () => {
     }
 
     const get_user = async () => {
+        console.log('get_user');
+        
          // 從 localStorage 中取出儲存的 token 並解析為 JSON 物件
         const data = JSON.parse(localStorage.getItem('token'))
          // 如果 token 存在
         if (data) {
             userData.value = data
-            language.value = data.locale
-            await get_user_data()
+            await update_local(data)
+            // await get_user_data()
+    
             const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
             const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
             const expTime = userData.value.jwtExpireAt
@@ -72,6 +77,7 @@ export const useStore = defineStore('counter', () => {
             // 若無 token，清空使用者資料
             userData.value = ''
         }
+        
     }
 
     const get_user_data = async () => {
@@ -99,7 +105,33 @@ export const useStore = defineStore('counter', () => {
             console.log(err)
         }
     }
+
+    // 更新語言
+    const update_local = async (data)=>{
+        // 如果選擇的語言跟帳號不一樣
+        if(language.value !== data.locale){
+            // 更新語言
+            language.value = data.locale
+            await get_auth_language_txt()
+            pageKey.value++
+        }
+    }
+
+    const get_ip = async () => {
+        fetch('https://api.ipify.org?format=json')
+            .then((res) => res.json())
+            .then((data) => {
+                console.log('使用者 IP:', data.ip)
+                return data.ip
+            })
+            .catch((err) => {
+                console.error('取得 IP 失敗:', err)
+            })
+    }
     
+    
+
+
     // 驗證 JWT token 是否已過期
     const token_validation = async () => {
         const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
@@ -151,14 +183,16 @@ export const useStore = defineStore('counter', () => {
             baseUrl.value = `${protocol}//${host}/`
         } else {
             // 開發環境，使用指定的測試 API 網址
-            baseUrl.value = 'http://sunline.dboem.com:8088/';
-            // baseUrl.value = 'https://sunlinedev.elonphp.tw/';
+            // baseUrl.value = 'http://sunline.dboem.com:8088/';
+            baseUrl.value = 'https://sunlinedev.elonphp.tw/';
             
         }
     }
 
     // 翻譯文字
     const get_auth_language_txt = async () => {
+        console.log('翻譯',language.value);
+        
         const url = `${baseUrl.value}api/v2/common/translations/list/global?locale=${language.value}&equal_flag=2`
         const data = await get_api(url)
         if(!data.error){
@@ -244,10 +278,12 @@ export const useStore = defineStore('counter', () => {
         division_height: order.text_dividers + 'idx' + order.text_height, //中隔高度
         division_no_move: order.text_dividers + 'idx' + order.text_dividers_json_is_fixed, //不移動
         division_center: order.text_dividers + 'idx' + order.text_dividers_json_is_center, //置中
-        above_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_above_division,
-        beneath_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_beneath_divide,
-        beneath_handle_division_center:order.text_dividers + 'idx_bottom' + order.text_dividers_json_top_center,
-        above_handle_division_center: order.text_dividers + 'idx_top' + order.text_dividers_json_top_center,
+        above_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_above_division, // 以上拉桿
+        beneath_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_beneath_divide, // 以下拉桿
+        // 以上拉桿分段置中
+        beneath_handle_division_center:order.text_dividers + 'idx'  + order.text_dividers_json_above_division + order.text_dividers_json_is_center, 
+        // 以上拉桿分段置中
+        above_handle_division_center: order.text_dividers + 'idx' + order.text_dividers_json_beneath_divide + order.text_dividers_json_is_center, 
         
         // 拉桿分段需求
         lever_value:'拉桿分段需求idx',
@@ -318,7 +354,8 @@ export const useStore = defineStore('counter', () => {
                 }
             }
         })
-
+        console.log('語言');
+        
         return headers
     }
 
@@ -597,7 +634,6 @@ export const useStore = defineStore('counter', () => {
                     const is_note = header.code == 'note'
                     let is_json
                     // json
-                    console.log(json_arr);
                     
                     if (json_arr.length > 0) {
                         is_json = json_body_value(json_arr, header.name)
@@ -617,13 +653,14 @@ export const useStore = defineStore('counter', () => {
                             row.push(key ? data : '')
                         } else {
                             options[key].option_values.forEach((value) => {
-                                row.push(key ? 'YES' : 'NO')
+                                
+                                row.push(value.value == 'Y'? '✓' : '')
                             })
                         }
                     } else if (json.length > 0 && !!is_json) {
                         // json加入json_arr的值
                         if (is_json == 'Y' || is_json == 'N') {
-                            row.push(is_json == 'Y' ? 'YES' : '')
+                            row.push(is_json == 'Y' ? '✓' : '')
                         } else {
                             row.push(is_json)
                         }
@@ -782,6 +819,7 @@ export const useStore = defineStore('counter', () => {
     }
 
 
+
     // computed
     // 有登入?
     const is_login = computed(() => {
@@ -789,12 +827,19 @@ export const useStore = defineStore('counter', () => {
     })
     // 是經銷商?
     const is_dealer = computed(() => {
+        console.log(role.value);
+        
         return !!role.value.dealer || role.value.sunline
     })
     // 是翔特
     const is_sunline = computed(() => {
         return !!role.value.sunline
     })
+    // 英文版樣式
+    const en_class = computed(() => {
+        
+        return language.value == 'en' ? 'en-main' : '';
+    });
 
     return {
         pageKey,
@@ -824,5 +869,6 @@ export const useStore = defineStore('counter', () => {
         is_sunline,
         exportTable,
         get_api,
+        en_class
     }
 })

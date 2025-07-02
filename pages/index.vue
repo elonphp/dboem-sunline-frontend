@@ -113,8 +113,10 @@ const recaptcha  = async()=>{
 // // 登入
 const login = async () =>{
   const sha256_PW = sha256(login_password.value.toString())
-  let url = `${store.baseUrl}api/v2/login?email=${login_email.value}&password=${sha256_PW}`
+  let url = `${store.baseUrl}api/v2/login`
   const form_data = {
+    email: login_email.value,
+    password: sha256_PW,
     'google-recaptcha-v3-token':recaptchaToken.value
   }
   try{

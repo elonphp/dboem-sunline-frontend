@@ -6,11 +6,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     store.set_baseUrl()
     
     // 檢查是否已經加載過用戶數據
-    if (!store.is_login && !store.user_loaded) {
+    if (!store.is_login) {
       console.log("開啟網頁");
       store.get_user();
-      await store.get_auth_language_txt()
-       store.user_loaded = true
+      await store.get_auth_language_txt('global')
       }
 
       // 執行 token 驗證

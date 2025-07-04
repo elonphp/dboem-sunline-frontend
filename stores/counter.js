@@ -8,7 +8,6 @@ export const useStore = defineStore('counter', () => {
     const role = ref({})
     const pageKey = ref(1)    // 換語言重新渲染用的key
     const baseUrl = ref('')   
-    const user_loaded = ref(false)
     const loading = ref(false)
     const language = ref('en')  // zh_Hant en
     const language_txt = ref({})
@@ -49,7 +48,6 @@ export const useStore = defineStore('counter', () => {
         localStorage.removeItem('token')  // 刪除localStorage
         userData.value = ''              
         role.value = {}
-        user_loaded.value = false
     }
 
     const get_user = async () => {
@@ -844,7 +842,6 @@ export const useStore = defineStore('counter', () => {
     return {
         pageKey,
         role,
-        user_loaded,
         language,
         method_nav,
         baseUrl,

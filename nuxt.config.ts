@@ -61,8 +61,8 @@ export default defineNuxtConfig({
         files: getLocaleFiles('en')
       },
       {
-        code: 'zh-Hant',
-        files: getLocaleFiles('zh-Hant')
+        code: 'zh_Hant',
+        files: getLocaleFiles('zh_Hant')
       }
     ]
   },

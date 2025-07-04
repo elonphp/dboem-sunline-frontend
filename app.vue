@@ -1,15 +1,18 @@
 <template>
-  <NuxtLayout name="head" :class="store.en_class"/>
-  <main :key="store.pageKey" @click="store.method_nav = false" :class="store.en_class">
-      <NuxtPage />
-  </main>
-  <NuxtLayout name="footer" :class="store.en_class"/>
-
-  <NuxtLayout name="loading"/>
+  <div :class="locale === 'en' ? 'en-main' : ''">
+    <NuxtLayout name="head" />
+    <main :key="store.pageKey" @click="store.method_nav = false" >
+        <NuxtPage />
+    </main>
+    <NuxtLayout name="footer" />
+  
+    <NuxtLayout name="loading"/>
+  </div>
 
 </template>
 
 
 <script setup>
 const store = useStore()
+const { locale } = useI18n()
 </script>

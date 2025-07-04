@@ -54,7 +54,7 @@ const role = store.role
 const { t } = useI18n()
 
 // 連結區塊
-const link = ref([
+const link = computed(() => [
     { icon: 'fa-plus', title: t('order.text_add_order'), router: 'create_order', roles: ['salesperson', 'dealer','sunline'] },
     { icon: 'fa-history', title: t('order.tab_data'), router: 'order-list', roles: ['salesperson'] },
     { icon: 'fa-clipboard-list', title: t('order.text_manage_order'), router: 'order-list', roles: ['dealer','sunline'] },

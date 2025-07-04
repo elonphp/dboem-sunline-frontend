@@ -7,13 +7,14 @@
       <!-- <button type="button" @click="logout" v-show="is_login">登出</button> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2">
         <label for="">{{language_txt}}：</label>
-        <div>
-          <select class="form-select" @change="change_language" v-model="store.language">
+        <div class="d-flex">
+          <select class="form-select me-4" @change="change_language" v-model="store.language">
             <option value="en">English</option>
-            <option value="zh_Hant" selected>繁體中文</option>
+            <option value="zh_Hant">繁體中文</option>
           </select>
         </div>
       </div>
+      <!-- <div style="font-size: 24px;">{{ locale }}</div> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="user_info && store.language_txt">
         <label class="w-100">{{ role }}：</label>
         <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
@@ -40,9 +41,14 @@
 
 <script setup>
 
-
 const route = useRoute()
 const store = useStore()
+const { locale, setLocale } = useI18n()
+store.language = locale.value
+const changeLang = () => {
+  setLocale(store.language)
+}
+
 const user_info = ref()
 const { $setValidationLocale } = useNuxtApp();
 
@@ -79,7 +85,8 @@ const change_language = async()=>{
   // 設定驗證套件語言
   $setValidationLocale(store.language);
   // 語言檔
-  await store.get_auth_language_txt()
+  changeLang()
+  await store.get_auth_language_txt('change_language')
   // 重新渲染主要頁面
   store.pageKey++
   // 重新獲取會員資料(右上角會員名字用)

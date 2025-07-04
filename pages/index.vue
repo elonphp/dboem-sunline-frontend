@@ -3,16 +3,16 @@
       <div class="login">
         <div class="login_tit">
           <img class="login_logo" src="@/assets/images/logo.png" alt="logo">
-          {{ store.language_txt?.auth?.text_login}}
+          {{ $t('auth.text_login') }}
         </div>
         <form id="login" class="mt-3" @submit.prevent="recaptcha">
           <div class="login_input">
-            <label  for="login_account">  {{ store.language_txt?.auth?.column_email }}</label>
-            <input class="form-control" type="email" id="login_account" :placeholder="store.language_txt?.auth?.text_input_email" v-model="login_email"  required>
+            <label  for="login_account">  {{ $t('auth.column_email') }}</label>
+            <input class="form-control" type="email" id="login_account" :placeholder="$t('auth.text_input_email')" v-model="login_email"  required>
           </div>
           <div class="login_input input-group">
-            <label class="mt-3" for="login_password">{{ store.language_txt?.auth?.column_password }}</label>
-            <input class="form-control" :type="is_active? 'text':'password'" id="login_password" :placeholder="store.language_txt?.auth?.column_password" v-model="login_password" autocomplete="off" required>
+            <label class="mt-3" for="login_password">{{ $t('auth.column_password') }}</label>
+            <input class="form-control" :type="is_active? 'text':'password'" id="login_password" :placeholder="$t('auth.column_password')" v-model="login_password" autocomplete="off" required>
             <span class="input-group-text" @mousedown="Previewing_pw" @mouseup="Previewing_pw">
               <i class="fas" :class="is_active? 'fa-eye-slash':'fa-eye'"></i>
             </span>
@@ -20,18 +20,9 @@
           <div class="fs-6 mt-1 login_input text-end">
               <i class="fas fa-question-circle"></i>
               <nuxt-link to="/" class="ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal" 
-              style="text-decoration: underline;">{{ store.language_txt?.auth?.text_forget_password }}</nuxt-link>
+              style="text-decoration: underline;">{{ $t('auth.text_forget_password') }}</nuxt-link>
           </div>
-          <!-- <button
-            class="g-recaptcha login_btn"
-            :disabled="submit_btn"
-            data-sitekey="6LeqtGMrAAAAAJ61fJAqz70NFuEfvyjXR1zWu-6t"
-            data-action="login"
-            data-callback="recaptcha ">
-            {{ store.language_txt?.text_login }}
-          </button> -->
-          <button class="login_btn"> {{ store.language_txt?.auth.text_login }}</button>
-          <!-- <nuxt-link to="/create_order/order" class="login_btn">登入</nuxt-link> -->
+          <button class="login_btn"> {{ $t('auth.text_login') }}</button>
         </form>
       </div>
 
@@ -44,8 +35,8 @@
       <div class="modal-dialog modal-dialog-centered " style="max-width: 650px;" >
         <VeeForm class="modal-content px-4" @submit="send_reset_pw" v-slot="{ errors}">
           <div class="modal-header d-block text-center  border-0 pb-0">
-            <h2 class="modal-title" id="exampleModalLabel" style="letter-spacing: 5px;">{{ store.language_txt?.auth?.text_reset_password }}</h2>
-            <p class="fs-6 text-black-50 mt-2">{{ store.language_txt?.auth?.text_verification_sending }}</p>
+            <h2 class="modal-title" id="exampleModalLabel" style="letter-spacing: 5px;">{{ $t('auth.text_reset_password') }}</h2>
+            <p class="fs-6 text-black-50 mt-2">{{ $t('auth.text_verification_sending') }}</p>
           </div>
           <transition name="fade" mode="out-in">
             <div class="bg-danger text-white text-center p-1 fs-6" v-show="error_msg" key="1">{{ error_msg }}</div>
@@ -53,19 +44,19 @@
           <transition name="fade" mode="out-in">
             <div class="modal-body" v-if="!reset_pw_submit_ok" key="2">
             <label class="d-block mb-3">
-              {{ store.language_txt?.auth?.column_email }}
-              <VeeField type="email" name="reset_pw_email" class="form-control mt-2" v-model="reset_pw_email" :placeholder="store.language_txt?.auth?.text_input_email"  rules="required|email" />
+              {{ $t('auth.column_email') }}
+              <VeeField type="email" name="reset_pw_email" class="form-control mt-2" v-model="reset_pw_email" :placeholder="$t('auth.text_input_email')"  rules="required|email" />
               <VeeErrorMessage class="error__label fs-xs" name="reset_pw_email" />
             </label>
             <div class="modal-footer border-0 justify-content-center pb-4">
-              <button type="submit" class="btn sent_go" :disabled="submit_btn">{{ store.language_txt?.auth?.text_reset_password }}</button>
+              <button type="submit" class="btn sent_go" :disabled="submit_btn">{{ $t('auth.text_reset_password') }}</button>
             </div>   
             </div>
             <div class="modal-body text-center" v-else key="3">
             <i class="far fa-check-circle me-2" style="color: #63E6BE;"></i>
             <span style="letter-spacing:2px;">{{ ok_msg }}</span>
             <div class="modal-footer border-0 justify-content-center pt-4">
-              <span class="btn sent_go"  data-bs-dismiss="modal" aria-label="Close" @click="reset_pw_submit_ok = false">{{ store.language_txt.default.text_close }}</span>
+              <span class="btn sent_go"  data-bs-dismiss="modal" aria-label="Close" @click="reset_pw_submit_ok = false">{{ $t('default.text_close') }}</span>
             </div>
             </div>
           </transition>

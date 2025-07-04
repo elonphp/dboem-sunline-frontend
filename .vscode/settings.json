@@ -1,4 +1,9 @@
 {
     "commentTranslate.multiLineMerge": true,
-    "liveServer.settings.port": 5502
+    "liveServer.settings.port": 5502,
+    "i18n-ally.localesPaths": [
+      "locales"
+    ],
+    "i18n-ally.sourceLanguage": "zh-Hant", // 預設語系為中文
+    "i18n-ally.keystyle": "nested", // 巢狀顯示
 }

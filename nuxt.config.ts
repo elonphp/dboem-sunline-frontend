@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { readdirSync } from 'fs'
+import { join } from 'path'
+
 export default defineNuxtConfig({
   devtools: { 
     enabled: true
@@ -9,7 +12,9 @@ export default defineNuxtConfig({
       key: './https/server.key',
       cert: './https/server.crt',
     },
-  } : {},
+  } : {
+    port: 3600
+  },
   // runtimeConfig: {
   //   // 服務器端專用
   //   apiSecret: 'test',
@@ -45,7 +50,22 @@ export default defineNuxtConfig({
     "@/assets/scss/order.scss",
     "@/assets/scss/login.scss",
   ],
-  modules: ["@vee-validate/nuxt",'@pinia/nuxt'],
+  modules: ["@vee-validate/nuxt",'@pinia/nuxt', '@nuxtjs/i18n'],
+  i18n: {
+    lazy: true,
+    defaultLocale: 'en',
+    langDir: 'locales',
+    locales: [
+      {
+        code: 'en',
+        files: getLocaleFiles('en')
+      },
+      {
+        code: 'zh-Hant',
+        files: getLocaleFiles('zh-Hant')
+      }
+    ]
+  },
   imports: {
     dirs: ['stores']
   },
@@ -67,4 +87,11 @@ export default defineNuxtConfig({
     },
   },
 });
+
+// 自動化導入所有語言檔
+function getLocaleFiles(localeDir: string) {
+  return readdirSync(join(__dirname, 'locales', localeDir))
+    .filter(file => file.endsWith('.yaml'))
+    .map(file => `${localeDir}/${file}`)
+}
 

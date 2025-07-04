@@ -99,13 +99,7 @@ watchEffect(async()=>{
 onMounted(async()=>{
   $('section').click(function(){
     store.method_nav = false 
-  })
-  // header高度
-   const header_Height = $('header').innerHeight()
-    
-    // 設定CSS變數
-    document.documentElement.style.setProperty('--header-height', header_Height + 'px');
-  
+  })      
 })
 
 

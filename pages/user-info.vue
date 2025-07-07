@@ -2,105 +2,105 @@
     <section class="bg-block">
         <div class="container">
             <div class="table-box">
-                <h2 class="title">{{store.language_txt.default?.text_basic_information}}</h2>
+                <h2 class="title">{{$t('default.text_basic_information')}}</h2>
                 <div class="my-4">
-                    <nuxt-link to="/home" class="btn link">{{ store.language_txt.default?.text_back }}</nuxt-link>
+                    <nuxt-link to="/home" class="btn link">{{$t('default.text_back')}}</nuxt-link>
                 </div>
                 <div class="user-info px-2" v-if="!!userinfo">
                     <div class="row mb-xl-4">
                         <div class="col-xl-3 col-12 user-data">
-                            <span class="col-xl-1 col-4">{{ store.language_txt.member?.column_email }}</span>
+                            <span class="col-xl-1 col-4">{{$t('member.column_email')}}</span>
                             <div class="col-2">{{ userinfo.email }}</div>
                         </div>
                         <div class="col-xl-3 user-data">
-                            <span class="col-4">{{ store.language_txt.member.column_first_name }}</span>
+                            <span class="col-4">{{$t('member.column_first_name')}}</span>
                             <div class="col">{{ userinfo.name }}</div>
                         </div>
                         <div class="col-xl-3 user-data">
-                            <span class="col-4">{{ store.language_txt.member.column_telephone }}</span>
+                            <span class="col-4">{{$t('member.column_telephone')}}</span>
                             <div class="col">{{ userinfo.telephone }}</div>
                         </div>
                         <div class="col-xl-3 user-data">
-                            <span class="col-4">{{store.language_txt.member.column_phone}}</span>
+                            <span class="col-4">{{$t('member.column_phone')}}</span>
                             <div class="col">{{ userinfo.mobile }}</div>
                         </div>
                     </div>
                     <div class="row mb-xl-4">
                         <div class="col-xl-3 user-data">
-                            <span class="col-4">{{store.language_txt.member.column_dealer_code}}</span>
+                            <span class="col-4">{{$t('member.column_dealer_code')}}</span>
                             <div class="col">{{ userinfo.employer_company_code }}</div>
                         </div>
                         <div class="col-xl-3 user-data">
-                            <span class="col-4">{{store.language_txt.member.column_tax_id_num}}</span>
+                            <span class="col-4">{{$t('member.column_tax_id_num')}}</span>
                             <div class="col">{{ userinfo.tax_id_num }}</div>
                         </div>
                         <div class="col-xl-3 user-data">
-                            <span class="col-xl-2 col-4">{{ store.language_txt.member.column_company_name }}</span>
+                            <span class="col-xl-2 col-4">{{$t('member.column_company_name')}}</span>
                             <div class="col">{{ userinfo.employer_company_name }}</div>
                         </div>
                         <div class="col-xl-3  user-data">
-                            <span class="col-xl col-4">{{ store.language_txt.member.column_country }}</span>
+                            <span class="col-xl col-4">{{$t('member.column_country')}}</span>
                             <div class="col">{{ userinfo.country_name }}</div>
                         </div>
                     </div>
                     <div class="row mb-xl-4">
                         <div class="col-xl-1  user-data">
-                            <span class="col-xl col-4">{{ store.language_txt.member.column_zip_code }}</span>
+                            <span class="col-xl col-4">{{$t('member.column_zip_code')}}</span>
                             <div class="col">{{ userinfo.zip_code }}</div>
                         </div>
                         <div class="col-xl-2  user-data">
-                            <span class="col-xl col-4">{{store.language_txt.member.column_state}}</span>
+                            <span class="col-xl col-4">{{$t('member.column_state')}}</span>
                             <div class="col">{{userinfo.state}}</div>
                         </div>
                         <div class="col-xl-2  user-data">
-                            <span class="col-xl col-4">{{ store.language_txt.member.column_city }}</span>
+                            <span class="col-xl col-4">{{$t('member.column_city')}}</span>
                             <div class="col">{{ userinfo.city }}</div>
                         </div>
                         <div class="col-xl-3 user-data flex-auto">
-                            <span class="col-xl-2 col-4">{{ store.language_txt.member.column_address1 }}</span>
+                            <span class="col-xl-2 col-4">{{$t('member.column_address1')}}</span>
                             <div class="col">{{ userinfo.address1 }}</div>
                         </div>
                         <div class="col-xl-3 user-data flex-auto">
-                            <span class="col-xl-2 col-4">{{ store.language_txt.member.column_address2 }}</span>
+                            <span class="col-xl-2 col-4">{{$t('member.column_address2')}}</span>
                             <div class="col">{{ userinfo.address2 }}</div>
                         </div>
                     </div>
                 </div>
-                <h2 class="title mb-xl-4 my-xl-0 my-4">{{store.language_txt.auth?.text_reset_password}}</h2>
+                <h2 class="title mb-xl-4 my-xl-0 my-4">{{$t('auth.text_reset_password')}}</h2>
                 <VeeForm class="pw-reset px-2" v-if="!!userinfo" @submit="onSubmit" v-slot="{ errors}">
                     <div class="row mb-xl-4">
                         <div class="col-12 row user-data pb-3 align-items-center">
-                            <span class="col-xl-1 col-4">{{store.language_txt.member.column_old_password}}</span>
+                            <span class="col-xl-1 col-4">{{$t('member.column_old_password')}}</span>
                             <div class="form-box">
                                 <VeeField type="password" class="form-control" autocomplete="off"
                                     :class="{ 'error': errors.password }" name="password" 
-                                    :placeholder="store.language_txt.member.column_old_password"
+                                    :placeholder="$t('member.column_old_password')"
                                     rules="required" 
-                                    :label="store.language_txt.member.column_old_password" />
+                                    :label="$t('member.column_old_password')" />
                                 <VeeErrorMessage class="error__label fs-6 " name="password" />
                             </div>
                         </div>
                         <!-- new -->
                         <div class="col-12 row user-data pb-3 align-items-center">
-                            <span class="col-xl-1 col-4">{{ store.language_txt.member.column_new_password }}</span>
+                            <span class="col-xl-1 col-4">{{$t('member.column_new_password')}}</span>
                             <div class="form-box">
                                 <VeeField type="password" class="form-control" autocomplete="off"
                                     :class="{ 'error': errors.new_password }" name="new_password"
-                                    :placeholder="store.language_txt.member.help_new_password"
+                                    :placeholder="$t('member.help_new_password')"
                                     :rules="{ required: true, regex: /^(?=.*[A-Za-z]).{8,16}$/ }" 
-                                    :label="store.language_txt.member.column_new_password" />
+                                    :label="$t('member.column_new_password')" />
                                 <VeeErrorMessage class="error__label fs-6 " name="new_password" />
                             </div>
                         </div>
                         <!-- confirm_pw -->
                         <div class="col-12 row user-data pb-3 align-items-center">
-                            <span class="col-xl-1 col-4">{{ store.language_txt.member.column_confirm_password }}</span>
+                            <span class="col-xl-1 col-4">{{$t('member.column_confirm_password')}}</span>
                             <div class="form-box">
                                 <VeeField type="password" class="form-control" autocomplete="off"
                                     :class="{ 'error': errors.confirm_new_password }" name="confirm_new_password"
-                                    :placeholder="store.language_txt.member.help_confirm_password" 
+                                    :placeholder="$t('member.help_confirm_password')" 
                                     rules="required|confirmed:@new_password" 
-                                    :label="store.language_txt.member.column_confirm_password" />
+                                    :label="$t('member.column_confirm_password')" />
                                 <VeeErrorMessage class="error__label fs-6 " name="confirm_new_password" />
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                             data-sitekey="6LcMcOwpAAAAALlXivXwE8zGjzVwpIm77jv9ft8a" 
                             data-action="verify"
                             data-callback="onSubmit">
-                            {{ store.language_txt.default?.text_save }}
+                            {{$t('default.text_save')}}
                         </button>
                     </div>
                 </VeeForm>

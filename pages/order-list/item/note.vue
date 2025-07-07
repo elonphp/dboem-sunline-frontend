@@ -7,11 +7,10 @@
                     <div class="tag m-0 " :class="store.status_colors(order_info.status_code)">{{ order_info.status_name
                         }}
                     </div>
-                    <h2 class="title">{{ store.language_txt.default.tab_comments }}</h2>
+                    <h2 class="title">{{ $t('order.tab_comments') }}</h2>
                 </div>
                 <div class="d-flex align-items-center justify-content-between  gap-3 mb-4">
-                    <nuxt-link :to="`/order-list/item?id=${order_id}`" class="btn link">{{ store.language_txt.default?.text_back
-                        }}</nuxt-link>
+                    <nuxt-link :to="`/order-list/item?id=${order_id}`" class="btn link">{{ $t('default.text_back') }}</nuxt-link>
                 </div>
                 <!-- msg_box -->
                 <div class="">
@@ -40,7 +39,7 @@
                             <div class="msg_height_box">{{ comment }}</div>
                             <textarea v-model="comment" @keyup.enter="submit_comment"></textarea>
                             <button type="submit" class="btn sent_go" :disabled="submit_btn">
-                                <span v-if="!submit_btn">{{ store.language_txt.default.text_send }}</span>
+                                <span v-if="!submit_btn">{{ $t('default.text_send') }}</span>
                                 <div class="loader loader--style2" title="1" v-else>
                                     <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="40px"
@@ -68,7 +67,7 @@
                 <transition name="slide" :duration="550">
                     <div class="new_msg  alart_box" v-show="new_msg_remind" @click="to_bottom">
                         <i class="fas fa-comment-dots"></i>
-                        {{ store.language_txt.default.text_you_have_new_message }}
+                        {{ $t('order.text_you_have_new_message') }}
                     </div>
                 </transition>
             </div>

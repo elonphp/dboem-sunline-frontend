@@ -10,26 +10,26 @@
                     </div>
                     <div class="total-data">
                         <div>
-                            <span>{{store.language_txt.order.text_product_items}}：</span>
+                            <span>{{ $t('order.text_product_items') }}：</span>
                             <span class="fw-bold">{{ list_data.length }}</span>
                         </div>
                         <div>
-                            <span>{{store.language_txt.order.column_total_quantity}}：</span>
+                            <span>{{ $t('order.column_total_quantity') }}：</span>
                             <span class="fw-bold">{{ total_quantity }}</span>
                         </div>
                         <div>
-                            <span>{{store.language_txt.order.text_total_sqm}}(m2)：</span>
+                            <span>{{ $t('order.text_total_sqm') }}(m2)：</span>
                             <span class="fw-bold">{{ total_sqm }}</span>
                         </div>
                     </div>
                 </div>              
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <nuxt-link to="/order-list" class="btn link">{{store.language_txt.default?.text_back}}</nuxt-link>
-                    <nuxt-link :to="`/create_order?code=${order_info.code}&id=${order_id}`" class="btn link">{{store.language_txt.order.text_information}}</nuxt-link>
-                    <nuxt-link :to="`/create_order/order?id=${order_id}&main=${order_info.material}`" v-if="list_data.length > 0 && is_Draft" class="btn link">{{ store.language_txt.default.text_add }}{{ store.language_txt.order.tab_products }}</nuxt-link>
-                    <nuxt-link :to="`/create_order/order?id=${order_id}`" v-else-if="is_Draft" class="btn link">{{ store.language_txt.default.text_add }}{{ store.language_txt.order.tab_products }}</nuxt-link>
-                    <button class="btn link" @click="exportTable(0)">{{ store.language_txt.default.text_export }}</button>
-                    <nuxt-link :to="`/order-list/item/note?id=${order_id}`" class="btn link">{{ store.language_txt.order.tab_comments }}</nuxt-link>
+                    <nuxt-link to="/order-list" class="btn link">{{$t('default.text_back')}}</nuxt-link>
+                    <nuxt-link :to="`/create_order?code=${order_info.code}&id=${order_id}`" class="btn link">{{$t('order.text_information')}}</nuxt-link>
+                    <nuxt-link :to="`/create_order/order?id=${order_id}&main=${order_info.material}`" v-if="list_data.length > 0 && is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
+                    <nuxt-link :to="`/create_order/order?id=${order_id}`" v-else-if="is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
+                    <button class="btn link" @click="exportTable(0)">{{$t('default.text_export')}}</button>
+                    <nuxt-link :to="`/order-list/item/note?id=${order_id}`" class="btn link">{{$t('order.tab_comments')}}</nuxt-link>
                 </div>
                 <div class="table-inner">
                     <table class="table">
@@ -38,15 +38,15 @@
                                 <th>
                                     <input type="checkbox" class="form-check-input" v-model="all_selected" @change="all_select">
                                 </th>
-                                <th>{{ store.language_txt.default.column_sort_order }}</th>
-                                <th>{{ store.language_txt.order.tab_products }}</th>
-                                <th>{{ store.language_txt.order.text_position }}</th>
-                                <th>{{store.language_txt.order.text_width}}(mm)</th>
-                                <th>{{store.language_txt.order.text_height}}(mm)</th>
-                                <th>{{ store.language_txt.order.text_quantity }}</th>
-                                <th>{{ store.language_txt.order.text_outer_frame }}</th>
-                                <th>{{ store.language_txt.order.text_color }}</th>
-                                <th>{{store.language_txt.order.column_sqm}}(m2)</th>
+                                <th>{{ $t('default.column_sort_order') }}</th>
+                                <th>{{ $t('order.tab_products') }}</th>
+                                <th>{{ $t('order.text_position') }}</th>
+                                <th>{{ $t('order.text_width') }}(mm)</th>
+                                <th>{{ $t('order.text_height') }}(mm)</th>
+                                <th>{{ $t('order.text_quantity') }}</th>
+                                <th>{{ $t('order.text_outer_frame') }}</th>
+                                <th>{{ $t('order.text_color') }}</th>
+                                <th>{{ $t('order.column_sqm') }}(m2)</th>
                                 <th class="pe-5 col-2">
                                     <select class="form-select-sm px-3" v-model="pageSize">
                                         <option value="10" selected>{{ page_language_txt(10) }}</option>
@@ -70,21 +70,21 @@
                                 <td>{{ item.order_product_options[`${order_info.material}_color`]?.value }}</td>
                                 <td>{{ item.sqm }}</td>
                                 <td class="col-2" v-if="is_Draft">
-                                    <button type="button" class="method-btn btn-s" @click="copy_product(item)">{{store.language_txt.default.text_copy}}</button>
-                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{ store.language_txt.default.text_edit }}</nuxtLink>
-                                    <button type="button" class="method-btn btn-s" @click="delete_product(item)">{{ store.language_txt.default.text_delete }}</button>
+                                    <button type="button" class="method-btn btn-s" @click="copy_product(item)">{{$t('default.text_copy')}}</button>
+                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
+                                    <button type="button" class="method-btn btn-s" @click="delete_product(item)">{{$t('default.text_delete')}}</button>
                                 </td>
                                 <td class="col-2" v-else>
-                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`" class="method-btn btn-s">{{ store.language_txt.default.text_view }}</nuxtLink>
-                                    <nuxtLink v-if="(is_pending && store.is_dealer)" :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{store.language_txt.default.text_edit}}</nuxtLink>
-                                    <button type="button" class="method-btn btn-s" v-if="is_pending && store.is_dealer" @click="copy_product(item)">{{ store.language_txt.default.text_copy }}</button>
-                                    <button v-if="(is_pending && store.is_dealer)" type="button" class="method-btn btn-s" @click="delete_product(item)">{{ store.language_txt.default.text_delete }}</button>
+                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`" class="method-btn btn-s">{{$t('default.text_view')}}</nuxtLink>
+                                    <nuxtLink v-if="(is_pending && store.is_dealer)" :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
+                                    <button type="button" class="method-btn btn-s" v-if="is_pending && store.is_dealer" @click="copy_product(item)">{{$t('default.text_copy')}}</button>
+                                    <button v-if="(is_pending && store.is_dealer)" type="button" class="method-btn btn-s" @click="delete_product(item)">{{$t('default.text_delete')}}</button>
                                 </td>
                             </tr>
                                
                         </tbody>
                     </table>
-                    <button type="button" class="btn link mt-2" :disabled="!is_some_checked" @click="delete_product()" v-show="is_Draft">{{ store.language_txt.default.column_batch_delete }}</button>
+                    <button type="button" class="btn link mt-2" :disabled="!is_some_checked" @click="delete_product()" v-show="is_Draft">{{$t('default.column_batch_delete')}}</button>
                 </div>
                 <div class="pages" v-if="list_data.length > 0">
                     <button :disabled="currentPage === 1" @click="changPage(-1)">
@@ -98,10 +98,10 @@
                     </button>
                 </div>
                 <div class="d-flex align-items-center justify-content-center gap-4 mt-5">
-                    <button class="btn cancel" @click="delete_order" v-if="is_Draft">{{store.language_txt.default.text_delete}}{{ store.language_txt.order.text_order }}</button>
-                    <button class="btn cancel" @click="return_review" v-if="is_pending && store.is_dealer">{{ store.language_txt.order.text_order_status_return_to_draft }}</button>
-                    <button class="btn sent_go" @click="submit_review" v-if="is_Draft && list_data.length > 0">{{store.language_txt.order.text_submit_order}}</button>
-                    <button class="btn sent_go" @click="submit_corporate" v-if="is_pending && store.is_dealer">{{store.language_txt.order.text_order_status_dealer_confirm}}</button>
+                    <button class="btn cancel" @click="delete_order" v-if="is_Draft">{{$t('default.text_delete')}}{{$t('order.text_order')}}</button>
+                    <button class="btn cancel" @click="return_review" v-if="is_pending && store.is_dealer">{{$t('order.text_order_status_return_to_draft')}}</button>
+                    <button class="btn sent_go" @click="submit_review" v-if="is_Draft && list_data.length > 0">{{$t('order.text_submit_order')}}</button>
+                    <button class="btn sent_go" @click="submit_corporate" v-if="is_pending && store.is_dealer">{{$t('order.text_order_status_dealer_confirm')}}</button>
                 </div>
             </div>
         </div>
@@ -110,6 +110,7 @@
 
 <script setup>
 
+const { t } = useI18n()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -128,7 +129,7 @@ const pageSize = ref(10)
 // 顯示幾筆的語言文字
 const page_language_txt = (value)=>{
     // return 1
-    return store.language_txt.default?.text_row_limit.replace(':number',value)
+    return t('default.text_row_limit').replace(':number',value)
 }
 
 // 狀態 = 草稿
@@ -252,7 +253,7 @@ const copy_product = async(item)=>{
 
 const delete_product = async(item)=>{
     // 顯示確認視窗，詢問是否要刪除
-    const confirmed = confirm(store.language_txt.order?.text_confirm_delete);
+    const confirmed = confirm(t('order.text_confirm_delete'));
     if (!confirmed) return;
 
     // 顯示 loading 畫面
@@ -320,7 +321,7 @@ const delete_product = async(item)=>{
 
 // 審核
 const submit_review = async () => {
-    const confirmed = confirm(store.language_txt.order?.text_confirm_submit)
+    const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${store.language}`
@@ -351,7 +352,7 @@ const submit_review = async () => {
 
 // 審核退回
 const return_review = async () => {
-    const confirmed = confirm(store.language_txt.order?.text_confirm_return)
+    const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${order_id}?locale=${store.language}`
@@ -384,7 +385,7 @@ const return_review = async () => {
 
 // 送出訂單
 const submit_corporate = async ()=>{
-    const confirmed = confirm(store.language_txt.order?.text_confirm_send)
+    const confirmed = confirm(t('order.text_confirm_send'))
     approve_excel()
     if (confirmed) {
         store.show_loading(true)
@@ -442,7 +443,7 @@ const approve_excel = async()=>{
 
 // 刪除訂單
 const delete_order = async()=>{
-    const confirmed =  confirm(store.language_txt.order?.text_confirm_delete)
+    const confirmed =  confirm(t('order.text_confirm_delete'))
     if (confirmed) {
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/destroyMany`

@@ -4,7 +4,7 @@
     <div class="login">
       <div class="login_tit">
         <img class="login_logo" src="@/assets/images/logo.png" alt="logo">
-        {{ store.language_txt.auth?.text_reset_password }}
+        {{$t('auth.text_reset_password')}}
       </div>
       <!-- <transition name="fade" mode="out-in">
       <div class="bg-danger text-white w-75 p-1 text-center" v-show="error">
@@ -14,17 +14,17 @@
       </transition> -->
       <VeeForm id="login" class="mt-3" @submit="onSubmit" v-slot="{ errors}">
         <div class="login_input input-group">
-          <label class="mt-3" for="new_password">{{store.language_txt.auth?.column_password}}</label>
+          <label class="mt-3" for="new_password">{{$t('auth.column_password')}}</label>
           <VeeField 
             class="form-control"
             :class="{ 'error': errors.new_password }"
             name="new_password"
             :type="is_active.new_password? 'text':'password'" 
             id="new_password"
-            :placeholder="store.language_txt.auth.text_password_rule" 
+            :placeholder="$t('auth.text_password_rule')" 
             v-model="new_password"
             :rules="{required:true,regex:/^(?=.*[A-Za-z]).{8,16}$/}"
-            :label="store.language_txt.auth.column_new_password"
+            :label="$t('member.column_new_password')"
           
              />
           <span class="input-group-text" @mousedown="Previewing_pw(0)" @mouseup="Previewing_pw(0)">
@@ -34,25 +34,25 @@
         </div>
 
         <div class="login_input input-group">
-          <label class="mt-3" for="new_password_confirmation">{{ store.language_txt.auth.column_confirm_password }}</label>
+          <label class="mt-3" for="new_password_confirmation">{{$t('auth.column_confirm_password')}}</label>
           <VeeField 
             class="form-control"
             :class="{ 'error': errors.new_password_confirmation }"
             name="new_password_confirmation"
             :type="is_active.new_password_confirmation? 'text':'password'" 
             id="new_password_confirmation" 
-            :placeholder="store.language_txt.auth.text_enter_new_password" 
+            :placeholder="$t('auth.text_enter_new_password')" 
             v-model="new_password_confirmation"
             rules="required|confirmed:@new_password"
-            :label="store.language_txt.auth.column_confirm_password"
+            :label="$t('auth.column_confirm_password')"
             />
           <span class="input-group-text" @mousedown="Previewing_pw(1)" @mouseup="Previewing_pw(1)">
             <i class="fas" :class="is_active.new_password_confirmation? 'fa-eye-slash':'fa-eye'"></i>
           </span>
           <VeeErrorMessage class="error__label fs-6" name="new_password_confirmation" />
         </div>
-        <button class="login_btn" type="submit" :disabled="submit_btn_close">{{store.language_txt.default?.text_save}}</button>
-        <button class="d-none" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" id="open_modal">{{ store.language_txt.default?.text_save }}</button>
+        <button class="login_btn" type="submit" :disabled="submit_btn_close">{{$t('default.text_save')}}</button>
+        <button class="d-none" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" id="open_modal">{{$t('default.text_save')}}</button>
       </VeeForm>
     </div>
 
@@ -79,7 +79,7 @@
             </div>
           </div>
           <div class="modal-footer border-0 justify-content-center pb-4">
-            <button type="button" class="btn sent_go" @click="go_login">{{store.language_txt.default?.text_back}}{{store.language_txt.default?.text_login}}</button>
+            <button type="button" class="btn sent_go" @click="go_login">{{$t('default.text_back')}}{{$t('default.text_login')}}</button>
           </div>
         </div>
       </div>

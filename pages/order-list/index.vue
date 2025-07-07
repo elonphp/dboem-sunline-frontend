@@ -209,10 +209,6 @@ const search_keyword = ref("")
 const route = useRoute()
 const status_query = route.query.status
 
-// 頁面標題
-// const show_title  = computed(()=>{
-//     return store.is_dealer? '管理訂單': store.language_txt.order.tab_data
-// })
 
 // 是否已有被勾選 
 const is_some_checked = computed(()=>{
@@ -448,28 +444,6 @@ const del_data = async(id)=>{
     if (confirmed && is_length_match.value) {
         store.show_loading(true)
         const del_data = new FormData()
-        // // 單筆刪除
-        // if(id){
-        //     del_data.append('selected[]',id)
-        // // 多筆
-        // }else{
-        //     // 對應的 checkbox_idx 並篩出有勾選的品項
-        //     const del_item = list_data.value.filter((item, idx) => checkboxes.value[idx])
-
-
-        //     // 檢查是否有包含不是草稿狀態
-        //     const check_is_not_Draft = del_item.some(item => !is_Draft(item))
-        //     if(check_is_not_Draft){
-        //         alert(store.language_txt.order.error_order_status_code_only_draft_deletable)
-        //         store.show_loading(false)
-        //         return
-        //     }else{
-        //         // 篩出品項添加id至formData
-        //         del_item.map(item =>{
-        //             del_data.append('selected[]',item.id)
-        //         })
-        //     }
-        // }
         const url = `${store.baseUrl}api/v2/sales/orders/deleteOrder/${id}`
     
         try {

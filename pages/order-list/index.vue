@@ -104,7 +104,7 @@
                                         <div class="new-comment" v-if="item.unread_comment_count > 0" >
                                             {{ item.unread_comment_count }}
                                         </div>
-                                        留言
+                                        {{ $t('order.tab_comments') }}
                                     </nuxtLink>
                                     <button type="button" class="method-btn btn-s" @click="del_data(item.id)"
                                         v-if="is_Draft(item)">{{$t('default.text_delete')}}</button>
@@ -187,6 +187,7 @@ import flatpickr from 'flatpickr';
 import {Mandarin} from 'flatpickr/dist/l10n/zh-tw.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const { t } = useI18n()
 const store = useStore()
 const show_export_box = ref(false)
 const search_order_code = ref("")
@@ -235,15 +236,15 @@ const is_Pending = (item) =>{
 
 // 表單header 順序這裡調
 const language  = ref({
-    code:store.language_txt.order?.column_code,
-    dealer_name:store.language_txt.order?.column_dealer_name,
-    material_name:store.language_txt.order?.text_material,
-    quantity:store.language_txt.order?.text_quantity,
-    customer_name:store.language_txt.order?.column_customer_name,
-    side_mark:store.language_txt.order?.column_side_mark,
-    sqm:store.language_txt.order?.column_sqm,
-    status_name:store.language_txt.order?.column_status,
-    created_at:store.language_txt.order?.column_order_date,
+    code: t('order.column_code'),
+    dealer_name: t('order.column_dealer_name'),
+    material_name: t('order.text_material'),
+    quantity: t('order.text_quantity'),
+    customer_name: t('order.column_customer_name'),
+    side_mark: t('order.column_side_mark'),
+    sqm: t('order.column_sqm'),
+    status_name: t('order.column_status'),
+    created_at: t('order.column_order_date'),
     
     // salesperson_email:"下單者",
 })
@@ -305,7 +306,7 @@ const pageSize = ref(10)
 
 // 顯示幾筆的語言文字
 const page_language_txt = (value)=>{
-    return store.language_txt.default.text_row_limit.replace(':number',value)
+    return t('default.text_row_limit').replace(':number',value)
 }
 
 //* 算出總共幾頁
@@ -355,7 +356,7 @@ const show_data = computed(()=>{
 // 種類顯示設定資料
 const data_change_category = () => {
     if(store.is_dealer || store.is_corporate){
-        language.value.salesperson_name = store.language_txt.order.text_order_comment_identity_salesperson
+        language.value.salesperson_name = t('order.text_order_comment_identity_salesperson')
     }
     console.log(list_data.value);
     if (list_data.value.length > 0) {
@@ -380,7 +381,7 @@ const data_change_category = () => {
 
 // 複製
 const copy_data = async(id)=>{
-    const confirmed =  confirm(store.language_txt.order.text_confirm_copy)
+    const confirmed =  confirm(t('order.text_confirm_copy'))
     if (confirmed){
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/copyOrder/${id}`
@@ -443,7 +444,7 @@ const copy_data = async(id)=>{
 
 // 刪除訂單
 const del_data = async(id)=>{
-    const confirmed =  confirm(store.language_txt.order.text_confirm_delete)
+    const confirmed =  confirm(t('order.text_confirm_delete'))
     if (confirmed && is_length_match.value) {
         store.show_loading(true)
         const del_data = new FormData()
@@ -534,7 +535,7 @@ const Save_order = async (item) => {
 
 // 審核
 const submit_review = async (id) => {
-    const confirmed = confirm(store.language_txt.order.text_confirm_submit)
+    const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${store.language}`
@@ -569,7 +570,7 @@ const submit_review = async (id) => {
 
 // 經銷商退回訂單
 const return_review = async (item) => {
-    const confirmed = confirm(store.language_txt.order.text_confirm_return)
+    const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
         store.show_loading(true)
         const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${item.id}?locale=${store.language}`
@@ -636,7 +637,7 @@ const submit_approve = async (item) => {
 }
 // 經銷商審核(excel)
 const approve_excel = async(item)=>{
-    const confirmed = confirm(store.language_txt.order.text_confirm_send)
+    const confirmed = confirm(t('order.text_confirm_send'))
     if (confirmed) {
         const data = await get_order_data(item.id)
         const excel = store.exportTable(data, 'mail')

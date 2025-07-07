@@ -130,6 +130,7 @@ import { useReCaptcha } from 'vue-recaptcha-v3'
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha()
 const store = useStore()
 const recaptchaToken = ref('')
+const { t } = useI18n()
 
 const userinfo = ref()
 const submit_btn_close = ref(false)
@@ -170,7 +171,7 @@ const verify = async (values) =>{
     if(res.ok){
        return !data.error
     }else{
-     alert(store.language_txt.error_old_password)
+     alert(t('auth.error_old_password'))
     }
   }catch (err) {
     console.log(err);

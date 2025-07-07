@@ -2,14 +2,14 @@
     <section class="bg-block">
         <div class="container">
             <div class="table-box" id="table">
-                <h2 class="title">{{ store.language_txt.order?.text_option_setting }}</h2>
+                <h2 class="title">{{$t('order.text_option_setting')}}</h2>
                 <div class="my-4 d-flex align-items-center justify-content-between ">
-                    <nuxt-link to="/home" class="btn link align-self-center">{{store.language_txt.default?.text_back}}</nuxt-link>
+                    <nuxt-link to="/home" class="btn link align-self-center">{{$t('default.text_back')}}</nuxt-link>
                     <div class="d-flex col-5 gap-2 align-items-center justify-content-end ">
-                        <button class="me-2" @click="cancel_search" v-if="keyword">{{store.language_txt.text_cancel}}{{ store.language_txt.default?.text_search }}</button>
+                        <button type="button" class="btn search align-self-stretch me-2" @click="cancel_search" v-if="keyword">{{$t('default.text_cancel')}}{{$t('default.text_search')}}</button>
                         <div class="d-flex gap-2 align-items-center col-8">
-                            <input type="text" :placeholder="store.language_txt.text_keyword" class="form-control" v-model="input_keyword">
-                            <button type="button" class="btn search align-self-stretch" @click="search">{{ store.language_txt.default?.text_search }}</button>
+                            <input type="text" :placeholder="$t('default.text_keyword')" class="form-control" v-model="input_keyword">
+                            <button type="button" class="btn search align-self-stretch" @click="search">{{$t('default.text_search')}}</button>
                         </div>
                     </div>
                 </div>
@@ -17,7 +17,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="col-4">{{ store.language_txt.default?.text_column_name }}</th>
+                                <th class="col-4">{{$t('default.text_column_name')}}</th>
                                 <th class="text-end pe-5">
                                     <select class="form-select-sm px-3" v-model="pageSize">
                                         <option value="10" selected>{{page_language_txt(10)}}</option>
@@ -31,7 +31,7 @@
                             <tr v-for="(item,idx) in show_data" :key="'data_' + idx">
                                 <td>{{ item.name }}</td>
                                 <td class="justify-content-end  pe-5">
-                                    <nuxt-link :to="`/order-setting/${item.id}?code=${item.code}`" class="method-btn large">{{ store.language_txt.default?.text_setting }}</nuxt-link>
+                                    <nuxt-link :to="`/order-setting/${item.id}?code=${item.code}`" class="method-btn large">{{$t('default.text_setting')}}</nuxt-link>
                                 </td>
                             </tr>
                         </tbody>

@@ -86,7 +86,7 @@ const change_language = async()=>{
   $setValidationLocale(store.language);
   // 語言檔
   changeLang()
-  await store.get_auth_language_txt('change_language')
+  // await store.get_auth_language_txt('change_language')
   // 重新渲染主要頁面
   store.pageKey++
   // 重新獲取會員資料(右上角會員名字用)

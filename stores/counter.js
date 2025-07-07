@@ -19,7 +19,7 @@ export const useStore = defineStore('counter', () => {
         // data.id = await get_ip()
         localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
         userData.value = data
-        await update_local(data)
+        // await update_local(data)
         await get_user_data()
     }
 
@@ -58,7 +58,7 @@ export const useStore = defineStore('counter', () => {
          // 如果 token 存在
         if (data) {
             userData.value = data
-            await update_local(data)
+            // await update_local(data)
             // await get_user_data()
     
             const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
@@ -110,7 +110,7 @@ export const useStore = defineStore('counter', () => {
         if(language.value !== data.locale){
             // 更新語言
             language.value = data.locale
-            await get_auth_language_txt()
+            await get_auth_language_txt('update_local')
             pageKey.value++
         }
     }
@@ -188,8 +188,8 @@ export const useStore = defineStore('counter', () => {
     }
 
     // 翻譯文字
-    const get_auth_language_txt = async () => {
-        console.log('翻譯',language.value);
+    const get_auth_language_txt = async (reqPath = null) => {
+        console.log(reqPath, 'reqPath');
         
         const url = `${baseUrl.value}api/v2/common/translations/list/global?locale=${language.value}&equal_flag=2`
         const data = await get_api(url)

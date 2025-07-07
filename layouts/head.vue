@@ -21,13 +21,13 @@
           <span>{{ user_info.name }}</span>
           <ul v-show="store.method_nav ">
             <li @click="store.method_nav = !store.method_nav">
-              <nuxt-link to="/user-info">{{ store.language_txt.default?.text_basic_information }}</nuxt-link>
+              <nuxt-link to="/user-info">{{ $t('default.text_basic_information') }}</nuxt-link>
             </li>
             <li @click="store.method_nav = !store.method_nav">
-              <nuxt-link to="/">{{ store.language_txt.default.text_return_home }}</nuxt-link>
+              <nuxt-link to="/">{{ $t('default.text_return_home') }}</nuxt-link>
             </li>
             <li @click="store.method_nav = !store.method_nav">
-              <button type="button" @click="logout" v-show="store.is_login">{{ store.language_txt.auth.text_logout }}</button>
+              <button type="button" @click="logout" v-show="store.is_login">{{ $t('auth.text_logout') }}</button>
             </li>
           </ul>
         </div>

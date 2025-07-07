@@ -18,7 +18,6 @@ const store = useStore()
 
 onMounted(() => {
     store.show_loading(false)
-    console.log(store.language_txt);
     
 })
 </script>

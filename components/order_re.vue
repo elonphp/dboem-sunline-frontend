@@ -25,7 +25,7 @@
         <div class="container container-original">
           <div class="block block1 flex-wrap">
             <h2 class="title">
-              {{ store.language_txt.order.text_material }}
+              {{$t('order.text_material')}}
               <VeeErrorMessage class="error__label" :name="`${order_data.win_material.code}.option_value_id`" />
             </h2>
             <div class="d-flex justify-content-around flex-auto" :class="{ 'error': errors[`${order_data.win_material.code}.option_value_id`] }">
@@ -60,7 +60,7 @@
       <section id="style" v-if="!!design_data.design && design_data.type">
         <div class="container container-original">
           <div class="block block2">
-            <h2 class="title">{{ store.language_txt.order.text_style}}</h2>
+            <h2 class="title">{{ $t('order.text_style') }}</h2>
             <VeeErrorMessage class="error__label error-design" :name="`${design_data.design.option_code}.option_value_id`" />
             <div class="d-flex justify-content-around flex-auto gap-lg-0 gap-4 "
               :class="{ 'error': errors[`${design_data.design.option_code}.option_value_id`] }">
@@ -130,7 +130,7 @@
       <section id="sizeSection" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_basicsetting}}</h2>
+            <h2 class="title">{{ $t('order.text_basicsetting') }}</h2>
             <div class="row flex-auto col-12">
               <!-- 室內外 -->
               <div class="col-md-6 flex-auto" v-if="is_aluminum">
@@ -151,7 +151,7 @@
                       label="indooroutdoor" 
                       rules="required"
                       >
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option :value="option.id" v-for="option in order_data.indooroutdoor.option_values">
                         {{ option.name }}
                       </option>
@@ -180,7 +180,7 @@
                       v-model="data_id[order_data.std_or_fixed.code]"
                       @change="set_name(option,order_data.std_or_fixed.code)"
                        label="std_or_fixed" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option :value="option.id" v-for="option in order_data.std_or_fixed.option_values">
                         {{ option.name }}
                       </option>
@@ -201,7 +201,7 @@
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-2 " for="">
                     <span class="text-danger">*</span>
-                    {{ store.language_txt.default.text_type}}
+                    {{ $t('default.text_type') }}
                   </label>
                   <div class="col-sm-10">
                     <div class="d-flex algin-items-center flex-wrap p-2 pt-0" :class="{ 'error': errors[`${order_data.win_stdwin_subtype.code}.option_value_id`] }">
@@ -298,7 +298,7 @@
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-4" for="quantity">
                     <span class="text-danger">*</span>
-                    {{ store.language_txt.order.text_quantity}}
+                    {{ $t('order.text_quantity') }}
                   </label>
                   <div class="col-sm-8">
                     <div class="input-group" :class="{ 'error': errors[`quantity`] }">
@@ -487,7 +487,7 @@
                       @change="set_name(data,order_data.blade_directions.code)"
                       :class="{ 'error': errors[`${order_data.blade_directions.code}.option_value_id`] }"
                       label="blade_directions" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="data in order_data.blade_directions.option_values" :key="data.name + data.id"
                         :value="data.id">
                         {{ data.name }}
@@ -554,7 +554,7 @@
                     {{ order_data.wsms.name }}
                     <i class="fas fa-question-circle"></i>
                     <div class="info_box">
-                      {{ store.language_txt.order.helper_ms }}
+                      {{ $t('order.helper_ms') }}
                     </div>
                   </label>
                   <div class="col-sm-8">
@@ -563,7 +563,7 @@
                       v-model="data_id[order_data.wsms.code]"
                       @change="set_name(option,order_data.wsms.code)"
                      label="wsms" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option :value="option.id" v-for="option in wsms_data">
                         {{ option.name }}
                       </option>
@@ -585,8 +585,8 @@
                     {{ order_data.imom.name }}
                     <i class="fas fa-question-circle"></i>
                     <div class="info_box">
-                      <p>{{ store.language_txt.order.helper_om }}</p>
-                      <p>{{ store.language_txt.order.helper_im }}</p>
+                      <p>{{ $t('order.helper_om') }}</p>
+                      <p>{{ $t('order.helper_im') }}</p>
                     </div>
                   </label>
                   <div class="col-sm-8">
@@ -595,7 +595,7 @@
                       v-model="data_id[order_data.imom.code]"
                       @change="set_name(option,order_data.imom.code)"
                       label="imom" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option :value="option.id" v-for="option in order_data.imom.option_values" >
                         {{ option.name }}
                       </option>
@@ -665,7 +665,7 @@
       <section id="options" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_option }}</h2>
+            <h2 class="title">{{ $t('order.text_option') }}</h2>
             <div class="row flex-auto col-12">
               <div class="col-12" v-if="!is_track">
                 <!-- T型式 -->
@@ -673,10 +673,10 @@
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-2" for="">
                     <span class="text-danger">*</span>
-                    {{t_post_data.name}}
+                    {{ t_post_data.name }}
                     <i class="fas fa-question-circle"></i>
                     <div class="info_box">
-                      {{ store.language_txt.order.text_vertical_horizontal}}
+                      {{ $t('order.text_vertical_horizontal') }}
                     </div>
                   </label>
                   <div class="col-sm-10">
@@ -731,7 +731,7 @@
                   :key="'T-POST_position' + idx +1">
                   <label class="label-set col-form-label col-sm-4 pe-3" :for="'T-POST_position' + idx+1">
                     <span class="text-danger">*</span>
-                    T{{ idx+1 }}{{ store.language_txt.order.text_position}}
+                    T{{ idx+1 }}{{ $t('order.text_position') }}
                   </label>
                   <div class="col-xxl-8 col pe-3">
                     <div class="input-group">
@@ -765,7 +765,7 @@
                     v-model="t_post_json.t_post_average"
                     class="form-check-input" value="Y" />
                   <label for=""
-                    class="col-8 label-set text-start ps-2">{{ store.language_txt.order.text_divide_equally}}</label>
+                    class="col-8 label-set text-start ps-2">{{ $t('order.text_divide_equally') }}</label>
                 </div>
                 </div>
                 <div class="col-12 text-center my-4">
@@ -787,11 +787,11 @@
                 </div>
                 <div class="row col-md-8 col-12 mb-3" v-for="(data,idx) in corner_angle_data" :key="`corner_angle${idx +1}`" v-if="show_corner">
                   <span class="col-sm-3" v-if="idx == 0">
-                    {{store.language_txt.order.text_corner_shutters}}
+                    {{ $t('order.text_corner_shutters') }}
                     <div class="col-12 text-center mt-4" v-if="show_corner">
                       <button type="button" class="add_text_btn" @click="add_json(order_data.corner_angle.code,corner_angle_obj)">
                         <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                        <span>{{order_data.corner_angle.name.replace(':num',corner_angle_data.length + 1) }}</span>
+                        <span>{{ order_data.corner_angle.name.replace(':num', corner_angle_data.length + 1) }}</span>
                       </button>
                     </div>
                   </span>
@@ -815,7 +815,7 @@
                     <!-- 位置 -->
                     <label class="label-set col-form-label col-sm-4">
                       <span class="text-danger">*</span>
-                      C{{idx + 1}}{{ store.language_txt.order.text_position}}
+                      C{{ idx + 1 }}{{ $t('order.text_position') }}
                     </label>
                     <div class="col-sm-8 position-relative mb-3">
                       <div class="input-group">
@@ -877,11 +877,11 @@
                   <!-- 多層窗 -->
                   <div class="col-md-6 mb-3" v-if="show_multilayer">
                 <div class="row mb-3" v-if="show_multilayer">
-                  <p class="">{{store.language_txt.order.text_double_hung}}</p>
+                  <p class="">{{ $t('order.text_double_hung') }}</p>
                   <label class="label-set col-form-label col-sm-4" for="layers">
                     <span class="text-danger">*</span>
-                    {{ store.language_txt.order.text_layers}}
-                    <!-- {{order_data.layer_json.name}} -->
+                    {{ $t('order.text_layers') }}
+                    <!-- {{ order_data.layer_json.name }} -->
                   </label>
                   <!-- 層數 -->
                   <div class="col-sm-8">
@@ -905,7 +905,7 @@
                 <div class="row mb-3" v-for="(data,idx) in layers_value" :key="'T-POST-horizontal-' + idx" v-if="show_multilayer">
                   <label class="label-set col-form-label col-sm-4" :for="'T_POST_horizontal' + idx">
                     <span class="text-danger">*</span>
-                    {{ store.language_txt.order.text_vertical}}T{{idx+1}}
+                    {{ $t('order.text_vertical') }}T{{ idx+1 }}
                   </label>
                   <div class="col-sm-8">
                     <div class="input-group">
@@ -927,10 +927,10 @@
                   <!-- 窗簾盒 -->
                   <div class="col-md-6 mb-3" v-if="show_pelmet">
                     <div class="row mb-3">
-                      <p class="">{{store.language_txt.order.text_valance_box}}</p>
+                      <p class="">{{ $t('order.text_valance_box') }}</p>
                       <label class="label-set col-form-label col-sm-4" for="">
                         <span class="text-danger">*</span>
-                        {{order_data.win_valance_box_plans.name}}
+                        {{ order_data.win_valance_box_plans.name }}
                       </label>
                       <div class="col-sm-8">
                       <div class="d-flex align-items-center  p-2 pt-0"
@@ -1043,11 +1043,11 @@
                   </div>
                   </div>
               </div>
-              <hr/>
+              <hr />
               <!-- 中隔 -->
               <div class="row flex-auto col-12">
                 <div class="position-relative mb-3">
-                {{ store.language_txt.order.text_option_section_dividers }}
+                {{ $t('order.text_option_section_dividers') }}
                 <i class="fas fa-question-circle"></i>
                 <div class="info_box">
                   {{ partitio_note }}
@@ -1099,7 +1099,7 @@
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-2 " for="">
                     <span class="text-danger">*</span>
-                    {{store.language_txt.order.text_dividers}}{{ idx + 1 }}
+                    {{ $t('order.text_dividers') }}{{ idx + 1 }}
                   </label>
                   <div class="col-sm-4">
                     <div class="d-flex mb-2">
@@ -1122,7 +1122,7 @@
                           :name="`${order_data.dividers_json.code}.value[${idx}].division_center`"
                           :id="`dividers_json_center${idx +1 }`" />
                         <label :for="`dividers_json_center${idx +1 }`">
-                          {{ store.language_txt.order.text_dividers_json_is_center}}
+                          {{ $t('order.text_dividers_json_is_center') }}
                         </label>
                       </div>
                       <div>
@@ -1130,7 +1130,7 @@
                           value="Y" :name="`${order_data.dividers_json.code}.value[${idx}].division_no_move`"
                           :id="`dividers_json_no_move${idx +1}`" />
                         <label :for="`dividers_json_no_move${idx +1}`">
-                          {{ store.language_txt.order.text_dividers_json_is_fixed }}
+                          {{ $t('order.text_dividers_json_is_fixed') }}
                         </label>
                       </div>
                     </div>
@@ -1139,8 +1139,8 @@
                 <!-- 以上分段 -->
                 <div class="row me-0 d-inline-flex col-sm-6 mb-3" v-if="lever_segmentation_note_data[idx]">
                   <label class="label-set col-form-label col-4" for="">
-                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
-                    }}<br>{{ store.language_txt.order.text_dividers_json_above_division}}
+                    {{ $t('order.text_dividers') }}{{ idx + 1
+                    }}<br>{{ $t('order.text_dividers_json_above_division') }}
                     
                   </label>
                   <div class="col-8 d-flex align-items-center ">
@@ -1159,15 +1159,15 @@
                       class="form-check-input mx-2" v-model="data.above_handle_division_center"
                       :id="`above_handle_division_center${idx +1}`" />
                     <label :for="`above_handle_division_center${idx +1}`">
-                      {{ store.language_txt.order.text_dividers_json_is_center}}
+                      {{ $t('order.text_dividers_json_is_center') }}
                     </label>
                   </div>
                 </div>
                 <!-- 以下分段 -->
                 <div class="row ms-0 d-inline-flex col-sm-6 mb-3" v-if="idx == 0 && lever_segmentation_note_data[idx]">
                   <label class="label-set col-form-label col-4" for="">
-                    {{ store.language_txt.order.text_dividers}}{{ idx + 1
-                    }}<br>{{ store.language_txt.order.text_dividers_json_beneath_divide}}
+                    {{ $t('order.text_dividers') }}{{ idx + 1
+                    }}<br>{{ $t('order.text_dividers_json_beneath_divide') }}
                   </label>
                   <div class="col-sm-8 d-flex align-items-center">
                     <div class="col me-2 input-group">
@@ -1187,7 +1187,7 @@
                       v-model="data.beneath_handle_division_center" class="form-check-input mx-2"
                       :id="`beneath_handle_division_center${idx +1}`" />
                     <label :for="`beneath_handle_division_center${idx +1}`">
-                      {{ store.language_txt.order.text_dividers_json_is_center}}
+                      {{ $t('order.text_dividers_json_is_center') }}
                     </label>
                   </div>
                 </div>
@@ -1196,11 +1196,11 @@
                 <div class="col-12 text-center mt-4 d-flex align-items-center justify-content-center gap-4">
                   <button type="button" class="add_text_btn" @click="add_json(order_data.dividers_json.code,Divider_rail_obj)">
                     <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                    <span>{{store.language_txt.order.text_dividers}}</span>
+                    <span>{{ $t('order.text_dividers') }}</span>
                   </button>
                   <button type="button" class="add_text_btn" v-if="show_add_lever && !is_none_win_lever" @click="add_json(order_data. lever_segmentation_note.code,lever_segmentation_obj)">
                     <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
-                    <span>{{order_data.lever_segmentation_note.name}}</span>
+                    <span>{{ order_data.lever_segmentation_note.name }}</span>
                   </button>
                 </div>
               </div>
@@ -1213,7 +1213,8 @@
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">
-              {{ store.language_txt.order.text_t_post}}
+              {{ $t('order.text_t_post') }}
+              <span v-if="!is_track">{{ $t('order.helper_door_piece') }}</span>
             </h2>
             <div class="row flex-auto">
               <!-- 顏色 -->
@@ -1221,7 +1222,7 @@
                 <div class="row">
                   <label class="label-set col-form-label col-sm-2 " for="">
                     <span class="text-danger">*</span>
-                    {{show_custom_name(material_color)}}
+                    {{ show_custom_name(material_color) }}
                   </label>
                   <div class="col-sm-10">
                     <div class="d-flex algin-items-center flex-wrap  p-2 pt-0"
@@ -1310,7 +1311,7 @@
                       v-model="data_id[order_data.outer_frame_sides.code]"
                       @change="set_name(data,order_data.outer_frame_sides.code)"
                       >
-                      <option value="" disabled>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="data in order_data.outer_frame_sides.option_values" :key="data.id" @change="order_fill_out_id.outer_frame_sides = data.id"
                         :value="data.id">
                         {{ data.name }}
@@ -1381,7 +1382,7 @@
                       v-model="data_id[order_data.sldwood_pre_drilled_hole.code]"
                       @change="set_name(data,order_data.sldwood_pre_drilled_hole.code)"
                      >
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="data in order_data.sldwood_pre_drilled_hole.option_values" :key="data.id"
                         :value="data.id">
                         {{ data.name }}
@@ -1433,7 +1434,7 @@
                         v-model="data_id[order_data.outer_frame_gasket_thickness.code]" 
                         @change="set_name(data,order_data.outer_frame_gasket_thickness.code)"
                         rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                         <option v-for="data in order_data.outer_frame_gasket_thickness.option_values" :key="data.id"
                         @change="order_fill_out_id.outer_frame_gasket_thickness =  data.id"
                           :value="data.id">
@@ -1462,7 +1463,7 @@
                           :name="`${order_data.sldwood_build_out_thickness_manually.code}.values[0].value`"
                           v-model="data_val[order_data.sldwood_build_out_thickness_manually.code]" value="Y"
                           class="form-check-input" />
-                        {{ store.language_txt.order.text_enter_manually}}
+                        {{ $t('order.text_enter_manually') }}
                         <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.name`" :value="order_data.sldwood_build_out_thickness_manually.name" />
                       <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_id`" :value="order_data.sldwood_build_out_thickness_manually.id" />
                       <VeeField type="hidden" :name="`${order_data.sldwood_build_out_thickness_manually.code}.option_code`" :value="order_data.sldwood_build_out_thickness_manually.code" />
@@ -1485,7 +1486,7 @@
                       v-model="data_id[order_data.outer_frame_gasket_location.code]"
                       @change="set_name(option,order_data.outer_frame_gasket_location.code)"
                       rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="data in order_data.outer_frame_gasket_location.option_values" :key="data.id"
                         @change="order_fill_out_id.outer_frame_gasket_location = data.id"
                         :value="data.id">
@@ -1596,8 +1597,8 @@
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">
-              {{ store.language_txt.order.text_door }}
-              <span v-if="!is_track">{{ store.language_txt.order.helper_door_piece }}</span>
+              {{ $t('order.text_door') }}
+              <span v-if="!is_track">{{ $t('order.helper_door_piece') }}</span>
             </h2>
             <div class="row flex-auto col-12">
             <!-- 拉桿 -->
@@ -1659,7 +1660,7 @@
                       label="blade_size"
                       :key="blade_size_data.code + 'option_value_id'"
                       rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="size in blade_size_data.option_values" :key="size.name + size.id" :value="size.id">
                         {{ size.name }}
                       </option>
@@ -1710,7 +1711,7 @@
                       class="form-select"
                       :class="{ 'error': errors[`${magnetic_data.code}.option_value_id`] }"
                       label="magnetic_options" rules="required">
-                      <option value="" >{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" >{{ $t('order.text_choose_specification') }}</option>
                       <option 
                         :value="item.id" 
                         v-for="item in magnetic_data.option_values"
@@ -1745,7 +1746,7 @@
                       v-model="data_id[order_data.folding_method.code]"
                       @change="set_name(item,order_data.folding_method.code)"
                       label="folding_method" rules="required">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option :value="item.id" v-for="item in order_data.folding_method.option_values" :key="item.id">
                         {{ item.name }}
                       </option>
@@ -1781,7 +1782,7 @@
                         :key="hinge_color_data.code + 'option_value_id'"
                         @change="set_name(item,hinge_color_data.code)"
                         label="hinge_color" rules="required">
-                        <option value="">{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="">{{ $t('order.text_choose_specification') }}</option>
                         <option 
                           :value="item.id" 
                           v-for="item in hinge_color_data.option_values" 
@@ -1819,7 +1820,7 @@
                                   key="door_handle_type"
                                   @change="get_handle_color($event),set_name(item,order_data.door_handle_type.code)"
                                   label="lock_Handle" rules="required">
-                        <option value="">{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="">{{ $t('order.text_choose_specification') }}</option>
                         <option 
                           :value="item.id" 
                           v-for="item in order_data.door_handle_type.option_values" 
@@ -1983,7 +1984,7 @@
                         key="lock_type"
                         @change="get_lock_color($event),set_name(item,door_lock_type_data.code)"
                         label="lock_type" rules="required">
-                        <option value="">{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="">{{ $t('order.text_choose_specification') }}</option>
                         <option 
                         :value="item.id" 
                         v-for="item in door_lock_type_data.option_values" 
@@ -2143,7 +2144,7 @@
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">
-              {{ store.language_txt.order.text_track_style}}
+              {{ $t('order.text_track_style') }}
               <i class="fas fa-info-circle" @click="show_info_img($event)">
                 <div class="nav-img">
                   <img src="@/assets/images/track_info_img.jpg" alt="track_info_img">
@@ -2161,7 +2162,7 @@
                       {{ order_data.win_option_top_track.name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                      {{ store.language_txt.order.text_thickness_exceed_should_cut}}
+                      {{ $t('order.text_thickness_exceed_should_cut') }}
                         <!-- 厚度21mm 寬度超出2500mm，需考慮切半 -->
                       </div>
                     </label>
@@ -2202,7 +2203,7 @@
                       {{ order_data.top_board_with_track.name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                      {{ store.language_txt.order.text_thickness_exceed_should_cut}}
+                      {{ $t('order.text_thickness_exceed_should_cut') }}
                         <!-- 厚度21mm 寬度超出2500mm，需考慮切半 -->
                       </div>
                     </label>
@@ -2328,7 +2329,7 @@
                     {{ order_data.win_option_side.name }}
                     <i class="fas fa-question-circle"></i>
                     <div class="info_box">
-                      {{ store.language_txt.order.text_thickness_with_mm}}
+                      {{ $t('order.text_thickness_with_mm') }}
                     </div>
                   </label>
                   <div class="col-sm-8">
@@ -2373,7 +2374,7 @@
                       {{ order_data.win_option_bottom.name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                        {{ store.language_txt.order.text_thickness_exceed_should_cut}}
+                        {{ $t('order.text_thickness_exceed_should_cut') }}
                       </div>
                     </label>
                     <div class="col-sm-8">
@@ -2448,7 +2449,7 @@
                       {{ doorType_track?.option_name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                        {{  store.language_txt.order.helper_track}}
+                        {{  $t('order.helper_track') }}
                       </div>
                     </label>
                     <div class="col-sm-8" v-if="doorType_track.option_group_suboption_values">
@@ -2487,7 +2488,7 @@
                       {{ order_data.lower_track_color.name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                        {{  store.language_txt.order.helper_track}}
+                        {{  $t('order.helper_track') }}
                       </div>
                     </label>
                     <div class="col-sm-8">
@@ -2558,7 +2559,7 @@
                         class="form-select"
                         :class="{ 'error': errors[`${order_data.is_uplow_track_fixed.code}.option_value_id`] }"
                         label="track_fixed" rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                         <option v-for="data in order_data.is_uplow_track_fixed.option_values" :key="data.id"
                           :value="data.id">
                           {{ data.name }}
@@ -2584,7 +2585,7 @@
                       {{ order_data.door_openclose.name }}
                       <i class="fas fa-question-circle"></i>
                       <div class="info_box">
-                        {{ store.language_txt.order.helper_door_openclose}}
+                        {{ $t('order.helper_door_openclose') }}
                       </div>
                     </label>
                     <div class="col-sm-8">
@@ -2593,7 +2594,7 @@
                         v-model="data_id[order_data.door_openclose.code]"
                         @change="set_name(data,order_data.door_openclose.code)"
                         label="door_openclose" rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                         <option v-for="data in order_data.door_openclose.option_values" :key="data.id" :value="data.id">
                           {{ data.name }}
                         </option>
@@ -2620,7 +2621,7 @@
         <div class="container container-original">
           <div class="block block3 mainForm">
             <h2 class="title">
-              {{ store.language_txt.order.text_decorative_pane }}
+              {{ $t('order.text_decorative_pane') }}
               <i class="fas fa-info-circle" @click="show_info_img($event)">
                 <div class="nav-img">
                   <img src="@/assets/images/decorative_info_img.jpg" alt="decorative_info_img">
@@ -2671,10 +2672,10 @@
                 <!-- 飾板高度 -->
                 <div class="row mb-3">
                   <label class="label-set col-form-label col-sm-4 " for="">
-                    {{doorType_height.option_name}}
+                    {{ doorType_height.option_name }}
                     <i class="fas fa-question-circle fs-xs"></i>
                         <div class="info_box">
-                          {{ store.language_txt.order.helper_panel_height}}
+                          {{ $t('order.helper_panel_height') }}
                         </div>
                   </label>
                   <div class="col-sm-8">
@@ -2739,7 +2740,7 @@
                         id="decorative_pane_corner_piece"
                         rules="required"
                         class="form-select">
-                      <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                       <option v-for="data in order_data.decorative_pane_corner_piece.option_values" :key="data.id"
                         :value="data.id">
                         {{ data.name }}
@@ -2852,7 +2853,7 @@
       <section id="other" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_other}}</h2>
+            <h2 class="title">{{ $t('order.text_other') }}</h2>
             <div class="row flex-auto">
               <!-- 輔料需求 -->
               <div class="col-12 mb-4 row">
@@ -2889,7 +2890,7 @@
                       <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
                         :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
                         class="form-select" rules="required">
-                        <option value="" disabled selected>{{ store.language_txt.order.text_choose_specification}}</option>
+                        <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
                         <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
                           :value="data.name">
                           {{ data.name }}
@@ -2917,7 +2918,7 @@
                 <div class="col-md-6 flex-auto">
                   <div class="row mb-3">
                     <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_height${idx +1}`">{{ store.language_txt.order.text_height}}</label>
+                      :for="`auxiliary_height${idx +1}`">{{ $t('order.text_height') }}</label>
                     <div class="col-sm-8">
                       <div class="input-group">
                         <VeeField type="number" 
@@ -2932,7 +2933,7 @@
                   </div>
                   <div class="row mb-3">
                     <label class="label-set col-form-label col-sm-4 "
-                      :for="`auxiliary_count${ idx +1}`">{{ store.language_txt.order.text_quantity}}</label>
+                      :for="`auxiliary_count${ idx +1}`">{{ $t('order.text_quantity') }}</label>
                     <div class="col-sm-8">
                       <VeeField type="number" 
                       @keydown="clearInput"
@@ -2996,12 +2997,12 @@
       <section id="note" v-if="show_block">
         <div class="container container-original">
           <div class="block block3 mainForm">
-            <h2 class="title">{{ store.language_txt.order.text_option_section_note}}</h2>
+            <h2 class="title">{{ $t('order.text_option_section_note') }}</h2>
             <div class="row flex-auto col-lg col-12">
               <div class="col-12">
                 <div class="row">
                   <label class="label-set col-form-label col-sm-2 " for="">
-                    {{ store.language_txt.order.text_option_section_note}}
+                    {{ $t('order.text_option_section_note') }}
                   </label>
                   <div class="col-sm-10">
                     <VeeField v-if="data_val.note !== 'null'" as="textarea" v-model="data_val.note"
@@ -3020,8 +3021,8 @@
             <div class="col-12  text-center flex-auto mb-3">
               <!-- <button type="submit" class="btn sent_go">儲存訂單</button> -->
               <nuxt-link :to="`/order-list/item?id=${order_id}`"
-                class="btn sent_go me-4">{{ store.language_txt.default?.text_back}}</nuxt-link>
-              <button type="submit" class="btn sent_go" v-if="!edit_mode">{{button_text()}}</button>
+                class="btn sent_go me-4">{{ $t('default.text_back') }}</nuxt-link>
+              <button type="submit" class="btn sent_go" v-if="!edit_mode">{{ button_text() }}</button>
             </div>
           </div>
         </div>
@@ -3038,6 +3039,8 @@ import Compressor from 'compressorjs'; // 壓縮圖片套件
 import debounce from 'lodash/debounce'  // watch優化(延遲/防抖)
 import { useForm } from 'vee-validate';  //驗證套件
 const { validate,validateField,errors, } = useForm();//驗證套件
+
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -3100,26 +3103,26 @@ const currentItem = ref("");
 // 右側導覽
 const link_items = ref({
   track:[
-    { id: "material", title: store.language_txt.order.text_option_section_material },
-    { id: "design", title: store.language_txt.order.text_option_section_style },
-    { id: "setting", title: store.language_txt.order.text_option_section_basicsetting },
-    { id: "doorSet", title: store.language_txt.order.text_option_section_door },
-    { id: "partitio", title: store.language_txt.order.text_option_section_dividers },
-    { id: "track_style", title: store.language_txt.order.text_track_style },
-    { id: "decorative", title: store.language_txt.order.text_decorative_pane },
-    { id: "auxiliary", title: store.language_txt.order.text_option_section_packer },
-    { id: "other", title: store.language_txt.order.text_option_section_other},
-    { id: "note", title: store.language_txt.order.text_option_section_note },
+    { id: "material", title: t('order.text_option_section_material') },
+    { id: "design", title: t('order.text_option_section_style') },
+    { id: "setting", title: t('order.text_option_section_basicsetting') },
+    { id: "doorSet", title: t('order.text_option_section_door') },
+    { id: "partitio", title: t('order.text_option_section_dividers') },
+    { id: "track_style", title: t('order.text_track_style') },
+    { id: "decorative", title: t('order.text_decorative_pane') },
+    { id: "auxiliary", title: t('order.text_option_section_packer') },
+    { id: "other", title: t('order.text_option_section_other') },
+    { id: "note", title: t('order.text_option_section_note') },
   ],
   windows:[
-    { id: "material", title: store.language_txt.order.text_option_section_material },
-    { id: "style", title: store.language_txt.order.text_option_section_style },
-    { id: "sizeSection", title:  store.language_txt.order.text_basicsetting },
-    { id: "options", title: store.language_txt.order.text_option},
-    { id: "designSection", title: store.language_txt.order.text_t_post },
-    { id: "additionalDesigns", title: store.language_txt.order.text_door },
-    { id: "other", title:store.language_txt.order.text_option_section_other },
-    { id: "note", title: store.language_txt.order.text_option_section_note },
+    { id: "material", title: t('order.text_option_section_material') },
+    { id: "style", title: t('order.text_option_section_style') },
+    { id: "sizeSection", title:  t('order.text_basicsetting') },
+    { id: "options", title: t('order.text_option') },
+    { id: "designSection", title: t('order.text_t_post') },
+    { id: "additionalDesigns", title: t('order.text_door') },
+    { id: "other", title: t('order.text_option_section_other') },
+    { id: "note", title: t('order.text_option_section_note') },
   ]
 });
 
@@ -3220,9 +3223,9 @@ const set_custom_name = (item,code)=>{
 const button_text = ()=>{
   const product_id = route.query.product
   if(product_id){
-    return store.language_txt.default?.text_save
+    return t('default.text_save')
   }else{
-    return store.language_txt.default?.text_add
+    return t('default.text_add')
   }
 }
 
@@ -3260,9 +3263,9 @@ const validateWidth = () => {
   const bladeNumbers = +data_val.value[order_data.value.blade_numbers.code];  // 葉片組數量
   const maxWidth = +width / +bladeNumbers;   // 最大寬度
   
-  if (!bladeNumbers) return store.language_txt.order?.text_required; // 必填檢查
+  if (!bladeNumbers) return t('default.text_required'); // 必填檢查
 
-  const exceededMessage = store.language_txt.order?.helper_selected_number_of_blades_exceeded;  // 錯誤訊息
+  const exceededMessage = t('order.helper_selected_number_of_blades_exceeded');  // 錯誤訊息
 
   const isChecked = data_val.value[order_data.value.confirm_width_limit.code] == 'Y'  // 無保固確認
   
@@ -3858,16 +3861,16 @@ const attached_images = computed(()=>{
 const doorSet_comment = computed(() => {
   if(is_track.value){
     if(is_folding_door.value){
-      return store.language_txt.order?.helper_folding_width_limit
+      return t('order.helper_folding_width_limit')
     }else{
-      return store.language_txt.order?.helper_track_bypass_t_post_width_limit
+      return t('order.placeholder_helper_track_bypass_t_post_width_limit')
     }
   }
 });
 
 // 中隔備註
 const partitio_note = computed(()=>{
-  return is_track.value?  store.language_txt.order?.helper_tracktype_wsms:store.language_txt.order?.helper_wintype_wsms
+  return is_track.value?  t('order.helper_tracktype_wsms'):t('order.helper_wintype_wsms')
 })
 
 // 顯示拉桿分段需求
@@ -4258,14 +4261,14 @@ const show_errors = (errors) => {
     // 確保找到匹配的 keyBase 或者 keyBase 是 'quantity'
     if (match || keyBase === 'quantity') {
       return {
-        option: order_data.value[keyBase]?.name || store.language_txt.order.text_quantity,
+        option: order_data.value[keyBase]?.name || t('order.text_quantity'),
         msg: errors[errorKey]
       };
     }
   }).filter(Boolean); // 過濾 undefined 項目
 
   if (matchedKeys.length > 4) {
-    return store.language_txt.order.text_fields_need_to_be_confirmed.replace(':number', matchedKeys.length); // 數量大於4顯示數量
+    return t('order.text_fields_need_to_be_confirmed').replace(':number', matchedKeys.length); // 數量大於4顯示數量
   } else if (matchedKeys.length > 0) {
     const formattedErrors = matchedKeys.map(item => `<div>${item.option}：${item.msg}</div>`); // 小於則顯示哪邊錯誤
     return formattedErrors.join(''); // 轉字串

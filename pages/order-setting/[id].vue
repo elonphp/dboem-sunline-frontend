@@ -2,19 +2,19 @@
     <section class="bg-block">
         <div class="container">
             <div class="table-box" v-if="!!data" :key="data_page">
-                <h2 class="title">{{ store.language_txt.default.text_setting }} - {{ data.name }}</h2>
+                <h2 class="title">{{ $t('default.text_setting') }} - {{ data.name }}</h2>
                 <div class="my-4">
-                    <nuxt-link to="/order-setting" class="btn link ">{{store.language_txt.default?.text_back}}</nuxt-link>
+                    <nuxt-link to="/order-setting" class="btn link ">{{ $t('default.text_back') }}</nuxt-link>
                 </div>
                 <VeeForm class="table-inner" v-slot="{ values}" @submit="onSubmit">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>{{store.language_txt.default.text_type2}}</th>
-                                <th>{{store.language_txt.option.text_original_name}}({{ store.language_txt.default.text_language_en }})</th>
-                                <th>{{store.language_txt.option.text_original_name}}({{store.language_txt.default.text_language_zh_Hant}})</th>
-                                <th>{{store.language_txt.option.text_custom_name}}({{store.language_txt.default.text_language_en}})</th>
-                                <th>{{store.language_txt.option.text_custom_name}}({{store.language_txt.default.text_language_zh_Hant}})</th>
+                                <th>{{ $t('default.text_type2') }}</th>
+                                <th>{{ $t('option.text_original_name') }}({{ $t('default.text_language_en') }})</th>
+                                <th>{{ $t('option.text_original_name') }}({{ $t('default.text_language_zh_Hant') }})</th>
+                                <th>{{ $t('option.text_custom_name') }}({{ $t('default.text_language_en') }})</th>
+                                <th>{{ $t('option.text_custom_name') }}({{ $t('default.text_language_zh_Hant') }})</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,7 +72,7 @@
                         </tbody>
                     </table>
                 <div class="text-center mt-5">
-                        <button type="submit" class="btn sent_go" :disabled="submit_btn_close">{{store.language_txt.default?.text_save}}</button>
+                        <button type="submit" class="btn sent_go" :disabled="submit_btn_close">{{ $t('default.text_save') }}</button>
                 </div>
                 </VeeForm>
             </div>

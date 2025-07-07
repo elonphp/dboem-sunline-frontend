@@ -62,6 +62,7 @@
 
 <script setup>
 
+const { t } = useI18n()
 const store = useStore()
 const input_keyword = ref("")
 const keyword = ref("")
@@ -124,7 +125,7 @@ const changPage = (page) => {
 
 // 顯示幾筆的語言文字
 const page_language_txt = (value)=>{
-    return store.language_txt.default?.text_row_limit.replace(':number',value)
+    return t('default.text_row_limit').replace(':number',value)
 }
 
 // 當前頁面class

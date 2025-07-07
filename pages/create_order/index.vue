@@ -2,66 +2,66 @@
     <section class="bg-block">
         <div class="container">
             <VeeForm class="table-box" @submit="onSubmit" v-slot="{ errors}">
-                <h2 class="title">{{ store.language_txt.order?.text_information }}</h2>
+                <h2 class="title">{{ $t('order.text_information') }}</h2>
                 <div class="my-4">
-                    <nuxt-link :to="prev_page" class="btn link">{{ store.language_txt.default?.text_back }}</nuxt-link>
+                    <nuxt-link :to="prev_page" class="btn link">{{ $t('default.text_back') }}</nuxt-link>
                 </div>
                 <div class="row" v-if="userinfo">
                     <div class="col-lg-6 px-4 mb-lg-0 mb-4">
-                        <h3 class="title fs-3 mb-4">{{store.language_txt.order.text_salesperson_information}}</h3>
+                        <h3 class="title fs-3 mb-4">{{$t('order.text_salesperson_information')}}</h3>
                         <div class="row bg-body p-4" style="border-radius: 5px;">
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                    <span class="col-4 ">{{store.language_txt.order.column_dealer_code}}</span>
+                                    <span class="col-4 ">{{$t('order.column_dealer_code')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.employer_company_code }}</div>
                                     <div class="col" v-else>{{ order_info.dealer_code }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{ store.language_txt.order.column_tax_id_num }}</span>
+                                     <span class="col-4 ">{{$t('order.column_tax_id_num')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.tax_id_num }}</div>
                                     <div class="col" v-else>{{ order_info.dealer?.tax_id_number }}</div>
                                 </div>
                             </div>
                             <div class="col-md-12  mb-2">
                                 <div class="user-data">
-                                    <span class="col-xxl-2 col-4">{{ store.language_txt.order.column_company_name }}</span>
+                                    <span class="col-xxl-2 col-4">{{$t('order.column_company_name')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.employer_company_name }}</div>
                                     <div class="col" v-else>{{ order_info.dealer_name }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                    <span class="col-4">{{ store.language_txt.order.column_salesperson_name }}</span>
+                                    <span class="col-4">{{$t('order.column_salesperson_name')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.name }}</div>
                                     <div class="col" v-else>{{ order_info.salesperson_name }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.order.column_salesperson_email}}</span>
+                                     <span class="col-4 ">{{$t('order.column_salesperson_email')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.email }}</div>
                                     <div class="col" v-else>{{ order_info.salesperson_email }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.order.column_salesperson_mobile}}</span>
+                                     <span class="col-4 ">{{$t('order.column_salesperson_mobile')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.mobile }}</div>
                                     <div class="col" v-else>{{ order_info.salesperson_mobile }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.order.column_salesperson_telephone}}</span>
+                                     <span class="col-4 ">{{$t('order.column_salesperson_telephone')}}</span>
                                     <div class="col" v-if="!order_id">{{ userinfo.telephone }}</div>
                                     <div class="col" v-else>{{ order_info.salesperson_telephone }}</div>
                                 </div>
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{ store.language_txt.member.column_country }}</span>
+                                     <span class="col-4 ">{{$t('member.column_country')}}</span>
                                     <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.country_name }}</div>
                                         <div v-else>{{ order_info.shipping_country_code }}</div>
@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.member.column_zip_code}}</span>
+                                     <span class="col-4 ">{{$t('member.column_zip_code')}}</span>
                                     <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.zip_code }}</div>
                                         <div v-else>{{ order_info.shipping_zip_code }}</div>
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.member.column_state}}</span>
+                                     <span class="col-4 ">{{$t('member.column_state')}}</span>
                                     <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.state }}</div>
                                         <div v-else>{{ order_info.shipping_state }}</div>
@@ -91,7 +91,7 @@
                             </div>
                             <div class="col-xxl-6 col-12  mb-2">
                                 <div class="user-data">
-                                     <span class="col-4 ">{{store.language_txt.member.column_city}}</span>
+                                     <span class="col-4 ">{{$t('member.column_city')}}</span>
                                      <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.city }}</div>
                                         <div v-else>{{ order_info.shipping_city }}</div>
@@ -101,7 +101,7 @@
                             </div>
                             <div class="col-md-12  mb-2">
                                 <div class="user-data">
-                                    <span class="col-2">{{ store.language_txt.member.column_address1 }}</span>
+                                    <span class="col-2">{{$t('member.column_address1')}}</span>
                                     <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.address1 }}</div>
                                         <div v-else>{{ order_info.shipping_address1 }}</div>
@@ -111,7 +111,7 @@
                             </div>
                             <div class="col-md-12  mb-2">
                                 <div class="user-data">
-                                    <span class="col-2">{{ store.language_txt.member.column_address2 }}</span>
+                                    <span class="col-2">{{$t('member.column_address2')}}</span>
                                     <div class="col" v-if="is_ship_to_me">
                                         <div v-if="!order_id">{{ userinfo.address2 }}</div>
                                         <div v-else>{{ order_info.shipping_address2 }}</div>
@@ -122,10 +122,10 @@
                         </div>
                     </div>
                     <div class="col-lg-6 px-4 d-flex flex-column">
-                        <h3 class="title fs-3 mb-4">{{store.language_txt.order.text_customer_information}}</h3>
+                        <h3 class="title fs-3 mb-4">{{$t('order.text_customer_information')}}</h3>
                         <div class="box_shadow flex-auto p-4 px-5" style="border-radius: 5px;">
                             <div class="col-md-12 mb-3">
-                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{store.language_txt.order.column_shipping_to}}</label>
+                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{$t('order.column_shipping_to')}}</label>
                                 <VeeField 
                                     as="select" 
                                     name="delivery_method" 
@@ -134,13 +134,13 @@
                                     v-model="order_info.delivery_method"
                                     rules="required"
                                     >
-                                    <option value="pickup">{{ store.language_txt.order.text_delivery_method_pickup }}</option>
-                                    <option value="delivery">{{ store.language_txt.order.text_delivery_method_delivery }}</option>
+                                    <option value="pickup">{{ $t('order.text_delivery_method_pickup') }}</option>
+                                    <option value="delivery">{{ $t('order.text_delivery_method_delivery') }}</option>
                                 </VeeField>
                                 <VeeErrorMessage class="error__label" name="delivery_method" />
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{store.language_txt.order.column_customer_first_name}}</label>
+                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{$t('order.column_customer_first_name')}}</label>
                                 <VeeField 
                                     type="text" 
                                     class="form-control" 
@@ -151,7 +151,7 @@
                                 <VeeErrorMessage class="error__label" name="customer_first_name" />
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{store.language_txt.order.column_customer_last_name}}</label>
+                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{$t('order.column_customer_last_name')}}</label>
                                 <VeeField 
                                     type="text" 
                                     class="form-control" 
@@ -162,7 +162,7 @@
                                 <VeeErrorMessage class="error__label" name="customer_last_name" />
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{ store.language_txt.order.column_side_mark }}</label>
+                                <label class="col-3 form-label"> <span class="text-danger">*</span>{{$t('order.column_side_mark')}}</label>
                                 <VeeField 
                                     type="text" 
                                     class="form-control" 
@@ -173,7 +173,7 @@
                                 <VeeErrorMessage class="error__label" name="side_mark" />
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="col-3 form-label">{{store.language_txt.order.text_option_section_note}}</label>
+                                <label class="col-3 form-label">{{$t('order.text_option_section_note')}}</label>
                                 <VeeField 
                                     as="textarea"
                                     class="form-control" 
@@ -186,8 +186,8 @@
                     </div>
                 </div>
                 <div class="text-center mt-5">
-                    <button type="submit" class="btn sent_go" v-if="order_id && is_Draft">{{store.language_txt.default?.text_save}}</button>
-                    <button type="submit" class="btn sent_go" v-if="!order_id">{{store.language_txt.default.text_continue}}</button>
+                    <button type="submit" class="btn sent_go" v-if="order_id && is_Draft">{{$t('default.text_save')}}</button>
+                    <button type="submit" class="btn sent_go" v-if="!order_id">{{$t('default.text_continue')}}</button>
                 </div>
             </VeeForm>
         </div>

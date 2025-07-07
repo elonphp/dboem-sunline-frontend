@@ -4,18 +4,18 @@
             <div class="table-box" v-if="list_data">
                 <!-- 加總 -->
                 <div class="d-flex align-items-center justify-content-between ">
-                    <h2 class="title">{{store.language_txt.order.tab_data}}</h2>
+                    <h2 class="title">{{$t('order.tab_data')}}</h2>
                     <div class="total-data">
                         <div>
-                            <span>{{store.language_txt.order.text_product_items}}：</span>
+                            <span>{{$t('order.text_product_items')}}：</span>
                             <span class="fw-bold">{{ list_data.length }}</span>
                         </div>
                         <div>
-                            <span>{{store.language_txt.order.column_total_quantity}}：</span>
+                            <span>{{$t('order.column_total_quantity')}}：</span>
                             <span class="fw-bold">{{total_quantity}}</span>
                         </div>
                         <div>
-                            <span>{{store.language_txt.order.text_total_sqm}}(m2)：</span>
+                            <span>{{$t('order.text_total_sqm')}}(m2)：</span>
                             <span class="fw-bold">{{ total_m2 }}</span>
                         </div>
                     </div>
@@ -23,21 +23,21 @@
                 <!-- 功能區(篩選按鈕) -->
                 <div class="my-4 row justify-content-between ">
                     <div class="col-xxl-4 d-flex align-items-center gap-3 mb-3 mb-xxl-0">
-                        <nuxt-link to="home" class="btn link">{{ store.language_txt.default?.text_back }}</nuxt-link>
+                        <nuxt-link to="home" class="btn link">{{$t('default.text_back')}}</nuxt-link>
                         <button type="button" class="btn link" data-bs-toggle="modal"
-                            data-bs-target="#list-setting">{{ store.language_txt.order?.text_order_display_setting }}</button>
-                        <nuxt-link to="/create_order" class="btn link">{{ store.language_txt.order.text_add_order }}</nuxt-link>
+                            data-bs-target="#list-setting">{{$t('order.text_order_display_setting')}}</button>
+                        <nuxt-link to="/create_order" class="btn link">{{$t('order.text_add_order')}}</nuxt-link>
                     </div>
                     <div class="col-xxl-8 col-12 row gx-2">
                         <div class="date-input col-lg-4 col-6">
-                            <input type="date" class="form-control" id="datePicker" :placeholder="store.language_txt.order.text_order_date_start"
+                            <input type="date" class="form-control" id="datePicker" :placeholder="$t('order.text_order_date_start')"
                                 v-model="start_date">
                             <span class="px-1">~</span>
-                            <input type="date" class="form-control" id="datePicker2" :placeholder="store.language_txt.order.text_order_date_end"
+                            <input type="date" class="form-control" id="datePicker2" :placeholder="$t('order.text_order_date_end')"
                                 v-model="end_date">
                         </div>
                         <div class="col-lg-2 col-6 multiSelect">
-                            <div class="selectBtn form-select" @click.stop="selected_state_box = !selected_state_box">{{ store.language_txt.order.column_status }}</div>
+                            <div class="selectBtn form-select" @click.stop="selected_state_box = !selected_state_box">{{$t('order.column_status')}}</div>
                             <transition name="fade" mode="out-in">
                                 <div class="option-group form-control" v-show="selected_state_box && status_data" @click.stop>
                                     <label v-for="status in status_values" :key="status">
@@ -48,10 +48,10 @@
                             </transition>
                         </div>
                         <div class="col-lg-6 col-12 d-flex gap-2 mt-lg-0 mt-3">
-                            <input type="text" :placeholder="store.language_txt.order.column_code" class="form-control w-75"
+                            <input type="text" :placeholder="$t('order.column_code')" class="form-control w-75"
                                 v-model="search_order_code">
-                            <input type="text" :placeholder="store.language_txt.default.text_keyword" class="form-control w-75" v-model="search_keyword">
-                            <button type="button" class="btn search" @click="get_list_data('search')">{{ store.language_txt.default.text_search }}</button>
+                            <input type="text" :placeholder="$t('default.text_keyword')" class="form-control w-75" v-model="search_keyword">
+                            <button type="button" class="btn search" @click="get_list_data('search')">{{$t('default.text_search')}}</button>
             
                         </div>
                     </div>
@@ -91,15 +91,15 @@
                                 </td>
                                 <td>
                                     <nuxt-link :to="`/order-list/item?id=${item.id}`"
-                                        class="method-btn btn-s">{{ store.language_txt.default.text_view }}</nuxt-link>
+                                        class="method-btn btn-s">{{$t('default.text_view')}}</nuxt-link>
                                     <button type="button" class="method-btn btn-s" @click="submit_review(item.id)"
-                                        v-if="is_Draft(item)">{{ store.language_txt.order.text_submit_order }}</button>
+                                        v-if="is_Draft(item)">{{$t('order.text_submit_order')}}</button>
                                     <button type="button" class="method-btn btn-s" @click="approve_excel(item)"
-                                        v-if="is_Pending(item) && store.is_dealer">{{ store.language_txt.order.text_order_status_dealer_confirm }}</button>
+                                        v-if="is_Pending(item) && store.is_dealer">{{$t('order.text_order_status_dealer_confirm')}}</button>
                                     <button type="button" class="method-btn btn-s" @click="return_review(item)"
-                                        v-if="is_Pending(item) && store.is_dealer">{{ store.language_txt.order.text_order_status_return_to_draft }}</button>
+                                        v-if="is_Pending(item) && store.is_dealer">{{$t('order.text_order_status_return_to_draft')}}</button>
                                     <button type="button" class="method-btn btn-s"
-                                        @click="copy_data(item.id)">{{ store.language_txt.default.text_copy }}</button>
+                                        @click="copy_data(item.id)">{{$t('default.text_copy')}}</button>
                                     <nuxtLink :to="`/order-list/item/note?id=${item.id}`" class="method-btn btn-s position-relative ">
                                         <div class="new-comment" v-if="item.unread_comment_count > 0" >
                                             {{ item.unread_comment_count }}
@@ -107,21 +107,21 @@
                                         留言
                                     </nuxtLink>
                                     <button type="button" class="method-btn btn-s" @click="del_data(item.id)"
-                                        v-if="is_Draft(item)">{{ store.language_txt.default.text_delete }}</button>
+                                        v-if="is_Draft(item)">{{$t('default.text_delete')}}</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="d-flex align-items-center gap-2 mt-2">
                         <button type="button" :disabled="!is_some_checked" class="btn link" @click="submit_approve()"
-                        v-if="store.is_dealer">{{ store.language_txt.default.column_batch_approve }}</button>
+                        v-if="store.is_dealer">{{$t('default.column_batch_approve')}}</button>
                         <button type="button" :disabled="!is_some_checked" class="btn link" @click="del_data()"
-                        >{{ store.language_txt.default.column_batch_delete }}</button>
+                        >{{$t('default.column_batch_delete')}}</button>
                         <span class="table-info">預設為10天前資料，如需特定區間請使用搜尋功能。</span>
                     </div>
                 </div>
                 <div v-else class="text-center">
-                    {{store.language_txt.order.text_no_orders}}
+                    {{$t('order.text_no_orders')}}
                 </div>
                 <div class="pages" v-if="list_data.length > 0">
                     <button :disabled="currentPage === 1" @click="changPage(-1)">
@@ -153,7 +153,7 @@
                     <i class="fas fa-times"></i>
                 </button>
                 <div class="modal-body text-center">
-                    <h3 style="letter-spacing:2px;">{{ store.language_txt.order?.text_order_display_setting }}</h3>
+                    <h3 style="letter-spacing:2px;">{{$t('order.text_order_display_setting')}}</h3>
                     <!-- <span class="fs-xs">*訂單列表顯示項目</span> -->
                     <div class="row mt-4">
                         <div class="col-md-4 col-6 mb-3" v-for="category in data_category" :key="category.key"
@@ -166,7 +166,7 @@
                     </div>
                 </div>
                 <div class="modal-footer border-0 justify-content-center pb-4">
-                    <button type="button" class="btn sent_go" data-bs-dismiss="modal" aria-label="Close">{{ store.language_txt.default?.text_save }}</button>
+                    <button type="button" class="btn sent_go" data-bs-dismiss="modal" aria-label="Close">{{$t('default.text_save')}}</button>
                 </div>
             </div>
         </div>

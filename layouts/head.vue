@@ -6,7 +6,7 @@
     <div class="d-flex align-items-center gap-3">
       <!-- <button type="button" @click="logout" v-show="is_login">登出</button> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2">
-        <label for="">{{language_txt}}：</label>
+        <label for="">{{header_txt}}：</label>
         <div class="d-flex">
           <select class="form-select me-4" @change="change_language" v-model="store.language">
             <option value="en">English</option>
@@ -15,7 +15,7 @@
         </div>
       </div>
       <!-- <div style="font-size: 24px;">{{ locale }}</div> -->
-      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="user_info && store.language_txt">
+      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="user_info">
         <label class="w-100">{{ role }}：</label>
         <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
           <span>{{ user_info.name }}</span>
@@ -68,7 +68,7 @@ const role = computed(()=>{
 })
 
 // header語言切換的語言字
-const language_txt = computed(()=>{
+const header_txt = computed(()=>{
   return store.language == 'en'? "Language":"語言"
 })
 

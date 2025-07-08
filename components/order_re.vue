@@ -394,7 +394,7 @@
                       :value="order_data.win_height.type" />
                     <VeeField type="hidden" :name="`${order_data.win_height.code}.option_value_id`" value="0" />
                     <VeeErrorMessage class="error__label" :name="`${order_data.win_height.code}.value`" />
-                    <span class="fs-xs">{{ store.language_txt.order.helper_height }}</span>
+                    <span class="fs-xs">{{ $t('order.helper_panel_height') }}</span>
                   </div>
                 </div>
                 <!-- 數量 -->

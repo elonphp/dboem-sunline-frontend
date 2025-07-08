@@ -3070,17 +3070,18 @@ const data_val = ref({
 
 
 // method------------------------------------------------>
+const { $j } = useNuxtApp()
 
 // 檢視模式
 const examine_mode = ()=>{
   nextTick(()=>{
       edit_mode.value = true
-      $('.main_form input').prop('disabled',true)
-      $('.main_form select').prop('disabled',true)
-      $('.main_form textarea').prop('disabled',true)
-      $('.main_form button').hide()
-      $('.main_form .close_btn').hide() 
-      $('.main_form .add_btn').hide()
+      $j('.main_form input').prop('disabled',true)
+      $j('.main_form select').prop('disabled',true)
+      $j('.main_form textarea').prop('disabled',true)
+      $j('.main_form button').hide()
+      $j('.main_form .close_btn').hide() 
+      $j('.main_form .add_btn').hide()
   })
 }
 
@@ -3418,9 +3419,9 @@ const track_to_window_width = ()=>{
   const is_checked = data_val.value[order_data.value?.track_to_window_width?.code] == 'Y'
   if(is_checked){
     data_val.value[order_data.value.track_width.code] = data_val.value[order_data.value.win_width.code]
-    $('#track_width').prop('disabled',true)
+    $j('#track_width').prop('disabled',true)
   }else{
-    $('#track_width').prop('disabled',false)
+    $j('#track_width').prop('disabled',false)
   }
 }
 

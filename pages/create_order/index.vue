@@ -307,6 +307,7 @@ const get_data = async()=>{
     userinfo.value = data
     // console.log('會員',userinfo.value);
 }
+const { $j } = useNuxtApp()
 
 // 訂單資料
 const get_order_data = async()=>{
@@ -324,9 +325,9 @@ const get_order_data = async()=>{
             // 不是草稿且有訂單id則不能修改
             if (!is_Draft.value && order_id) {
                 nextTick(() => {
-                    $('.table-box input').attr('disabled', true)
-                    $('.table-box select').attr('disabled', true)
-                    $('.table-box textarea').attr('disabled', true)
+                    $j('.table-box input').attr('disabled', true)
+                    $j('.table-box select').attr('disabled', true)
+                    $j('.table-box textarea').attr('disabled', true)
                 })
     }
         }

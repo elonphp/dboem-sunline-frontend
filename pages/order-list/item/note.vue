@@ -94,16 +94,17 @@ const submit_btn = ref(false)
 const my_msg = (id) => {
     return id == user_id.value ? 'my_msg' : null
 }
+const { $j } = useNuxtApp()
 
 
 // 滑至底部
 const to_bottom = () => {
-    $('.msg-box').animate({ scrollTop: $('.msg-box')[0].scrollHeight }, 500);
+    $j('.msg-box').animate({ scrollTop: $j('.msg-box')[0].scrollHeight }, 500);
     new_msg_remind.value = false
 }
 // 監聽卷軸顯示to_bottom用
 const checkScroll = () => {
-    const megBox = $('.msg-box')[0]
+    const megBox = $j('.msg-box')[0]
     const isAtBottomNow = megBox.scrollTop + megBox.clientHeight >= megBox.scrollHeight - 300;
     // 沒到底部顯示往下按鈕
     show_to_bottom.value = !isAtBottomNow;
@@ -244,7 +245,7 @@ onMounted(async () => {
             await Promise.all([get_note_data(), get_user_data()]);
             store.show_loading(false);
             nextTick(() => {
-                const $megBox = $('.msg-box');
+                const $megBox = $j('.msg-box');
                 if ($megBox.length) {
                     $megBox.scrollTop($megBox[0].scrollHeight);
                 }

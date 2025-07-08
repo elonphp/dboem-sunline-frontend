@@ -106,8 +106,9 @@
   const submit_btn_close = ref(false)
   const msg = ref("")
 
+  const { $j } = useNuxtApp()
   const go_login = ()=>{
-    $('#close_modal').click()
+    $j('#close_modal').click()
     router.push("/")
   }
 
@@ -143,7 +144,7 @@
         // console.log(data);
         if(res.ok){
           msg.value = data
-          $('#open_modal').click()
+          $j('#open_modal').click()
         }
     }catch (err) {
       console.log(err);

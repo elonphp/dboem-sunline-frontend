@@ -1,5 +1,7 @@
 <template>
+  <ClientOnly>
     <orderView></orderView>
+  </ClientOnly>
 </template>
   
   

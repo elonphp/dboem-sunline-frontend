@@ -103,12 +103,6 @@ watchEffect(async()=>{
   }
 })
 
-onMounted(async()=>{
-  $('section').click(function(){
-    store.method_nav = false 
-  })      
-})
-
 
 
 

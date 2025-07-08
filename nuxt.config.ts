@@ -75,7 +75,8 @@ export default defineNuxtConfig({
       "@/plugins/custom.js",
       "@/plugins/bootstrap.js",
       '@/plugins/vue-recaptcha-v3.js',
-      { src: "~/plugins/jquery", mode: "client" },],
+      '@/plugins/jquery.client.js',
+  ],
   veeValidate: {
     // 啟用 auto imports
     autoImports: true,

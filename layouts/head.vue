@@ -45,6 +45,9 @@ const route = useRoute()
 const store = useStore()
 const { locale, setLocale } = useI18n()
 store.language = locale.value
+watch(locale, () => {
+  store.language = locale.value
+})
 const changeLang = () => {
   setLocale(store.language)
 }

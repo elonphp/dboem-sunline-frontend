@@ -424,7 +424,7 @@
                     <VeeErrorMessage class="error__label" :name="`${order_data.blade_numbers.code}.value`" />
                     
                     <div v-if="show_not_warranty" class="text-danger fs-xs">
-                      {{store.language_txt.order?.helper_selected_number_of_blades_exceeded}}
+                      {{ $t('order.helper_selected_number_of_blades_exceeded') }}
                     </div>
                     <div v-if="show_not_warranty">
                       <label>

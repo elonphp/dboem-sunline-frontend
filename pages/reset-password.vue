@@ -79,7 +79,7 @@
             </div>
           </div>
           <div class="modal-footer border-0 justify-content-center pb-4">
-            <button type="button" class="btn sent_go" @click="go_login">{{$t('default.text_back')}}{{$t('default.text_login')}}</button>
+            <button type="button" class="btn sent_go" @click="go_login">{{$t('default.text_back')}}{{$t('auth.text_login')}}</button>
           </div>
         </div>
       </div>

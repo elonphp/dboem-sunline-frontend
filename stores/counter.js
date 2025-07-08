@@ -182,6 +182,7 @@ export const useStore = defineStore('counter', () => {
         } else {
             // 開發環境，使用指定的測試 API 網址
             // baseUrl.value = 'http://sunline.dboem.com:8088/';
+            // baseUrl.value = 'http://sunlinedev.elonphp.tw/';
             baseUrl.value = 'https://sunlinedev.elonphp.tw/';
             
         }

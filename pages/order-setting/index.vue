@@ -167,7 +167,7 @@ const get_data = async()=>{
     try{
         const res = await fetch(url,{
             headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         // console.log(res);

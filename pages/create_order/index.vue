@@ -280,7 +280,7 @@ const onSubmit = async(values)=>{
             method:"POST",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken,
+                "Authorization": "Bearer " + store.userData.access_token,
                 "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body:JSON.stringify(data)
@@ -315,7 +315,7 @@ const get_order_data = async()=>{
     try{
         const res = await fetch(url,{
             headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             },
         })
         const res_data = await res.json()

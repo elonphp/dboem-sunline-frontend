@@ -29,17 +29,19 @@ export const useStore = defineStore('counter', () => {
         const expTime = userData.value.jwtExpireAt                            // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
         if (nowTime < expTime) {
-            const url = `${baseUrl.value}api/v2/logout/${userData.value.refreshToken}`
+            // const url = `${baseUrl.value}api/v2/logout/${userData.value.refreshToken}`
+            const url = `${baseUrl.value}api/v3/logout`
             try {
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        Authorization: 'Bearer ' + userData.value.jwtToken,
+                        Authorization: 'Bearer ' + userData.value.access_token,
                     },
+                    body: {
+                      device_id: userData.value.device_id
+                    }
                 })
-                const data = await res.json()
-                if (res.ok) {
-                }
+                await res.json()
             } catch (err) {
                 console.log(err)
             }
@@ -83,7 +85,7 @@ export const useStore = defineStore('counter', () => {
         try {
             const res = await fetch(url, {
                 headers: {
-                    Authorization: 'Bearer ' + userData.value.jwtToken,
+                    Authorization: 'Bearer ' + userData.value.access_token,
                 },
             })
             if (res.status == 200) {
@@ -131,7 +133,7 @@ export const useStore = defineStore('counter', () => {
 
 
     // 驗證 JWT token 是否已過期
-    const token_validation = async () => {
+    const token_validation = () => {
         const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
         const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
         const expTime = userData.value.jwtExpireAt
@@ -142,33 +144,53 @@ export const useStore = defineStore('counter', () => {
         // 如果現在時間已超過過期時間，表示 token 已過期
         if (nowTime > expTime) {
             // 嘗試刷新 token
-            await refresh_token()
+            refresh_token()
             return
         }
     }
 
     // 刷新 access token
-    const refresh_token = () => {
+    const refresh_token = async () => {
         // 從使用者資料中取得 refresh token
         const refresh_token = userData.value.refreshToken
-
-        // 如果 refresh token
-        if (refresh_token) {
-            fetch(`${baseUrl.value}api/v2/newAccessToken/${refresh_token}`)
-                .then((res) => res.json())
-                .then((res) => {
-                     // 如果後端回傳錯誤（例如 token 已失效），執行登出
-                    if (res.error) {
-                        logout()
-                    }
-                     // 否則儲存新的 token 資訊
-                    set_token(res)
-                    // console.log("刷新");
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+        if (!refresh_token) return
+        const url = `${baseUrl.value}api/v3/refresh`
+        try {
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + userData.value.access_token,
+            },
+            body: {
+              refresh_token
+            }
+          })
+          if (res.status !== 200) {
+            logout()
+          }
+          const data = await res.json()
+          set_token(data)
+        } catch (error) {
+          logout()
+          console.log(error, 'refresh_token');
         }
+        // 如果 refresh token
+        // if (refresh_token) {
+        //     fetch(`${baseUrl.value}api/v2/newAccessToken/${refresh_token}`)
+        //         .then((res) => res.json())
+        //         .then((res) => {
+        //              // 如果後端回傳錯誤（例如 token 已失效），執行登出
+        //             if (res.error) {
+        //                 logout()
+        //             }
+        //              // 否則儲存新的 token 資訊
+        //             set_token(res)
+        //             // console.log("刷新");
+        //         })
+        //         .catch((err) => {
+        //             console.log(err)
+        //         })
+        // }
     }
 
     // api網域位置
@@ -803,7 +825,7 @@ export const useStore = defineStore('counter', () => {
         try {
             const res = await fetch(url, {
                 headers: {
-                    Authorization: 'Bearer ' + userData.value.jwtToken,
+                    Authorization: 'Bearer ' + userData.value.access_token,
                 },
             })
             const res_data = await res.json()

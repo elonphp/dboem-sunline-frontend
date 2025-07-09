@@ -109,7 +109,7 @@ const get_data = async()=>{
     try{
         const res = await fetch(url,{
             headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         if(res.ok){
@@ -140,7 +140,7 @@ const onSubmit = async(values)=>{
             method: "POST",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken,
+                "Authorization": "Bearer " + store.userData.access_token,
                 "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body: JSON.stringify(submit_data)

@@ -233,7 +233,7 @@ const copy_product = async(item)=>{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: ""
             })
@@ -285,7 +285,7 @@ const delete_product = async(item)=>{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: ""
             });
@@ -333,7 +333,7 @@ const submit_review = async () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: JSON.stringify(formData)
             })
@@ -364,7 +364,7 @@ const return_review = async () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: JSON.stringify(formData)
             })
@@ -398,7 +398,7 @@ const submit_corporate = async ()=>{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: JSON.stringify(formData)
             })
@@ -428,7 +428,7 @@ const approve_excel = async()=>{
         const res = await fetch(url,{
             method:"POST",
             headers: {
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
             body: formData
         })
@@ -455,7 +455,7 @@ const delete_order = async()=>{
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: del_order
             })
@@ -497,7 +497,7 @@ const up_date = async () => {
             method:"POST",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken,
+                "Authorization": "Bearer " + store.userData.access_token,
                 "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body:JSON.stringify(data)
@@ -521,7 +521,7 @@ const get_data = async()=>{
     try{
         const res = await fetch(url,{
             headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()

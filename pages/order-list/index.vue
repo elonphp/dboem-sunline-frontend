@@ -386,7 +386,7 @@ const copy_data = async(id)=>{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: ""
             })
@@ -450,7 +450,7 @@ const del_data = async(id)=>{
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: ""
             })
@@ -472,7 +472,7 @@ const get_order_data = async(id)=>{
     try{
         const res = await fetch(url,{
             headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()
@@ -492,7 +492,7 @@ const Save_order = async (item) => {
         const res = await fetch(url, {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             },
             body: news_form_data
         })
@@ -521,7 +521,7 @@ const submit_review = async (id) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: JSON.stringify(formData)
             })
@@ -556,7 +556,7 @@ const return_review = async (item) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: JSON.stringify(formData)
             })
@@ -597,7 +597,7 @@ const submit_approve = async (item) => {
         const res = await fetch(url, {
             method: "POST",
             headers: {
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             },
             body: formData
         })
@@ -624,7 +624,7 @@ const approve_excel = async(item)=>{
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Authorization": "Bearer " + store.userData.jwtToken
+                    "Authorization": "Bearer " + store.userData.access_token
                 },
                 body: formData
             })
@@ -687,7 +687,7 @@ const get_list_data = async(search)=>{
     try{
         const res = await fetch(url,{
              headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()
@@ -737,7 +737,7 @@ const get_status_data = async()=>{
     try{
         const res = await fetch(url,{
              headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const res_data = await res.json()

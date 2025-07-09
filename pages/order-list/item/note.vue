@@ -142,7 +142,7 @@ const submit_comment = async () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.jwtToken,
+                "Authorization": "Bearer " + store.userData.access_token,
                 "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body: JSON.stringify(comment_data)
@@ -165,7 +165,7 @@ const get_note_data = async () => {
     try {
         const res = await fetch(url, {
             headers: {
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()
@@ -202,7 +202,7 @@ const get_data = async () => {
     try {
         const res = await fetch(url, {
             headers: {
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()
@@ -221,7 +221,7 @@ const set_read = async ()=>{
     try{
         const res =  await fetch(url,{
             headers: {
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()

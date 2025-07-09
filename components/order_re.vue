@@ -4052,7 +4052,7 @@ const get_design_data = async (id) => {
       try {
         const requests = await fetch(url_2,{
           headers:{
-            "Authorization": "Bearer " + store.userData.jwtToken
+            "Authorization": "Bearer " + store.userData.access_token
         }
         })
         if(requests.ok){
@@ -4384,7 +4384,7 @@ const onSubmit = async(values) => {
           const res = await fetch(url, {
               method: "POST",
               headers: {
-                  "Authorization": "Bearer " + store.userData.jwtToken,
+                  "Authorization": "Bearer " + store.userData.access_token,
                   "X-CLIENT-IPV4":store.userData.loginIpAddress
               },
               body: news_form_data

@@ -134,7 +134,7 @@
         const res = await fetch(url,{
             method: "POST",
             headers: {
-                  "Authorization": "Bearer " + store.userData.jwtToken,
+                  "Authorization": "Bearer " + store.userData.access_token,
                   "X-CLIENT-IPV4":store.userData.loginIpAddress
             },
             body: formData

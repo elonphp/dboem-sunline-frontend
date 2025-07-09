@@ -95,7 +95,7 @@ const get_order_data = async()=>{
     try{
         const res = await fetch(url,{
              headers:{
-                "Authorization": "Bearer " + store.userData.jwtToken
+                "Authorization": "Bearer " + store.userData.access_token
             }
         })
         const data = await res.json()

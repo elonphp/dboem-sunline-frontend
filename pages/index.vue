@@ -118,8 +118,6 @@ const login = async () =>{
     });
     const data = await res.json();
     if(res.ok && !data.error){
-      setLocale(data.locale)
-      store.language = data.locale
        await store.set_token(data)
        router.push('/home')
     }else{

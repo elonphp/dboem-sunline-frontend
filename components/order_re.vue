@@ -4293,7 +4293,7 @@ const onInvalidSubmit = ({ values, errors, results }) =>{
 }
 // 通過驗證
 const onSubmit = async(values) => {
-  await store.token_validation();  //驗證token
+  await store.refresh_token();  //驗證token
   const order_id = route.query.id   //訂單ID
   const product_id = route.query.product  //商品ID
   const quantity = values.quantity     // 數量

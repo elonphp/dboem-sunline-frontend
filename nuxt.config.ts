@@ -55,7 +55,7 @@ export default defineNuxtConfig({
     "@/assets/scss/order.scss",
     "@/assets/scss/login.scss",
   ],
-  modules: ["@vee-validate/nuxt",'@pinia/nuxt', '@nuxtjs/i18n'],
+  modules: ["@vee-validate/nuxt", '@pinia/nuxt', '@nuxtjs/i18n', "dayjs-nuxt"],
   i18n: {
     lazy: true,
     defaultLocale: 'en',
@@ -101,4 +101,3 @@ function getLocaleFiles(localeDir: string) {
     .filter(file => file.endsWith('.yaml'))
     .map(file => `${localeDir}/${file}`)
 }
-

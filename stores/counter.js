@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import  XLSX  from 'xlsx-js-style'
-
+import { useDayjs } from '#imports'
 
 export const useStore = defineStore('counter', () => {
+    const dayjs = useDayjs()
     const config = useRuntimeConfig()
     const router = useRouter()
     const userData = ref('')
@@ -15,7 +16,12 @@ export const useStore = defineStore('counter', () => {
     const method_nav = ref(false)
     const temporarily_product = ref()
     const textMap = ref(null) //匯出excel的json_header
-
+    
+    // 判斷token是否過期
+    const isExpire = () => {
+        const expTime = userData.value.expire_at        
+        return dayjs().isAfter(dayjs(expTime))
+    }
     const set_token = async (data) => {
         // data.id = await get_ip()
         localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
@@ -25,11 +31,9 @@ export const useStore = defineStore('counter', () => {
     }
 
     const logout = async () => {
-        const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)       // 現在時間UTC+8
-        const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)  // 轉格式(YYYY-MM-DD HH:MM:SS)
-        const expTime = userData.value.jwtExpireAt                            // 取得目前使用者 JWT（JSON Web Token）過期時間
+        // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
-        if (nowTime < expTime) {
+        if (!isExpire()) {
             // const url = `${baseUrl}api/v2/logout/${userData.value.refreshToken}`
             const url = `${baseUrl}api/v3/logout`
             try {
@@ -38,9 +42,9 @@ export const useStore = defineStore('counter', () => {
                     headers: {
                         Authorization: 'Bearer ' + userData.value.access_token,
                     },
-                    body: {
-                      device_id: userData.value.device_id
-                    }
+                    body: jsonToFormData({
+                        device_id: userData.value.device_id
+                    })
                 })
                 await res.json()
             } catch (err) {
@@ -54,22 +58,13 @@ export const useStore = defineStore('counter', () => {
     }
 
     const get_user = async () => {
-        console.log('get_user');
-        
          // 從 localStorage 中取出儲存的 token 並解析為 JSON 物件
         const data = JSON.parse(localStorage.getItem('token'))
          // 如果 token 存在
         if (data) {
             userData.value = data
-            // await update_local(data)
-            // await get_user_data()
-    
-            const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
-            const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
-            const expTime = userData.value.jwtExpireAt
-
             // 如果現在時間已超過 token 的過期時間，表示登入已逾時
-            if (nowTime > expTime) {
+            if (isExpire()) {
                  // 執行登出動作（如清除 token、導向登入頁）
                 await logout()
                 alert('連線逾時，請重新登入')
@@ -129,31 +124,12 @@ export const useStore = defineStore('counter', () => {
                 console.error('取得 IP 失敗:', err)
             })
     }
-    
-    
-
-
-    // 驗證 JWT token 是否已過期
-    const token_validation = () => {
-        const now = new Date(new Date().getTime() + 8 * 60 * 60 * 1000)
-        const nowTime = now.toISOString().replace('T', ' ').substring(0, 19)
-        const expTime = userData.value.jwtExpireAt
-        // console.log("現在時刻" + nowTime);
-        // console.log("過期時刻" + expTime);
-        // console.log(`過期：${nowTime > expTime}`);
-
-        // 如果現在時間已超過過期時間，表示 token 已過期
-        if (nowTime > expTime) {
-            // 嘗試刷新 token
-            refresh_token()
-            return
-        }
-    }
 
     // 刷新 access token
     const refresh_token = async () => {
+        if (!isExpire()) return
         // 從使用者資料中取得 refresh token
-        const refresh_token = userData.value.refreshToken
+        const refresh_token = userData.value.refresh_token
         if (!refresh_token) return
         const url = `${baseUrl}api/v3/refresh`
         try {
@@ -162,15 +138,19 @@ export const useStore = defineStore('counter', () => {
             headers: {
                 Authorization: 'Bearer ' + userData.value.access_token,
             },
-            body: {
+            body: jsonToFormData({
               refresh_token
-            }
+            })
           })
           if (res.status !== 200) {
             logout()
           }
           const data = await res.json()
-          set_token(data)
+          userData.value = {
+            ...userData.value,
+            ...data
+          }
+          
         } catch (error) {
           logout()
           console.log(error, 'refresh_token');
@@ -859,7 +839,6 @@ export const useStore = defineStore('counter', () => {
         logout,
         get_user_data,
         get_user,
-        token_validation,
         refresh_token,
         is_login,
         show_loading,

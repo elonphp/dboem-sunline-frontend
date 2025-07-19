@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       }
 
       // 執行 token 驗證
-      await store.token_validation();
+      await store.refresh_token();
       if (to.path === "/" && store.is_login) {
         // console.log("返回home");
         // 如果有登入則導向主頁

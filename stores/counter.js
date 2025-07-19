@@ -3,11 +3,12 @@ import  XLSX  from 'xlsx-js-style'
 
 
 export const useStore = defineStore('counter', () => {
+    const config = useRuntimeConfig()
     const router = useRouter()
     const userData = ref('')
     const role = ref({})
     const pageKey = ref(1)    // 換語言重新渲染用的key
-    const baseUrl = ref('')   
+    const baseUrl = config.public.apiUrl
     const loading = ref(false)
     const language = ref('en')  // zh_Hant en
     const language_txt = ref({})
@@ -29,8 +30,8 @@ export const useStore = defineStore('counter', () => {
         const expTime = userData.value.jwtExpireAt                            // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
         if (nowTime < expTime) {
-            // const url = `${baseUrl.value}api/v2/logout/${userData.value.refreshToken}`
-            const url = `${baseUrl.value}api/v3/logout`
+            // const url = `${baseUrl}api/v2/logout/${userData.value.refreshToken}`
+            const url = `${baseUrl}api/v3/logout`
             try {
                 const res = await fetch(url, {
                     method: 'POST',
@@ -81,7 +82,7 @@ export const useStore = defineStore('counter', () => {
     }
 
     const get_user_data = async () => {
-        const url = `${baseUrl.value}api/v2/members/info?locale=${language.value}&equal_id=${userData.value.member_id}`
+        const url = `${baseUrl}api/v2/members/info?locale=${language.value}&equal_id=${userData.value.member_id}`
         try {
             const res = await fetch(url, {
                 headers: {
@@ -154,7 +155,7 @@ export const useStore = defineStore('counter', () => {
         // 從使用者資料中取得 refresh token
         const refresh_token = userData.value.refreshToken
         if (!refresh_token) return
-        const url = `${baseUrl.value}api/v3/refresh`
+        const url = `${baseUrl}api/v3/refresh`
         try {
           const res = await fetch(url, {
             method: 'POST',
@@ -176,7 +177,7 @@ export const useStore = defineStore('counter', () => {
         }
         // 如果 refresh token
         // if (refresh_token) {
-        //     fetch(`${baseUrl.value}api/v2/newAccessToken/${refresh_token}`)
+        //     fetch(`${baseUrl}api/v2/newAccessToken/${refresh_token}`)
         //         .then((res) => res.json())
         //         .then((res) => {
         //              // 如果後端回傳錯誤（例如 token 已失效），執行登出
@@ -193,28 +194,11 @@ export const useStore = defineStore('counter', () => {
         // }
     }
 
-    // api網域位置
-    const set_baseUrl = () => {
-        if (process.env.NODE_ENV === 'production') {
-            // 取得目前網站的通訊協定（http: 或 https:）
-            const protocol = window.location.protocol
-            // 取得目前網站的主機名稱與埠號（例如：www.example.com 或 localhost:3000）
-            const host = window.location.host 
-            baseUrl.value = `${protocol}//${host}/`
-        } else {
-            // 開發環境，使用指定的測試 API 網址
-            // baseUrl.value = 'http://sunline.dboem.com:8088/';
-            // baseUrl.value = 'http://sunlinedev.elonphp.tw/';
-            baseUrl.value = 'https://sunlinedev.elonphp.tw/';
-            
-        }
-    }
-
     // 翻譯文字
     const get_auth_language_txt = async (reqPath = null) => {
         console.log(reqPath, 'reqPath');
         
-        const url = `${baseUrl.value}api/v2/common/translations/list/global?locale=${language.value}&equal_flag=2`
+        const url = `${baseUrl}api/v2/common/translations/list/global?locale=${language.value}&equal_flag=2`
         const data = await get_api(url)
         if(!data.error){
             const path = data
@@ -884,7 +868,6 @@ export const useStore = defineStore('counter', () => {
         status_colors,
         is_dealer,
         get_auth_language_txt,
-        set_baseUrl,
         language_txt,
         is_sunline,
         exportTable,

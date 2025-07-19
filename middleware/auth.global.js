@@ -3,7 +3,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     
   if (process.client) {
     store.method_nav  = false
-    store.set_baseUrl()
     
     // 檢查是否已經加載過用戶數據
     if (!store.is_login) {
@@ -24,7 +23,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (to.path !== "/" && to.path !== "/reset-password" && !store.is_login){
       // console.log("返回首頁");
       // 如果頁面是登入頁跟忘記密碼頁然後沒有登入的情況下返回登入頁
-      store.set_baseUrl()
       return navigateTo("/");
       
     }

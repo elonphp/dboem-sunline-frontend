@@ -15,6 +15,11 @@ export default defineNuxtConfig({
   } : {
     port: 3600
   },
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_API_BASE_URL
+    }
+  },
   // runtimeConfig: {
   //   // 服務器端專用
   //   apiSecret: 'test',

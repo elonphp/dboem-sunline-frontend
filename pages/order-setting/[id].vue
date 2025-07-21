@@ -98,13 +98,7 @@ const submit_btn_close = ref(false)
 const data_page = ref(1)
 
 
-const another_language = computed(()=>{
-    return store.language == "zh_Hant"? "en":"zh_Hant"
-})
-
-
 const get_data = async()=>{
-    // const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
     const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${option_code}`
     try{
         const res = await fetch(url,{

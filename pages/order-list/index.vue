@@ -187,7 +187,7 @@ import flatpickr from 'flatpickr';
 import {Mandarin} from 'flatpickr/dist/l10n/zh-tw.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const store = useStore()
 const show_export_box = ref(false)
 const search_order_code = ref("")
@@ -468,7 +468,7 @@ const del_data = async(id)=>{
 
 // 獲取該筆訂單資訊
 const get_order_data = async(id)=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${id}`
+    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${id}`
     try{
         const res = await fetch(url,{
             headers:{
@@ -486,7 +486,7 @@ const get_order_data = async(id)=>{
 
 // 複製儲存訂單
 const Save_order = async (item) => {
-    const url = `${store.baseUrl}api/v2/sales/orders/save?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/save?locale=${locale.value}`
     const news_form_data = store.jsonToFormData(item)
     try {
         const res = await fetch(url, {
@@ -512,7 +512,7 @@ const submit_review = async (id) => {
     const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
         store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${locale.value}`
         const formData = {
             order_id: id
         }
@@ -547,7 +547,7 @@ const return_review = async (item) => {
     const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
         store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${item.id}?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${item.id}?locale=${locale.value}`
         const formData = {
             status_code: item.status_code
         }
@@ -583,7 +583,7 @@ const submit_approve = async (item) => {
     let url
     if (item) {
         store.show_loading(true)
-        url = `${store.baseUrl}api/v2/sales/orders/status/dealerApprove/${item.id}?locale=${store.language}`
+        url = `${store.baseUrl}api/v2/sales/orders/status/dealerApprove/${item.id}?locale=${locale.value}`
         formData.append('status_code', item.status_code)
     } else {
         url = `${store.baseUrl}api/v2/sales/orders/status/dealerApproveMany?locale=zh_Hant`
@@ -615,7 +615,7 @@ const approve_excel = async(item)=>{
     if (confirmed) {
         const data = await get_order_data(item.id)
         const excel = store.exportTable(data, 'mail')
-        const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${locale.value}`
         const formData = new FormData
         formData.append("order_id", item.id)
         formData.append("order_code", item.code)
@@ -652,10 +652,10 @@ const get_list_data = async(search)=>{
     const tenDaysAgoDate = tenDaysAgo.toISOString().substring(0, 10); // 只保留日期部分
 
     // 預設業務
-    let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${store.language}&equal_salesperson_id=${store.userData.member_id}&limit=0`
+    let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_salesperson_id=${store.userData.member_id}&limit=0`
     // 經銷商
     if(store.is_dealer){
-        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${store.language}&equal_dealer_id=${store.userData.employer_company_id}&limit=0`
+        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_dealer_id=${store.userData.employer_company_id}&limit=0`
     }
     const default_time_zone = `&filter_order_date=${tenDaysAgoDate}-${todayDate}`
     url = url + default_time_zone
@@ -715,7 +715,7 @@ const get_list_data = async(search)=>{
 }
 
 const picker_locale = computed(()=>{
-    return store.language == 'en'? 'en':'zh_tw'
+    return locale.value == 'en'? 'en':'zh_tw'
 })
 
 // 日期套件
@@ -733,7 +733,7 @@ const set_picker = ()=>{
 
 
 const get_status_data = async()=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/resource?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/resource?locale=${locale.value}`
     try{
         const res = await fetch(url,{
              headers:{

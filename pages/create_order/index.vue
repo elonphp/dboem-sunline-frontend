@@ -200,6 +200,7 @@
 
 
 <script setup>
+const { locale } = useI18n()
 const store = useStore()
 const router = useRouter()
 const route = useRoute()
@@ -231,7 +232,7 @@ const prev_page = computed(()=>{
 
 const onSubmit = async(values)=>{
     store.show_loading(true)
-    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${locale.value}`
     const data = {
         // 運送方式
         delivery_method:values.delivery_method,
@@ -311,7 +312,7 @@ const { $j } = useNuxtApp()
 
 // 訂單資料
 const get_order_data = async()=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
+    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
     try{
         const res = await fetch(url,{
             headers:{

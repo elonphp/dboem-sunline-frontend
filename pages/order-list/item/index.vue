@@ -110,7 +110,7 @@
 
 <script setup>
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -324,7 +324,7 @@ const submit_review = async () => {
     const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
         store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${locale.value}`
         const formData = {
             order_id: order_id
         }
@@ -355,7 +355,7 @@ const return_review = async () => {
     const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
         store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${order_id}?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${order_id}?locale=${locale.value}`
         const formData = {
             status_code: order_info.value.status_code
         }
@@ -389,7 +389,7 @@ const submit_corporate = async ()=>{
     approve_excel()
     if (confirmed) {
         store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerApprove/${order_id}?locale=${store.language}`
+        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerApprove/${order_id}?locale=${locale.value}`
         const formData = {
             status_code: order_info.value.status_code
         }
@@ -419,7 +419,7 @@ const submit_corporate = async ()=>{
 // 寄信
 const approve_excel = async()=>{
     const excel = store.exportTable(order_info.value,'mail')
-    const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${locale.value}`
     const formData = new FormData
     formData.append("order_id",order_info.value.id)
     formData.append("order_code",order_info.value.code)
@@ -474,7 +474,7 @@ const delete_order = async()=>{
 // 更新資料
 const up_date = async () => {
     await get_data()
-    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${locale.value}`
     const data = {...order_info.value}
     console.log(data);
     // 如果目前沒有材質則從網址路徑抓
@@ -516,8 +516,8 @@ const up_date = async () => {
 
 
 const get_data = async()=>{
-    // const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
-    const url = `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${store.language}`
+    // const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
+    const url = `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${locale.value}`
     try{
         const res = await fetch(url,{
             headers:{

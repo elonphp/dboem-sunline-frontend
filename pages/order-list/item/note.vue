@@ -95,6 +95,7 @@ const my_msg = (id) => {
     return id == user_id.value ? 'my_msg' : null
 }
 const { $j } = useNuxtApp()
+const { locale } = useI18n()
 
 
 // 滑至底部
@@ -132,7 +133,7 @@ const roles_colors = (role,id) =>{
 // 傳送訊息
 const submit_comment = async () => {
     submit_btn.value = true
-    const url = `${store.baseUrl}api/v2/sales/orders/comments/add?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/sales/orders/comments/add?locale=${locale.value}`
     const comment_data = {
         order_id: order_id,
         comment: comment.value,
@@ -161,7 +162,7 @@ const submit_comment = async () => {
 }
 
 const get_note_data = async () => {
-    const url = `${store.baseUrl}api/v2/sales/orders/comments/list?locale=${store.language}&limit=0&equal_order_id=${order_id}&limit=0&pagination=false`
+    const url = `${store.baseUrl}api/v2/sales/orders/comments/list?locale=${locale.value}&limit=0&equal_order_id=${order_id}&limit=0&pagination=false`
     try {
         const res = await fetch(url, {
             headers: {
@@ -198,7 +199,7 @@ const get_user_data = async () => {
 }
 
 const get_data = async () => {
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${store.language}&equal_id=${order_id}`
+    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
     try {
         const res = await fetch(url, {
             headers: {

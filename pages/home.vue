@@ -51,7 +51,7 @@
 const store = useStore()
 const order = ref()
 const role = store.role
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // 連結區塊
 const link = computed(() => [
@@ -80,13 +80,13 @@ const get_order_data = async()=>{
     const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
     const tenDaysAgoDate = tenDaysAgo.toISOString().substring(0, 10); // 只保留日期部分
     //業務 
-    let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${store.language}&equal_salesperson_id=${store.userData.member_id}&limit=6`
+    let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_salesperson_id=${store.userData.member_id}&limit=6`
 
     // 經銷商
     if(store.is_dealer){
-        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${store.language}&equal_dealer_id=${store.userData.employer_company_id}&limit=6`
+        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_dealer_id=${store.userData.employer_company_id}&limit=6`
     }else if(store.is_corporate){
-        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${store.language}&limit=6`
+        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&limit=6`
     }
     // console.log(url);
     const default_time_zone = `&filter_order_date=${tenDaysAgoDate}-${todayDate}`

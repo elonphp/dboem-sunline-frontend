@@ -3043,7 +3043,7 @@ import DecorativeInfoImg from '@/assets/images/decorative_info_img.jpg'
 import AuxiliaryInfoImg from '@/assets/images/auxiliary_info_img.jpg' 
 const { validate,validateField,errors, } = useForm();//驗證套件
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -3296,8 +3296,8 @@ const validateWidth = () => {
 // 顯示語言自訂名字(外框&顏色)
 const show_custom_name = (item)=>{
   // 檢查 translations 是否存在且具有所需的語言
-  const customName = item.option_value_dealers && item.option_value_dealers[store.language];
-  const defaultName = item.translations.find(option => option.locale == store.language).name
+  const customName = item.option_value_dealers && item.option_value_dealers[locale.value];
+  const defaultName = item.translations.find(option => option.locale == locale.value).name
   return customName || defaultName
 }
 
@@ -4008,7 +4008,7 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 
 // API ------------------------------------------------>
 const get_order_data = async()=>{
-  const url = `${store.baseUrl}api/v2/catalog/options/list?lang=${store.language}&limit=0&details=1`
+  const url = `${store.baseUrl}api/v2/catalog/options/list?locale=${locale.value}&limit=0&details=1`
   const data = await store.get_api(url)
 
   order_data.value = data.data
@@ -4041,7 +4041,7 @@ const get_design_data = async (id) => {
   if(!order_id){
     data_id.value[order_data.value.win_stdwin_subtype.code] = []
   }
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${id}`
+  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${id}`
   const data = await store.get_api(url)
   console.log(data)
   design_data.value.design = data.option_group_suboptions.win_type
@@ -4051,7 +4051,7 @@ const get_design_data = async (id) => {
   if (design_data.value.design.option_group_suboption_values) {
     // 跑迴圈抓個別資料
     const design_type  = design_data.value.design.option_group_suboption_values.map(async(item) => {
-      const url_2 = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${id},${item.option_value_id}`
+      const url_2 = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${id},${item.option_value_id}`
       try {
         const requests = await fetch(url_2,{
           headers:{
@@ -4132,7 +4132,7 @@ const get_outer_frame = async ()=>{
 const get_handle_color = async (e) => {
   const selectedId = e?.target?.value || e;
   handle_color.value = []
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${selectedId}`
+  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${selectedId}`
   const data = await store.get_api(url)
   if(!data.error){
     const handleColorValue = Object.values(data.option_group_suboptions)[0]
@@ -4147,7 +4147,7 @@ const get_handle_color = async (e) => {
 const get_lock_color = async (e) => {
   const selectedId = e?.target?.value || e;
   lock_color.value = []
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${selectedId}`;
+  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${selectedId}`;
   const data = await store.get_api(url)
   if(!data.error){
     const lockColorValue = Object.values(data.option_group_suboptions)[0]
@@ -4161,7 +4161,7 @@ const get_lock_color = async (e) => {
 // 下軌道顏色 && 飾板高度
 const get_door_track = async () => {
   const design = data_id.value[selected_win_style.value]
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?lang=${store.language}&equal_option_value_ids=${design}`;
+  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${design}`;
   const data = await store.get_api(url)
   if(!data.error){
     doorType_height.value = data.option_group_suboptions.decorative_pane_height
@@ -4177,7 +4177,7 @@ const get_product_data = async () => {
   
 
   if (order_id && product_id) {
-    const url =  `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${store.language}`
+    const url =  `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${locale.value}`
     const data = await store.get_api(url);
     const order = data.order_products.find(item => item.id == product_id);  // 查找商品資料
 

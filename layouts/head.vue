@@ -8,13 +8,14 @@
       <div class="flex-shrink-0 d-flex align-items-center gap-2">
         <label for="">{{header_txt}}：</label>
         <div class="d-flex">
-          <select class="form-select me-4" @change="change_language" v-model="store.language">
+          <select class="form-select me-4" @change="change_language" v-model="selectLang">
             <option value="en">English</option>
             <option value="zh_Hant">繁體中文</option>
           </select>
         </div>
       </div>
-      <!-- <div style="font-size: 24px;">{{ locale }}</div> -->
+      <!-- <div style="font-size: 24px;">Cookie:{{ lang }}</div>
+      <div style="font-size: 24px;">selectLang:{{ selectLang }}</div> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="user_info">
         <label class="w-100">{{ role }}：</label>
         <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
@@ -41,15 +42,13 @@
 
 <script setup>
 
+const lang = useCookie('i18n_redirected')
+const selectLang = ref(lang.value)
 const route = useRoute()
 const store = useStore()
-const { locale, setLocale } = useI18n()
-store.language = locale.value
-watch(locale, () => {
-  store.language = locale.value
-})
+const { setLocale } = useI18n()
 const changeLang = () => {
-  setLocale(store.language)
+  setLocale(selectLang.value)
 }
 
 const user_info = ref()
@@ -72,7 +71,7 @@ const role = computed(()=>{
 
 // header語言切換的語言字
 const header_txt = computed(()=>{
-  return store.language == 'en'? "Language":"語言"
+  return lang.value == 'en'? "Language":"語言"
 })
 
 // 登出
@@ -86,7 +85,7 @@ const logout = ()=> {
 const change_language = async()=>{
   store.show_loading(true)
   // 設定驗證套件語言
-  $setValidationLocale(store.language);
+  $setValidationLocale(lang.value);
   // 語言檔
   changeLang()
   // await store.get_auth_language_txt('change_language')

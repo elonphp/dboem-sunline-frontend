@@ -62,7 +62,7 @@
 
 <script setup>
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const store = useStore()
 const input_keyword = ref("")
 const keyword = ref("")
@@ -163,7 +163,7 @@ watchEffect(()=>{
 })
 
 const get_data = async()=>{
-    const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${store.language}`
+    const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${locale.value}`
     try{
         const res = await fetch(url,{
             headers:{

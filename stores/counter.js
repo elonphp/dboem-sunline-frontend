@@ -3,6 +3,7 @@ import  XLSX  from 'xlsx-js-style'
 import { useDayjs } from '#imports'
 
 export const useStore = defineStore('counter', () => {
+    const lang = useCookie('i18n_redirected')    
     const dayjs = useDayjs()
     const config = useRuntimeConfig()
     const router = useRouter()
@@ -11,7 +12,6 @@ export const useStore = defineStore('counter', () => {
     const pageKey = ref(1)    // 換語言重新渲染用的key
     const baseUrl = config.public.apiUrl
     const loading = ref(false)
-    const language = ref('en')  // zh_Hant en
     const language_txt = ref({})
     const method_nav = ref(false)
     const temporarily_product = ref()
@@ -77,7 +77,7 @@ export const useStore = defineStore('counter', () => {
     }
 
     const get_user_data = async () => {
-        const url = `${baseUrl}api/v2/members/info?locale=${language.value}&equal_id=${userData.value.member_id}`
+        const url = `${baseUrl}api/v2/members/info?locale=${lang.value}&equal_id=${userData.value.member_id}`
         try {
             const res = await fetch(url, {
                 headers: {
@@ -105,9 +105,9 @@ export const useStore = defineStore('counter', () => {
     // 更新語言
     const update_local = async (data)=>{
         // 如果選擇的語言跟帳號不一樣
-        if(language.value !== data.locale){
+        if(lang.value !== data.locale){
             // 更新語言
-            language.value = data.locale
+            lang.value = data.locale
             await get_auth_language_txt('update_local')
             pageKey.value++
         }
@@ -179,7 +179,7 @@ export const useStore = defineStore('counter', () => {
     const get_auth_language_txt = async (reqPath = null) => {
         console.log(reqPath, 'reqPath');
         
-        const url = `${baseUrl}api/v2/common/translations/list/global?locale=${language.value}&equal_flag=2`
+        const url = `${baseUrl}api/v2/common/translations/list/global?locale=${lang.value}&equal_flag=2`
         const data = await get_api(url)
         if(!data.error){
             const path = data
@@ -489,7 +489,7 @@ export const useStore = defineStore('counter', () => {
                             return
                         }
                         // 標頭中英文
-                        // const header_name = language.value == 'en' ? options[option].en_name : options[option].name
+                        // const header_name = lang.value == 'en' ? options[option].en_name : options[option].name
                         const header_name = options[option].name
 
                         // 檢查選項是否在優先排列的清單中
@@ -606,7 +606,7 @@ export const useStore = defineStore('counter', () => {
                     // 中英文value
                     const language_value = () => {
                         if (key) {
-                            const value = language.value == 'en' ? options[key]?.en_value : options[key].value
+                            const value = lang.value == 'en' ? options[key]?.en_value : options[key].value
                             return value ? value : options[key].value
                         }
                     }
@@ -824,13 +824,12 @@ export const useStore = defineStore('counter', () => {
     // 英文版樣式
     const en_class = computed(() => {
         
-        return language.value == 'en' ? 'en-main' : '';
+        return lang.value == 'en' ? 'en-main' : '';
     });
 
     return {
         pageKey,
         role,
-        language,
         method_nav,
         baseUrl,
         userData,

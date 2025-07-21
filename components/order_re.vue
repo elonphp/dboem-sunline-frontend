@@ -2147,7 +2147,7 @@
               {{ $t('order.text_track_style') }}
               <i class="fas fa-info-circle" @click="show_info_img($event)">
                 <div class="nav-img">
-                  <img src="@/assets/images/track_info_img.jpg" alt="track_info_img">
+                  <img :src="TrackInfoImg" alt="track_info_img">
                 </div>
               </i>
             </h2>
@@ -2624,7 +2624,7 @@
               {{ $t('order.text_decorative_pane') }}
               <i class="fas fa-info-circle" @click="show_info_img($event)">
                 <div class="nav-img">
-                  <img src="@/assets/images/decorative_info_img.jpg" alt="decorative_info_img">
+                  <img :src="DecorativeInfoImg" alt="decorative_info_img">
                 </div>
               </i>
             </h2>
@@ -2861,7 +2861,7 @@
                   {{ order_data.auxiliaries.name }}
                   <i class="fas fa-info-circle" @click="show_info_img($event)">
                     <div class="nav-img nav-img-2">
-                      <img src="@/assets/images/auxiliary_info_img.jpg" alt="auxiliary_info_img">
+                      <img :src="AuxiliaryInfoImg" alt="auxiliary_info_img">
                     </div>
                   </i>
                 </div>
@@ -3038,6 +3038,9 @@
 import Compressor from 'compressorjs'; // 壓縮圖片套件
 import debounce from 'lodash/debounce'  // watch優化(延遲/防抖)
 import { useForm } from 'vee-validate';  //驗證套件
+import TrackInfoImg from '@/assets/images/track_info_img.jpg' 
+import DecorativeInfoImg from '@/assets/images/decorative_info_img.jpg' 
+import AuxiliaryInfoImg from '@/assets/images/auxiliary_info_img.jpg' 
 const { validate,validateField,errors, } = useForm();//驗證套件
 
 const { t } = useI18n()

@@ -34,8 +34,8 @@ export const useStore = defineStore('counter', () => {
         // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
         if (!isExpire()) {
-            // const url = `${baseUrl}api/v2/logout/${userData.value.refreshToken}`
-            const url = `${baseUrl}api/v3/logout`
+            const url = `${baseUrl}api/v2/logout`
+            // const url = `${baseUrl}api/v3/logout`
             try {
                 const res = await fetch(url, {
                     method: 'POST',
@@ -131,7 +131,8 @@ export const useStore = defineStore('counter', () => {
         // 從使用者資料中取得 refresh token
         const refresh_token = userData.value.refresh_token
         if (!refresh_token) return
-        const url = `${baseUrl}api/v3/refresh`
+        // const url = `${baseUrl}api/v3/refresh`
+        const url = `${baseUrl}api/v2/newAccessToken/${refresh_token}`
         try {
           const res = await fetch(url, {
             method: 'POST',

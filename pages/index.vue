@@ -105,8 +105,8 @@ const { setLocale } = useI18n()
 // // 登入
 const login = async () =>{
   const sha256_PW = sha256(login_password.value.toString())
-  let url = `${store.baseUrl}api/v3/login`
-  // let url = `${store.baseUrl}api/v2/login`
+  // let url = `${store.baseUrl}api/v3/login`
+  let url = `${store.baseUrl}api/v2/login`
   const form_data = {
     email: login_email.value,
     password: sha256_PW,

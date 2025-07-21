@@ -50,6 +50,9 @@ const { setLocale } = useI18n()
 const changeLang = () => {
   setLocale(selectLang.value)
 }
+watch(lang, () => {
+  selectLang.value = lang.value
+})
 
 const user_info = ref()
 const { $setValidationLocale } = useNuxtApp();

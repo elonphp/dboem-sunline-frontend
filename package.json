@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build --dotenv .env.prod",
-    "build:uat": "nuxt build --dotenv .env.uat",
-    "build:prod": "nuxt build --dotenv .env.prod",
+    "build": "nuxt generate --dotenv .env.uat",
+    "build:uat": "nuxt generate --dotenv .env.uat",
+    "build:prod": "nuxt generate --dotenv .env.prod",
     "dev": "nuxt dev",
     "dev:uat": "nuxt dev --dotenv .env.uat",
     "dev:prod": "nuxt dev --dotenv .env.prod",

@@ -27,7 +27,8 @@ export const useStore = defineStore('counter', () => {
         localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
         userData.value = data
         // await update_local(data)
-        await get_user_data()
+        const isLogin = true
+        await get_user_data(isLogin)
     }
 
     const logout = async () => {
@@ -76,7 +77,7 @@ export const useStore = defineStore('counter', () => {
         
     }
 
-    const get_user_data = async () => {
+    const get_user_data = async (is_first_login = false) => {
         const url = `${baseUrl}api/v2/members/info?locale=${lang.value}&equal_id=${userData.value.member_id}`
         try {
             const res = await fetch(url, {
@@ -92,7 +93,9 @@ export const useStore = defineStore('counter', () => {
                 role.value = data.response.roles
                 //  上級
                 userData.value.parent_id = data.response.parent_id
-               
+                if (lang.value !== data.response.locale && is_first_login) {
+                  lang.value = data.response.locale
+                }
                 return data.response
             } else {
                 //  console.log(res);

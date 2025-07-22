@@ -52,6 +52,7 @@ const changeLang = () => {
 }
 watch(lang, () => {
   selectLang.value = lang.value
+  changeLang()
 })
 
 const user_info = ref()
@@ -86,7 +87,7 @@ const logout = ()=> {
 
 // 換語言
 const change_language = async()=>{
-  store.show_loading(true)
+  // store.show_loading(true)
   // 設定驗證套件語言
   $setValidationLocale(lang.value);
   // 語言檔
@@ -95,10 +96,10 @@ const change_language = async()=>{
   // 重新渲染主要頁面
   store.pageKey++
   // 重新獲取會員資料(右上角會員名字用)
-  if(store.is_login){
-    user_info.value = await store.get_user_data()
-  }
-  store.show_loading(false)
+  // if(store.is_login){
+  //   user_info.value = await store.get_user_data()
+  // }
+  // store.show_loading(false)
 }
 
 // 重新登入的話重新獲取會員資料

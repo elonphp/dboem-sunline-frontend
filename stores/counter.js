@@ -19,7 +19,8 @@ export const useStore = defineStore('counter', () => {
     
     // 判斷token是否過期
     const isExpire = () => {
-        const expTime = userData.value.expire_at        
+        // const expTime = userData.value.expire_at        
+        const expTime = useCookie('token_data').expire_at
         return dayjs().isAfter(dayjs(expTime))
     }
     const set_token = async (data) => {
@@ -33,27 +34,21 @@ export const useStore = defineStore('counter', () => {
     const logout = async () => {
         // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
+        // const tokenData = JSON.parse(useCookie('token_data').value)
+        const tokenData = useCookie('token_data').value
         if (!isExpire()) {
-            const url = `${baseUrl}api/v2/logout`
-            // const url = `${baseUrl}api/v3/logout`
             try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        Authorization: 'Bearer ' + userData.value.access_token,
-                    },
-                    body: jsonToFormData({
-                        device_id: userData.value.device_id
-                    })
-                })
-                await res.json()
+              const res = await $api.auth.logout({
+                device_id: tokenData.device_id
+              })
             } catch (err) {
                 console.log(err)
             }
         }
         router.push('/')  // 返回登入頁
         localStorage.removeItem('token')  // 刪除localStorage
-        userData.value = ''              
+        useCookie('token_data').value = null
+        // userData.value = ''              
         role.value = {}
     }
 
@@ -77,26 +72,23 @@ export const useStore = defineStore('counter', () => {
     }
 
     const get_user_data = async () => {
-        const url = `${baseUrl}api/v2/members/info?locale=${lang.value}&equal_id=${userData.value.member_id}`
+        const params = {
+          locale: lang.value,
+          equal_id: useCookie('token_data').value?.member_id
+        }
         try {
-            const res = await fetch(url, {
-                headers: {
-                    Authorization: 'Bearer ' + userData.value.access_token,
-                },
-            })
-            if (res.status == 200) {
-                const data = await res.json()
-                //  更新公司
-                userData.value.employer_company_id = data.response.employer_company_id
-                //  角色
-                role.value = data.response.roles
-                //  上級
-                userData.value.parent_id = data.response.parent_id
-               
-                return data.response
-            } else {
-                //  console.log(res);
-            }
+            const res = await $api.member.getMemberInfo(params)
+            //  更新公司
+            // userData.value.employer_company_id = res.employer_company_id
+            useCookie('token_data').value.employer_company_id = res.response.employer_company_id
+            //  角色
+            role.value = res.response.roles
+            //  上級
+            // userData.value.parent_id = res.parent_id
+            useCookie('token_data').value.parent_id = res.response.parent_id
+            useCookie('token_data').value.name = res.response.name
+            return res
+            
         } catch (err) {
             console.log(err)
         }
@@ -809,7 +801,8 @@ export const useStore = defineStore('counter', () => {
     // computed
     // 有登入?
     const is_login = computed(() => {
-        return !!userData.value
+        // return !!userData.value
+        return !!useCookie('token_data').value
     })
     // 是經銷商?
     const is_dealer = computed(() => {

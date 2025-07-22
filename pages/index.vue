@@ -102,31 +102,41 @@ const recaptcha  = async()=>{
 }
 
 const { setLocale } = useI18n()
+const dayjs = useDayjs()
 // // 登入
 const login = async () =>{
   const sha256_PW = sha256(login_password.value.toString())
-  // let url = `${store.baseUrl}api/v3/login`
-  let url = `${store.baseUrl}api/v2/login`
   const form_data = {
     email: login_email.value,
     password: sha256_PW,
     'google-recaptcha-v3-token':recaptchaToken.value
   }
-  try{
-    const res = await fetch(url,{
-      method: 'POST',
-      body: store.jsonToFormData(form_data)
-    });
-    const data = await res.json();
-    if(res.ok && !data.error){
-       await store.set_token(data)
-       router.push('/home')
-    }else{
-     alert(data.error)
-    }
-  }catch (err) {
-    console.log(err);
+  try {
+    const res = await $api.auth.login(form_data)
+    useCookie('token_data', {
+      expires: dayjs(res.expires_at).toDate()
+    }).value = JSON.stringify(res)
+    await nextTick()
+    await store.get_user_data()
+    router.push('/home')
+  } catch (error) {
+    console.log(error);
   }
+  // try{
+  //   const res = await fetch(url,{
+  //     method: 'POST',
+  //     body: store.jsonToFormData(form_data)
+  //   });
+  //   const data = await res.json();
+  //   if(res.ok && !data.error){
+  //      await store.set_token(data)
+  //      router.push('/home')
+  //   }else{
+  //    alert(data.error)
+  //   }
+  // }catch (err) {
+  //   console.log(err);
+  // }
 }
 
 // 送出忘記密碼信箱

@@ -1,6 +1,19 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const store = useStore()
   store.method_nav  = false
+  const isLogin = useCookie('token_data').value
+  console.log(isLogin);
+  
+  // console.log(store.is_login, 'is_login', to);
+  
+  // 只要沒登入，且不是在登入頁，就導向首頁
+  if (!isLogin && to.path !== '/') {
+    return navigateTo('/')
+  }
+  // 已登入且在首頁，導向主頁
+  if (isLogin && to.path === '/') {
+    return navigateTo('/home')
+  }
   // if (to.path === '/' && store.is_login) {
   //   return navigateTo('/home')
   // }
@@ -24,16 +37,16 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   //   }
 
   
-  //   if (to.path !== "/" && to.path !== "/reset-password" && !store.is_login){
-  //     // console.log("返回首頁");
-  //     // 如果頁面是登入頁跟忘記密碼頁然後沒有登入的情況下返回登入頁
-  //     return navigateTo("/");
+    if (to.path !== "/" && to.path !== "/reset-password" && !isLogin){
+      // console.log("返回首頁");
+      // 如果頁面是登入頁跟忘記密碼頁然後沒有登入的情況下返回登入頁
+      return navigateTo("/");
       
-  //   }
+    }
 
     
   //   // 使用正則表達式來匹配所有 /order-setting 底下的路由
-  //   const orderSettingRegex = /^\/order-setting(\/|$)/;
+    // const orderSettingRegex = /^\/order-setting(\/|$)/;
 
   //   // 只有經銷商有權限進入
   //   if(orderSettingRegex.test(to.path)){

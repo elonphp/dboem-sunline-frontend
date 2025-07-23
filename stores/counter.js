@@ -30,26 +30,34 @@ export const useStore = defineStore('counter', () => {
         // await update_local(data)
         await get_user_data()
     }
-
+    const logoutHandle = async () => {
+      useCookie('token_data').value = null
+      localStorage.removeItem('token')  // 刪除localStorage
+      // userData.value = ''              
+      role.value = {}
+      await nextTick()
+      // 等待資料都清空再跳轉
+      router.push('/')  // 返回登入頁
+    }
     const logout = async () => {
+      console.log('logout');
+      
         // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
         // const tokenData = JSON.parse(useCookie('token_data').value)
         const tokenData = useCookie('token_data').value
         if (!isExpire()) {
             try {
-              const res = await $api.auth.logout({
+              await $api.auth.logout({
                 device_id: tokenData.device_id
               })
             } catch (err) {
                 console.log(err)
+            } finally {
+              logoutHandle()
             }
         }
-        router.push('/')  // 返回登入頁
-        localStorage.removeItem('token')  // 刪除localStorage
-        useCookie('token_data').value = null
-        // userData.value = ''              
-        role.value = {}
+        logoutHandle()
     }
 
     const get_user = async () => {
@@ -118,54 +126,73 @@ export const useStore = defineStore('counter', () => {
     }
 
     // 刷新 access token
-    const refresh_token = async () => {
-        if (!isExpire()) return
-        // 從使用者資料中取得 refresh token
-        const refresh_token = userData.value.refresh_token
-        if (!refresh_token) return
-        // const url = `${baseUrl}api/v3/refresh`
-        const url = `${baseUrl}api/v2/newAccessToken/${refresh_token}`
-        try {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + userData.value.access_token,
-            },
-            body: jsonToFormData({
-              refresh_token
-            })
-          })
-          if (res.status !== 200) {
-            logout()
-          }
-          const data = await res.json()
-          userData.value = {
-            ...userData.value,
-            ...data
-          }
-          
-        } catch (error) {
-          logout()
-          console.log(error, 'refresh_token');
-        }
-        // 如果 refresh token
-        // if (refresh_token) {
-        //     fetch(`${baseUrl}api/v2/newAccessToken/${refresh_token}`)
-        //         .then((res) => res.json())
-        //         .then((res) => {
-        //              // 如果後端回傳錯誤（例如 token 已失效），執行登出
-        //             if (res.error) {
-        //                 logout()
-        //             }
-        //              // 否則儲存新的 token 資訊
-        //             set_token(res)
-        //             // console.log("刷新");
-        //         })
-        //         .catch((err) => {
-        //             console.log(err)
-        //         })
-        // }
+    const refresh_token = async (is401 = false) => {
+      if (!isExpire() && !is401) return
+      // if (!refresh_token) return
+      const tokenData = useCookie('token_data')
+      try {
+        const res = await $api.auth.refresh_token({
+          refresh_token: tokenData.value.refresh_token
+        })
+        
+        useCookie('token_data', {
+          expires: dayjs(res.expires_at).toDate()
+        }).value = JSON.stringify({
+          ...tokenData.value,
+          ...res
+        })
+      } catch (error) {
+        logout()
+      }
     }
+    // const refresh_token = async () => {
+    //     if (!isExpire()) return
+    //     // 從使用者資料中取得 refresh token
+    //     const refresh_token = userData.value.refresh_token
+    //     if (!refresh_token) return
+    //     // const url = `${baseUrl}api/v3/refresh`
+    //     const url = `${baseUrl}api/v2/newAccessToken/${refresh_token}`
+    //     try {
+    //       const res = await fetch(url, {
+    //         method: 'POST',
+    //         headers: {
+    //             Authorization: 'Bearer ' + userData.value.access_token,
+    //         },
+    //         body: jsonToFormData({
+    //           refresh_token
+    //         })
+    //       })
+    //       if (res.status !== 200) {
+    //         logout()
+    //       }
+    //       const data = await res.json()
+    //       userData.value = {
+    //         ...userData.value,
+    //         ...data
+    //       }
+          
+    //     } catch (error) {
+    //       logout()
+    //       console.log(error, 'refresh_token');
+    //     }
+    //     // 如果 refresh token
+    //     // if (refresh_token) {
+    //     //     fetch(`${baseUrl}api/v2/newAccessToken/${refresh_token}`)
+    //     //         .then((res) => res.json())
+    //     //         .then((res) => {
+    //     //              // 如果後端回傳錯誤（例如 token 已失效），執行登出
+    //     //             if (res.error) {
+    //     //                 logout()
+    //     //             }
+    //     //              // 否則儲存新的 token 資訊
+    //     //             set_token(res)
+    //     //             // console.log("刷新");
+    //     //         })
+    //     //         .catch((err) => {
+    //     //             console.log(err)
+    //     //         })
+    //     // }
+    // }
 
     // 翻譯文字
     const get_auth_language_txt = async (reqPath = null) => {

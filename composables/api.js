@@ -8,34 +8,46 @@ const fetch = $fetch.create({
     options.baseURL = apiUrl
     // 取代 process.server
     const token = useCookie('token_data')
-    console.log(token.value);
     
     if (token.value) {
       options.headers = new Headers(options.headers)
-      // options.headers.set('Authorization', `Bearer ${token.value.access_token}`)
+      options.headers.set('Authorization', `Bearer ${token.value.access_token}`)
     }
   },
   onRequestError({ error }) {
     return error
   },
-  async onResponse({
-    response,
-    options
-  }) {
-    if (response.status === 200) {
-      return response
-    } else {
-      switch (response.status) {
-        case 401:
-          console.log('401囉');          
-          // useCookie('token_data').value = null
-          await navigateTo('/')
-          break
-        default:
-          break
-      }
+  async onResponse({ response, options }) {
+    // 1. logout API 直接略過
+    if (response.url && response.url.includes('/logout')) {
       return Promise.reject(response._data)
     }
+
+    // 2. 只處理 401
+    if (response.status === 401) {
+      const store = useStore()
+      // 只允許 retry 一次
+      if (options._retry) {
+        store.logout()
+        return
+      }
+      options._retry = true
+      try {
+        await store.refresh_token(true)
+        // refresh 成功，重打原本的 API
+        return fetch(response.url, options)
+      } catch (error) {
+        // refresh 失敗，直接登出
+        store.logout()
+        return
+      }
+    }
+
+    // 3. 其他狀態照常處理
+    if (response.status === 200) {
+      return response
+    }
+    return Promise.reject(response._data)
   },
   onResponseError({ response }) {
     return Promise.reject(response?._data ?? null)

@@ -50,7 +50,6 @@
 <script setup>
 const store = useStore()
 const order = ref()
-const role = store.role
 const { t, locale } = useI18n()
 
 // 連結區塊
@@ -129,14 +128,14 @@ const get_order_data = async()=>{
 
 
 
-store.show_loading(true)
-onMounted(async()=>{
-    if(store.userData){
-        await get_order_data()
-    }
-    store.show_loading(false)
+// store.show_loading(true)
+// onMounted(async()=>{
+//     if(store.userData){
+//         await get_order_data()
+//     }
+//     store.show_loading(false)
     
-})
+// })
 
 
 </script>

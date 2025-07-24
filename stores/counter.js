@@ -873,4 +873,11 @@ export const useStore = defineStore('counter', () => {
         get_api,
         en_class
     }
+}, {
+  persist: [
+    {
+      pick: ['userData', 'role'],
+      storage: piniaPluginPersistedstate.localStorage()
+    }
+  ]
 })

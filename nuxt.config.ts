@@ -7,19 +7,23 @@ export default defineNuxtConfig({
   devtools: { 
     enabled: true
    },
-   devServer: process.env.HTTPS === 'true' ? {
-    https: {
-      key: './https/server.key',
-      cert: './https/server.crt',
-    },
-  } : {
-    port: 3600
-  },
+   ssr: false,
+
+  devServer: process.env.HTTPS === 'true' ? {
+   https: {
+     key: './https/server.key',
+     cert: './https/server.crt',
+   },
+ } : {
+   port: 3600
+ },
+
   runtimeConfig: {
     public: {
       apiUrl: process.env.NUXT_API_BASE_URL
     }
   },
+
   // runtimeConfig: {
   //   // 服務器端專用
   //   apiSecret: 'test',
@@ -48,6 +52,7 @@ export default defineNuxtConfig({
       
     },
   },
+
   css: [
     "bootstrap/dist/css/bootstrap.min.css",
     "@fortawesome/fontawesome-free/css/all.css",
@@ -55,7 +60,9 @@ export default defineNuxtConfig({
     "@/assets/scss/order.scss",
     "@/assets/scss/login.scss",
   ],
-  modules: ["@vee-validate/nuxt", '@pinia/nuxt', '@nuxtjs/i18n', "dayjs-nuxt"],
+
+  modules: ["@vee-validate/nuxt", '@pinia/nuxt', '@nuxtjs/i18n', "dayjs-nuxt", 'pinia-plugin-persistedstate/nuxt'],
+
   i18n: {
     lazy: true,
     defaultLocale: 'en',
@@ -72,9 +79,11 @@ export default defineNuxtConfig({
       }
     ]
   },
+
   imports: {
     dirs: ['stores']
   },
+
   plugins: [
       "@/plugins/vee-validate.client",
       "@/plugins/custom.js",
@@ -82,6 +91,7 @@ export default defineNuxtConfig({
       '@/plugins/vue-recaptcha-v3.js',
       '@/plugins/jquery.client.js',
   ],
+
   veeValidate: {
     // 啟用 auto imports
     autoImports: true,
@@ -93,6 +103,8 @@ export default defineNuxtConfig({
       ErrorMessage: "VeeErrorMessage",
     },
   },
+
+  compatibilityDate: "2025-07-24"
 });
 
 // 自動化導入所有語言檔

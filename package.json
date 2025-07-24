@@ -28,7 +28,8 @@
     "jquery": "^3.7.1",
     "js-sha256": "^0.11.0",
     "lodash": "^4.17.21",
-    "nuxt": "^3.11.1",
+    "nuxt": "^3.15.0",
+    "pinia-plugin-persistedstate": "^4.4.1",
     "vee-validate": "^4.14.7",
     "vue": "^3.4.21",
     "vue-recaptcha-v3": "^2.0.1",
@@ -38,8 +39,8 @@
   },
   "devDependencies": {
     "@nuxtjs/i18n": "^8.5.6",
-    "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7",
+    "@pinia/nuxt": "^0.11.2",
+    "pinia": "^3.0.3",
     "sass": "^1.72.0"
   }
 }

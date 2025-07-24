@@ -23,25 +23,17 @@ export const useStore = defineStore('counter', () => {
         const expTime = useCookie('token_data').expire_at
         return dayjs().isAfter(dayjs(expTime))
     }
-    const set_token = async (data) => {
-        // data.id = await get_ip()
-        localStorage.setItem('token', JSON.stringify(data)) // 設定token到localStorage
-        userData.value = data
-        // await update_local(data)
-        await get_user_data()
-    }
     const logoutHandle = async () => {
       useCookie('token_data').value = null
-      localStorage.removeItem('token')  // 刪除localStorage
+      // localStorage.removeItem('token')  // 刪除localStorage
       // userData.value = ''              
+      userData.value = ''
       role.value = {}
       await nextTick()
       // 等待資料都清空再跳轉
       router.push('/')  // 返回登入頁
     }
     const logout = async () => {
-      console.log('logout');
-      
         // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
         // const tokenData = JSON.parse(useCookie('token_data').value)
@@ -88,13 +80,14 @@ export const useStore = defineStore('counter', () => {
             const res = await $api.member.getMemberInfo(params)
             //  更新公司
             // userData.value.employer_company_id = res.employer_company_id
-            useCookie('token_data').value.employer_company_id = res.response.employer_company_id
+            // useCookie('token_data').value.employer_company_id = res.response.employer_company_id
             //  角色
             role.value = res.response.roles
+            userData.value = res.response
             //  上級
             // userData.value.parent_id = res.parent_id
-            useCookie('token_data').value.parent_id = res.response.parent_id
-            useCookie('token_data').value.name = res.response.name
+            // useCookie('token_data').value.parent_id = res.response.parent_id
+            // useCookie('token_data').value.name = res.response.name
             return res
             
         } catch (err) {
@@ -855,7 +848,6 @@ export const useStore = defineStore('counter', () => {
         userData,
         // add_product,
         temporarily_product,
-        set_token,
         logout,
         get_user_data,
         get_user,

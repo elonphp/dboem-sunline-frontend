@@ -1,7 +1,7 @@
 <template>
     <section class="bg-block d-flex align-items-center" >
         <div class="container-xl">
-            <div class="row mb-5" v-if="!store.loading && order">
+            <div class="row mb-5" v-if="order">
                 <template v-for="(item, idx) in link" :key="'link_' + idx">
                     <div class="col-lg-3 col-md-6 mb-lg-0 mb-4" v-if="is_access(item.roles)">
                         <nuxt-link class="btn-home" :to="item.router">
@@ -63,34 +63,34 @@ const link = computed(() => [
 ])
 
 const is_access = (item)=>{
-    if(store.role){
-        return item.some(item => item == Object.keys(store.role))
-    }
+  return Object.keys(store.role).some(role => item.includes(role))
 }
 
 
 const dayjs = useDayjs()
+onMounted(() => {
+  get_order_data()
+})
 const get_order_data = async()=>{
     // 今日
     // const now = new Date();
     // const todayDate = now.toISOString().substring(0, 10); // 只保留日期部分
-    const todayDate = dayjs.format('YYYY-MM-DD');
+    const todayDate = dayjs().format('YYYY-MM-DD');
 
     // 10天前
     // const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
     // const tenDaysAgoDate = tenDaysAgo.toISOString().substring(0, 10); // 只保留日期部分
-    const tenDaysAgoDate = dayjs.subtract(10, 'day').format('YYYY-MM-DD');
-    const tokenData = useCookie('token_data')
+    const tenDaysAgoDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
     const params = {
       locale: locale.value,
-      [store.is_dealer ? equal_dealer_id : undefined]: tokenData.value.employer_company_id,
-      [!store.is_dealer && !store.is_corporate ? equal_salesperson_id : undefined]: tokenData.value.member_id,
+      [store.is_dealer ? 'equal_dealer_id' : undefined]: store.userData.employer_company_id,
+      [!store.is_dealer && !store.is_corporate ? 'equal_salesperson_id' : undefined]: store.userData.member_id,
       limit: 6,
       filter_order_date: `${tenDaysAgoDate}-${todayDate}`
     }
     try {
       const res = await $api.sales.getOrderList(params)
-      order.value = res
+      order.value = res.response.data
     } catch (error) {
       console.log(error);
       

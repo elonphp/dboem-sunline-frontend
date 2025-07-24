@@ -16,10 +16,10 @@
       </div>
       <!-- <div style="font-size: 24px;">Cookie:{{ lang }}</div>
       <div style="font-size: 24px;">selectLang:{{ selectLang }}</div> -->
-      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="user_info">
+      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="store.userData">
         <label class="w-100">{{ role }}：</label>
         <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
-          <span>{{ user_info.name }}</span>
+          <span>{{ store.userData.name }}</span>
           <ul v-show="store.method_nav ">
             <li @click="store.method_nav = !store.method_nav">
               <nuxt-link to="/user-info">{{ $t('default.text_basic_information') }}</nuxt-link>
@@ -54,7 +54,6 @@ watch(lang, () => {
   selectLang.value = lang.value
 })
 
-const user_info = useCookie('token_data')
 const { $setValidationLocale } = useNuxtApp();
 
 // 首頁

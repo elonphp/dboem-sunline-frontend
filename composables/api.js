@@ -8,16 +8,21 @@ const fetch = $fetch.create({
     options.baseURL = apiUrl
     // 取代 process.server
     const token = useCookie('token_data')
-    
     if (token.value) {
       options.headers = new Headers(options.headers)
       options.headers.set('Authorization', `Bearer ${token.value.access_token}`)
     }
+    const store = useStore()
+    store.show_loading(true)
   },
   onRequestError({ error }) {
+    const store = useStore()
+    store.show_loading(false)
     return error
   },
   async onResponse({ response, options }) {
+    const store = useStore()
+    store.show_loading(false)
     // 1. logout API 直接略過
     if (response.url && response.url.includes('/logout')) {
       return Promise.reject(response._data)
@@ -25,7 +30,6 @@ const fetch = $fetch.create({
 
     // 2. 只處理 401
     if (response.status === 401) {
-      const store = useStore()
       // 只允許 retry 一次
       if (options._retry) {
         store.logout()
@@ -50,6 +54,8 @@ const fetch = $fetch.create({
     return Promise.reject(response._data)
   },
   onResponseError({ response }) {
+    const store = useStore()
+    store.show_loading(false)
     return Promise.reject(response?._data ?? null)
   }
 })

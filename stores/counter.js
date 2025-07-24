@@ -24,9 +24,7 @@ export const useStore = defineStore('counter', () => {
         return dayjs().isAfter(dayjs(expTime))
     }
     const logoutHandle = async () => {
-      useCookie('token_data').value = null
-      // localStorage.removeItem('token')  // 刪除localStorage
-      // userData.value = ''              
+      useCookie('token_data').value = null           
       userData.value = ''
       role.value = {}
       await nextTick()
@@ -36,7 +34,6 @@ export const useStore = defineStore('counter', () => {
     const logout = async () => {
         // 取得目前使用者 JWT（JSON Web Token）過期時間
         // 沒過期透過api(登出)消除 過期則直接刪除
-        // const tokenData = JSON.parse(useCookie('token_data').value)
         const tokenData = useCookie('token_data').value
         if (!isExpire()) {
             try {
@@ -79,15 +76,10 @@ export const useStore = defineStore('counter', () => {
         try {
             const res = await $api.member.getMemberInfo(params)
             //  更新公司
-            // userData.value.employer_company_id = res.employer_company_id
-            // useCookie('token_data').value.employer_company_id = res.response.employer_company_id
             //  角色
             role.value = res.response.roles
             userData.value = res.response
             //  上級
-            // userData.value.parent_id = res.parent_id
-            // useCookie('token_data').value.parent_id = res.response.parent_id
-            // useCookie('token_data').value.name = res.response.name
             return res
             
         } catch (err) {

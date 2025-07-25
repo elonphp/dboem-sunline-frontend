@@ -163,32 +163,16 @@ watchEffect(()=>{
 })
 
 const get_data = async()=>{
-    const url = `${store.baseUrl}api/v2/dealers/option/list?locale=${locale.value}`
     try{
-        const res = await fetch(url,{
-            headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        // console.log(res);
-        const res_data = await res.json()
-        console.log(res_data)
-        // console.log(res_data);
-        if(res.ok){
-            data.value = res_data.response.data
-        }
+        const res = await $api.sales.getDealersOptionList(locale.value)
+        data.value = res.response.data
     }catch (err) {
         console.log(err);
     }
 }
 
-
-
-store.show_loading(true)
-
 onMounted(async()=>{
     await get_data()
-    store.show_loading(false)
 })
 
 

@@ -139,17 +139,8 @@ const submit_comment = async () => {
         comment: comment.value,
     }
     try {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.access_token,
-                "X-CLIENT-IPV4":store.userData.loginIpAddress
-            },
-            body: JSON.stringify(comment_data)
-        })
-        const data = await res.json()
-        if (data.success) {
+        const res = await $api.sales.ordersCommentsAdd(comment_data, locale.value)
+        if (res.success) {
             comment.value = ""
             set_read()
         }
@@ -162,34 +153,31 @@ const submit_comment = async () => {
 }
 
 const get_note_data = async () => {
-    const url = `${store.baseUrl}api/v2/sales/orders/comments/list?locale=${locale.value}&limit=0&equal_order_id=${order_id}&limit=0&pagination=false`
     try {
-        const res = await fetch(url, {
-            headers: {
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
-        if (res.ok) {
-            const new_data = data.response.data.sort((a, b) => a.id - b.id)
+      const params = {
+        locale: locale.value,
+        limit:0,
+        equal_order_id: order_id,
+        pagination: false
+      }
+        const res = await $api.sales.getOrdersCommentsList(params)
+        const new_data = res.response.data.sort((a, b) => a.id - b.id)
 
-            if(!note_data.value){
-                note_data.value = new_data
-                return
-            }else{
-                const is_my_msg = new_data[new_data.length - 1].user_id == user_id.value
-    
-                if (new_data.length > note_data.value.length) {
-                    note_data.value = new_data;
-                    if (!is_my_msg) {
-                        new_msg_remind.value = true
-                    }
+        if(!note_data.value){
+            note_data.value = new_data
+            return
+        }else{
+            const is_my_msg = new_data[new_data.length - 1].user_id == user_id.value
+
+            if (new_data.length > note_data.value.length) {
+                note_data.value = new_data;
+                if (!is_my_msg) {
+                    new_msg_remind.value = true
                 }
             }
-            
         }
     } catch (err) {
-        console.log('error', err);
+        console.log('get_note_data', err);
     }
 }
 const get_user_data = async () => {

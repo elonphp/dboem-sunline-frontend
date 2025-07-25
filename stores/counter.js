@@ -87,17 +87,6 @@ export const useStore = defineStore('counter', () => {
         }
     }
 
-    // 更新語言
-    const update_local = async (data)=>{
-        // 如果選擇的語言跟帳號不一樣
-        if(lang.value !== data.locale){
-            // 更新語言
-            lang.value = data.locale
-            await get_auth_language_txt('update_local')
-            pageKey.value++
-        }
-    }
-
     const get_ip = async () => {
         fetch('https://api.ipify.org?format=json')
             .then((res) => res.json())
@@ -178,26 +167,6 @@ export const useStore = defineStore('counter', () => {
     //     //         })
     //     // }
     // }
-
-    // 翻譯文字
-    const get_auth_language_txt = async (reqPath = null) => {
-        console.log(reqPath, 'reqPath');
-        
-        const url = `${baseUrl}api/v2/common/translations/list/global?locale=${lang.value}&equal_flag=2`
-        const data = await get_api(url)
-        if(!data.error){
-            const path = data
-            const txt = {
-                auth: path['global/auth'],
-                option: path['global/dealer/option'],
-                default: path['global/default'],
-                order: path['global/sales/order'],
-                member: Object.assign({}, path['global/user/member'], path['global/user/user']),
-            }
-            language_txt.value = txt
-            set_textMap()
-        }
-    }
 
     // 表單 轉formData
     const jsonToFormData = (data, formData = new FormData(), parentKey = '') => {
@@ -790,26 +759,6 @@ export const useStore = defineStore('counter', () => {
     }
 
 
-    const get_api = async(url)=>{
-        try {
-            const res = await fetch(url, {
-                headers: {
-                    Authorization: 'Bearer ' + userData.value.access_token,
-                },
-            })
-            const res_data = await res.json()
-            if(res_data.success && !res_data.error){
-                return res_data.response
-            }else{
-                alert('系統錯誤，請聯繫相關人員')
-            }
-        } catch (err) {
-            console.log(err)
-        }
-    }
-
-
-
     // computed
     // 有登入?
     const is_login = computed(() => {
@@ -850,11 +799,9 @@ export const useStore = defineStore('counter', () => {
         jsonToFormData,
         status_colors,
         is_dealer,
-        get_auth_language_txt,
         language_txt,
         is_sunline,
         exportTable,
-        get_api,
         en_class
     }
 }, {

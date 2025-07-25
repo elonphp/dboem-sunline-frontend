@@ -379,22 +379,10 @@ const data_change_category = () => {
 const copy_data = async(id)=>{
     const confirmed =  confirm(t('order.text_confirm_copy'))
     if (confirmed){
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/copyOrder/${id}`
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: ""
-            })
-            const data = await res.json()
-            if (res.ok) {
-                alert(data.success || data.error)
-                await get_list_data()
-            }
+            const res = $api.sales.ordersCopyOrder(id)
+            alert(res.success || res.error)
+            await get_list_data()
         } catch (err) {
             console.log('error', err);
         }
@@ -442,27 +430,13 @@ const copy_data = async(id)=>{
 const del_data = async(id)=>{
     const confirmed =  confirm(t('order.text_confirm_delete'))
     if (confirmed && is_length_match.value) {
-        store.show_loading(true)
-        const del_data = new FormData()
-        const url = `${store.baseUrl}api/v2/sales/orders/deleteOrder/${id}`
-    
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: ""
-            })
-            const data = await res.json()
-            if (res.ok) {
-                alert(data.success || data.error)
-                await get_list_data()
-            }
+            const res = await $api.sales.ordersDeleteOrder(id)
+            alert(res.success || res.error)
+            await get_list_data()
         } catch (err) {
             console.log('error', err);
         }
-        store.show_loading(false)
     }
 }
 
@@ -480,60 +454,24 @@ const get_order_data = async(id)=>{
     }
 }
 
-// 複製儲存訂單
-const Save_order = async (item) => {
-    const url = `${store.baseUrl}api/v2/sales/orders/save?locale=${locale.value}`
-    const news_form_data = store.jsonToFormData(item)
-    try {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + store.userData.access_token
-            },
-            body: news_form_data
-        })
-        const data = await res.json()
-        console.log(res)
-        if (res.ok) {
-            // console.log('post_data', data)
-        }
-    } catch (err) {
-        console.log('error', err);
-    }
-    get_list_data()
-}
-
 // 審核
 const submit_review = async (id) => {
     const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${locale.value}`
         const formData = {
             order_id: id
         }
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json()
-            // console.log(res);
-            // console.log(data);
-            if(data.success){
-                alert(data.success);
-            }else if (data.error){
-                alert(data.error.status_code)
+            const res = await $api.sales.ordersApply(formData, locale.value)
+            if(res.success){
+                alert(res.success);
+            }else if (res.error){
+                alert(res.error.status_code)
             }
         } catch (err) {
             console.log('error', err);
         }
         await get_list_data()
-        store.show_loading(false)
 
     }
 }
@@ -542,33 +480,20 @@ const submit_review = async (id) => {
 const return_review = async (item) => {
     const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${item.id}?locale=${locale.value}`
         const formData = {
             status_code: item.status_code
         }
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json()
-            // console.log(res);
-            // console.log(data);
-            if(data.success){
-                alert(data.success);
-            }else if (data.error){
-                alert(data.error.status_code)
+            const res = await $api.sales.ordersStatusDealerReturn(formData, item.id, locale.value)
+            if(res.success){
+                alert(res.success);
+            }else if (res.error){
+                alert(res.error.status_code)
             }
         } catch (err) {
             console.log('error', err);
         }
         await get_list_data()
-        store.show_loading(false)
 
     }
 }
@@ -590,17 +515,8 @@ const submit_approve = async (item) => {
         })
     }
     try {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + store.userData.access_token
-            },
-            body: formData
-        })
-        const data = await res.json()
-        if (res.ok) {
-            alert(data.success || data.error)
-        }
+        const res = await item ? $api.sales.ordersStatusDealerApprove(formData, item.id, locale.value) : $api.sales.ordersStatusDealerApproveMany(formData)
+        alert(res.success || res.error)
     } catch (err) {
         console.log('error', err);
     }
@@ -611,103 +527,65 @@ const approve_excel = async(item)=>{
     if (confirmed) {
         const data = await get_order_data(item.id)
         const excel = store.exportTable(data, 'mail')
-        const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${locale.value}`
         const formData = new FormData
         formData.append("order_id", item.id)
         formData.append("order_code", item.code)
         formData.append("order-excel", excel)
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: formData
-            })
-            const res_data = await res.json()
-            if (res_data.success) {
+            const res = await $api.sales.ordersSaveExcel(formData, locale.value)
+            if (res.success) {
                 submit_approve(item)
             }
         } catch (err) {
             console.log('error', err);
         }
         await get_list_data()
-        store.show_loading(false)
     }  
 }
 
 // 資料
+const dayjs = useDayjs()
 const get_list_data = async(search)=>{
-    store.show_loading(true)
-    // 今日
-    const now = new Date();
-    const todayDate = now.toISOString().substring(0, 10); // 只保留日期部分
-
+      // 今日
+    const todayDate = dayjs().format('YYYY-MM-DD');
     // 10天前
-    const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
-    const tenDaysAgoDate = tenDaysAgo.toISOString().substring(0, 10); // 只保留日期部分
-
+    const tenDaysAgoDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
     // 預設業務
-    let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_salesperson_id=${store.userData.member_id}&limit=0`
-    // 經銷商
-    if(store.is_dealer){
-        url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_dealer_id=${store.userData.employer_company_id}&limit=0`
+    const params = {
+      locale: locale.value,
+      [store.is_dealer ? 'equal_dealer_id' : 'equal_salesperson_id']: store.is_dealer ? store.userData.employer_company_id : store.userData.member_id,
+      limit: 0,
+      filter_order_date: `${tenDaysAgoDate}-${todayDate}`
     }
-    const default_time_zone = `&filter_order_date=${tenDaysAgoDate}-${todayDate}`
-    url = url + default_time_zone
-
     // 搜尋
     if(search || status_query){
         // status_query = 從首頁直接點擊獲取經銷商已審核完成訂單
         const state = selected_state.value.length > 0 ? selected_state.value:status_query
         // 有選狀態加參數
         if(state){
-            url = url + `&filter_status_codes=${state}`
+            params['filter_status_codes'] = state
         }
          // 有輸入編號加參數
         if(search_order_code.value){
-            url= url + `&equal_code=${search_order_code.value}`
+          params['equal_code'] = search_order_code.value
         }
         // 有輸入日期加參數
         if(start_date.value){
-            url = url.replace(default_time_zone,"")
-            console.log(url);
-            url = url + `&filter_order_date=${start_date.value}-${end_date.value}`
+            params['filter_order_date'] = `${start_date.value}-${end_date.value}`
         }
         // 有輸入關鍵字加參數
         if(search_keyword.value){
-            url = url + `&filter_keyword=${search_keyword.value}`
+            params['filter_keyword'] = search_keyword.value
         }
     }
-    // console.log(url);
     try{
-        const res = await fetch(url,{
-             headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
-        
-        if(res.ok){
-            list_data.value = data.response.data
-            data_change_category()
-            console.log(list_data.value);
-            console.log(data_category.value)
-            
-            // for(let i = 0;i<300;i++){
-            //     list_data.value.push(data.response.data[0])
-            // }
-            
-            // console.log(list_data.value);
-            // console.log(data.response);
-             // 設置checkbox 數量
-            checkboxes.value = list_data.value.map(()=>false)
-        }
-
+        const res = await $api.sales.getOrderList(params)
+        list_data.value = res.response.data
+        data_change_category()
+        checkboxes.value = list_data.value.map(()=>false)
     }catch(err){
         console.log('error',err);
     }
-    store.show_loading(false)
 }
 
 const picker_locale = computed(()=>{
@@ -729,17 +607,11 @@ const set_picker = ()=>{
 
 
 const get_status_data = async()=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/resource?locale=${locale.value}`
     try{
-        const res = await fetch(url,{
-             headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const res_data = await res.json()
-        if(res_data.success){
-            status_data.value = res_data.response.statuses
-            status_values.value = Object.keys(res_data.response.statuses)
+        const res = await $api.sales.ordersResource(locale.value)
+        if(res.success){
+            status_data.value = res.response.statuses
+            status_values.value = Object.keys(res.response.statuses)
         }
     }catch (err) {
         console.log(err);

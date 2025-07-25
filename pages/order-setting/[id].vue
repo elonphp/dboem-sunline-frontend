@@ -99,18 +99,12 @@ const data_page = ref(1)
 
 
 const get_data = async()=>{
-    const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${option_code}`
-    try{
-        const res = await fetch(url,{
-            headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        if(res.ok){
-            const res_data =await res.json()
-            data.value = res_data.response
-            // console.log(data.value);
-        }
+  try{
+      const params = {
+        equal_code: option_code
+      }
+      const res = await $api.sales.getCatalogOptionsInfo(params)
+      data.value = res.response
     }catch(err){
         console.log('err',err);
     }
@@ -119,9 +113,7 @@ const get_data = async()=>{
 
 
 const onSubmit = async(values)=>{
-    store.show_loading(true)
     submit_btn_close.value = true
-    console.log(store.userData);
     const submit_data = {
         dealer_id:store.userData.employer_company_id,
         options:values.options
@@ -129,28 +121,10 @@ const onSubmit = async(values)=>{
         // option_values:values.option_values
     }
     try{
-        const url = `${store.baseUrl}api/v2/dealers/option/saveMany`
-        const res = await fetch(url,{
-            method: "POST",
-            headers:{
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.access_token,
-                "X-CLIENT-IPV4":store.userData.loginIpAddress
-            },
-            body: JSON.stringify(submit_data)
-        })
-
-        const res_data = await res.json()
-        if(res.ok && !res_data.error){
-            alert(res_data.success)
-            await get_data()
-            data_page.value++
-            store.show_loading(false)
-            // console.log(data.value);
-        }else{
-            alert(res_data.error)
-        }
-
+        const res = await $api.sales.dealersSaveMany(submit_data)
+        alert(res.success)
+        await get_data()
+        data_page.value++
     }catch(err){
         console.log(err);
     }

@@ -72,5 +72,37 @@ export default () => {
         body
       });
     },
+    ordersCommentsAdd: (body, locale) => {
+      return useHttp.post(`v2/sales/orders/comments/add?locale=${locale}`, {
+        body
+      });
+    },
+    getOrdersCommentsList: (params) => {
+      return useHttp.get(`v2/sales/orders/comments/list`, {
+        params
+      });
+    },
+    getDealersOptionList: (locale) => {
+      return useHttp.get(`v2/dealers/option/list?locale=${locale}`);
+    },
+    dealersSaveMany: (body) => {
+      return useHttp.post(`v2/dealers/option/saveMany`, {
+        body
+      });
+    },
+    ordersCopyOrder: (id) => {
+      return useHttp.post(`v2/sales/orders/copyOrder/${id}`);
+    },
+    ordersDeleteOrder: (id) => {
+      return useHttp.post(`v2/sales/orders/deleteOrder/${id}`);
+    },
+    ordersStatusDealerApproveMany: (body) => {
+      return useHttp.post(`v2/sales/orders/status/dealerApproveMany?locale=zh_Hant`, {
+        body
+      });
+    },
+    ordersResource: (locale) => {
+      return useHttp.get(`v2/sales/orders/resource?locale${locale}`);
+    },
   };
 };

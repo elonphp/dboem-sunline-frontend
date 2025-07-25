@@ -158,22 +158,15 @@ const get_data = async()=>{
 const verify = async (values) =>{
   const email = userinfo.value.email
   const sha256_PW = sha256(values.password.toString())
-  const url = `${store.baseUrl}api/v2/login?email=${email}&password=${sha256_PW}`
   const form_data = {
+    email,
+    password: sha256_PW,
     'google-recaptcha-v3-token':recaptchaToken.value
   }
   try{
-    const res = await fetch(url,{   
-        method: "POST",
-        body:store.jsonToFormData(form_data)
-    });
-    const data = await res.json();
-    if(res.ok){
-       return !data.error
-    }else{
-     alert(t('auth.error_old_password'))
-    }
+    const res = await $api.auth.login(form_data)
   }catch (err) {
+    alert(t('auth.error_old_password'))
     console.log(err);
   }
 }
@@ -200,41 +193,20 @@ const onSubmit = async(values)=>{
 
 // 更新POST
 const update_data = async (values) =>{
-    const url = `${store.baseUrl}api/v2/members/save`
     const sha256_PW = sha256(values.new_password.toString())
     let formData = new FormData();
     formData.append('member_id', userinfo.value.id);
     formData.append('email', userinfo.value.email);
     formData.append('password', sha256_PW);
    try{
-        const res = await fetch(url,{
-            method: "POST",
-            headers: {
-                  "Authorization": "Bearer " + store.userData.access_token,
-                  "X-CLIENT-IPV4":store.userData.loginIpAddress
-            },
-            body: formData
-        });
-        // console.log(res);
-        const data = await res.json();
-        // console.log(data);
-        if(res.ok && !data.error){
-            alert(data.success)
-            store.logout()
-        }else{
-            alert(data.error)
-        }
+        const res = await $api.member.membersSave(formData)
+        alert(res.success)
+        store.logout()
         
     }catch (err) {
-        console.log(err);
+      alert(err)
+      console.log(err);
     }
-}
-
-
-
-
-const get_text = async()=>{
-    
 }
 
 onMounted(()=>{

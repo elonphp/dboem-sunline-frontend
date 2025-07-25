@@ -92,13 +92,11 @@ const Previewing_pw = ()=>{
 // google驗證
 const recaptcha  = async()=>{
   submit_btn.value = true
-  store.show_loading(true)
   await recaptchaLoaded()
   const token = await executeRecaptcha('login')
   recaptchaToken.value = token
   await login()
   submit_btn.value = false
-  store.show_loading(false)
 }
 
 const { setLocale } = useI18n()
@@ -122,55 +120,26 @@ const login = async () =>{
   } catch (error) {
     console.log(error);
   }
-  // try{
-  //   const res = await fetch(url,{
-  //     method: 'POST',
-  //     body: store.jsonToFormData(form_data)
-  //   });
-  //   const data = await res.json();
-  //   if(res.ok && !data.error){
-  //      await store.set_token(data)
-  //      router.push('/home')
-  //   }else{
-  //    alert(data.error)
-  //   }
-  // }catch (err) {
-  //   console.log(err);
-  // }
 }
 
 // 送出忘記密碼信箱
 const send_reset_pw = async () =>{
-  store.show_loading(true)
   submit_btn.value = true
-  const url = `${store.baseUrl}api/v2/password/email`
   let formData = new FormData();
   formData.append('email',reset_pw_email.value)
   try{
-    const res = await fetch(url,{
-      method: "POST",
-      body:formData
-    })
-     const data = await res.json();
-    if (res.ok) {
+    const res = await $api.member.resetPasswordEmail(formData)
+    if (res.success) {
       reset_pw_submit_ok.value = true;
       // 設置訊息
-      ok_msg.value = data.success
+      ok_msg.value = res.success
       error_msg.value = ""
-    }else{
-      // 錯誤則返回錯誤訊息
-      error_msg.value = data.error
     }
   } catch (err) {
     console.log(err);
   }
 
   submit_btn.value = false
-  store.show_loading(false)
 }
-
-onMounted(async()=>{
-  store.show_loading(false)
-})
 
 </script>

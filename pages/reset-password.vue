@@ -123,7 +123,6 @@
 
   const onSubmit = async()=>{
     submit_btn_close.value = true
-    const url = `${store.baseUrl}api/v2/password/update`
     const sha256_PW = sha256(new_password.value.toString())
     let formData = new FormData();
     formData.append('email', email.value);
@@ -131,21 +130,9 @@
     formData.append('password', sha256_PW);
     formData.append('password_confirmation', sha256_PW);
     try{
-        const res = await fetch(url,{
-            method: "POST",
-            headers: {
-                  "Authorization": "Bearer " + store.userData.access_token,
-                  "X-CLIENT-IPV4":store.userData.loginIpAddress
-            },
-            body: formData
-        });
-        // console.log(res);
-        const data = await res.json();
-        // console.log(data);
-        if(res.ok){
-          msg.value = data
-          $j('#open_modal').click()
-        }
+        const res = await $api.member.passwordUpdate(formData)
+        msg.value = res
+        $j('#open_modal').click()
     }catch (err) {
       console.log(err);
     }

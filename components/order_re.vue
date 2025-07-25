@@ -4008,10 +4008,15 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 
 // API ------------------------------------------------>
 const get_order_data = async()=>{
-  const url = `${store.baseUrl}api/v2/catalog/options/list?locale=${locale.value}&limit=0&details=1`
-  const data = await store.get_api(url)
+  try {
+    const params = {
+    locale: locale.value,
+    limit: 0,
+    details: 1
+  }
+  const res = await $api.sales.getCatalogOptions(params)
 
-  order_data.value = data.data
+  order_data.value = res.response.data
 
   // 把所有選項的code賦予空值，綁定v-model雙向控制
   Object.values(order_data.value).forEach(item=>{
@@ -4027,7 +4032,10 @@ const get_order_data = async()=>{
   data_val.value[order_data.value.corner_angle.code] = []   // 轉角窗角度
 
   // 圖片
-  data_val.value[order_data.value.attached_images.code] = []
+  data_val.value[order_data.value.attached_images.code] = [] 
+  } catch (error) {
+    console.log(error, 'get_order_data');
+  }
 }
 
 
@@ -4041,36 +4049,38 @@ const get_design_data = async (id) => {
   if(!order_id){
     data_id.value[order_data.value.win_stdwin_subtype.code] = []
   }
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${id}`
-  const data = await store.get_api(url)
-  console.log(data)
-  design_data.value.design = data.option_group_suboptions.win_type
-  get_material_color()
+  try {
+    const params = {
+      locale: locale.value,
+      equal_option_value_ids: id
+    }
+    const res = await $api.sales.getCatalogOptionGroups(params)
+    design_data.value.design = res.response.option_group_suboptions.win_type
+    get_material_color()
+  } catch (error) {
+    console.log(error, 'get_design_data');
+  }
 
   // 窗型/軌道型子選項資料
   if (design_data.value.design.option_group_suboption_values) {
-    // 跑迴圈抓個別資料
     const design_type  = design_data.value.design.option_group_suboption_values.map(async(item) => {
-      const url_2 = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${id},${item.option_value_id}`
       try {
-        const requests = await fetch(url_2,{
-          headers:{
-            "Authorization": "Bearer " + store.userData.access_token
+        // 跑迴圈抓個別資料
+        const params = {
+          locale: locale.value,
+          equal_option_value_ids: `${id},${item.option_value_id}`
         }
-        })
-        if(requests.ok){
-          const data = await requests.json()
-          
-          // 外框(窗型才有) (2004 = 窗型)
-          if(item.option_value_id == 2004){
-            get_outer_frame()
-          }
-          // 窗型跟軌道型子選項
-          const track = data.response.option_group_suboptions.win_track_subtype
-          const window = data.response.option_group_suboptions.win_win_subtype
+        const res = await $api.sales.getCatalogOptionGroups(params)          
+        // 外框(窗型才有) (2004 = 窗型)
+        if(item.option_value_id == 2004){
+          get_outer_frame()
+        }
+        // 窗型跟軌道型子選項
+        const track = res.response.option_group_suboptions.win_track_subtype
+        const window = res.response.option_group_suboptions.win_win_subtype
 
-          return track? track:window
-        }
+        return track? track:window
+        
       }catch(err){
         console.log(err);
         return null; 
@@ -4107,65 +4117,87 @@ const default_val = ()=>{
 // 材質顏色
 const get_material_color = async ()=>{
   const code = material_code.value + '_color' //取的材質的code來抓對應的材質顏色
-  const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
-  const data = await store.get_api(url)
-  const colors = data
-  if(colors){
-    material_color.value = colors
-  }else{
-    alert('該材質顏色未授權\n You are not permitted to use this material color.')
+  try {    
+    const params = {
+      equal_code: code
+    }
+    const res = await $api.sales.getCatalogOptionsInfo(params)
+    const colors = res.response
+    if(colors){
+      material_color.value = colors
+    }else{
+      alert('該材質顏色未授權\n You are not permitted to use this material color.')
+    }
+  } catch (error) {
+    console.log(error, 'get_material_color');
   }
 }
 // 外框
 const get_outer_frame = async ()=>{
   const code = material_code.value + '_win_frame' //取的材質的code來抓對應的材質顏色
-  const url = `${store.baseUrl}api/v2/catalog/options/info?equal_code=${code}`
-  const data = await store.get_api(url)
-  const outer_frames = data
-  if(outer_frames){
-    doorType_outerFrame.value = outer_frames
-  }else{
-    // alert('該材質外框未授權')
+  try {    
+    const params = {
+      equal_code: code
+    }
+    const res = await $api.sales.getCatalogOptionsInfo(params)
+    const outer_frames = res.response
+    if(outer_frames){
+      doorType_outerFrame.value = outer_frames
+    }
+  } catch (error) {
+    console.log(error, 'get_outer_frame');
   }
 }
 // 把手顏色
 const get_handle_color = async (e) => {
   const selectedId = e?.target?.value || e;
   handle_color.value = []
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${selectedId}`
-  const data = await store.get_api(url)
-  if(!data.error){
-    const handleColorValue = Object.values(data.option_group_suboptions)[0]
-    
+  try {
+    const params = {
+      locale: locale.value,
+      equal_option_value_ids: selectedId
+    }
+    const res = await $api.sales.getCatalogOptionGroups(params)
+    const handleColorValue = Object.values(res.response.option_group_suboptions)[0]
     if (handleColorValue) {
       handle_color.value = handleColorValue;
     }
-
+  } catch (error) {
+    console.log(error, 'get_handle_color')
   }
 };
 // 鎖顏色
 const get_lock_color = async (e) => {
   const selectedId = e?.target?.value || e;
   lock_color.value = []
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${selectedId}`;
-  const data = await store.get_api(url)
-  if(!data.error){
-    const lockColorValue = Object.values(data.option_group_suboptions)[0]
-
+  handle_color.value = []
+  try {    
+    const params = {
+      locale: locale.value,
+      equal_option_value_ids: selectedId
+    }
+    const res = await $api.sales.getCatalogOptionGroups(params)
+    const lockColorValue = Object.values(res.response.option_group_suboptions)[0]
     if (lockColorValue) {
         lock_color.value = lockColorValue;
     }
-    
+  } catch (error) {
+    console.log(error, 'get_lock_color');
   }
 };
 // 下軌道顏色 && 飾板高度
 const get_door_track = async () => {
   const design = data_id.value[selected_win_style.value]
-  const url = `${store.baseUrl}api/v2/catalog/option_groups/info?locale=${locale.value}&equal_option_value_ids=${design}`;
-  const data = await store.get_api(url)
-  if(!data.error){
-    doorType_height.value = data.option_group_suboptions.decorative_pane_height
-    doorType_track.value = data.option_group_suboptions.door_down_track;
+  try {    
+    const params = {
+      locale: locale.value,
+      equal_option_value_ids: design
+    }
+    const res = await $api.sales.getCatalogOptionGroups(params)
+    doorType_height.value = res.response.option_group_suboptions.decorative_pane_height
+    doorType_track.value = res.response.option_group_suboptions.door_down_track;
+  } catch (error) {
+    console.log(error, 'get_door_track');
   }
 };
 
@@ -4177,74 +4209,76 @@ const get_product_data = async () => {
   
 
   if (order_id && product_id) {
-    const url =  `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${locale.value}`
-    const data = await store.get_api(url);
-    const order = data.order_products.find(item => item.id == product_id);  // 查找商品資料
-
-    const handle_type = order_data.value.door_handle_type.code;
-    const lock_type = door_lock_type_data.value.code;
-
-    // 處理商品選項
-    Object.keys(order.order_product_options).forEach(key => {
-      const option = order.order_product_options[key];
-
-      // 更新 data_id
-      data_id.value[key] = option.type === 'checkbox'? option.option_values.map(item => item.option_value_id):option.option_value_id;
-      
-      // 處理選項值類型
-      if(option.type == 'checkbox'){
-        data_val.value[key] = option.option_values[0].value
-      }else if(option.type == 'json'){
-        if(option.value !== 'undefined'){
-          data_val.value[key] = JSON.parse(option.value)
+    try {      
+      const res = await $api.sales.ordersInfoById(order_id, locale.value)
+      const order = res.response.order_products.find(item => item.id == product_id);  // 查找商品資料
+      const handle_type = order_data.value.door_handle_type.code;
+      const lock_type = door_lock_type_data.value.code;
+  
+      // 處理商品選項
+      Object.keys(order.order_product_options).forEach(key => {
+        const option = order.order_product_options[key];
+  
+        // 更新 data_id
+        data_id.value[key] = option.type === 'checkbox'? option.option_values.map(item => item.option_value_id):option.option_value_id;
+        
+        // 處理選項值類型
+        if(option.type == 'checkbox'){
+          data_val.value[key] = option.option_values[0].value
+        }else if(option.type == 'json'){
+          if(option.value !== 'undefined'){
+            data_val.value[key] = JSON.parse(option.value)
+          }
+        }else if(option.type == 'images'){
+          data_val.value[key] = option.option_values
+        }else if(option.type == 'select'){        
+          // data_val.value[key] = option.option_value_id
+          data_val.value[key] = option.value
+        }else{
+          data_val.value[key] = option.value
         }
-      }else if(option.type == 'images'){
-        data_val.value[key] = option.option_values
-      }else if(option.type == 'select'){        
-        // data_val.value[key] = option.option_value_id
-        data_val.value[key] = option.value
+  
+        // 把手和鎖的顏色
+        if (key === handle_type) {
+          get_handle_color(data_id.value[handle_type]);
+        } else if (key === lock_type) {
+          get_lock_color(data_id.value[lock_type]);
+        }
+      });
+  
+      // 更新數量與備註
+      data_val.value.quantity = order.quantity;
+      data_val.value.note = order.note;
+      
+      
+      // 執行API獲取款式數據
+      await get_design_data(data_id.value[order_data.value.win_material.code]);
+      
+      // 多選checkbox 沒綁定v-model所以需手動設定
+        // 窗戶類型
+      const stdwin_type = data_id.value[order_data.value.win_stdwin_subtype.code]
+      order_form.value.setFieldValue("win_stdwin_subtype.option_value_id", stdwin_type);
+        // 切窗台
+      const outer_frame_cut_position = data_id.value[order_data.value.outer_frame_cut_position.code]
+      order_form.value.setFieldValue("outer_frame_cut_position.option_value_id", outer_frame_cut_position);
+      
+      // 不可編輯
+      const order_state = data.status_code 
+      if(view){
+        examine_mode()
       }else{
-        data_val.value[key] = option.value
+        switch(order_state) {
+          case 'Draft':
+            return
+          case 'Pending':
+            store.is_dealer? null:examine_mode()
+            return
+          default:
+            examine_mode()
+        }
       }
-
-      // 把手和鎖的顏色
-      if (key === handle_type) {
-        get_handle_color(data_id.value[handle_type]);
-      } else if (key === lock_type) {
-        get_lock_color(data_id.value[lock_type]);
-      }
-    });
-
-    // 更新數量與備註
-    data_val.value.quantity = order.quantity;
-    data_val.value.note = order.note;
-    
-    
-    // 執行API獲取款式數據
-    await get_design_data(data_id.value[order_data.value.win_material.code]);
-    
-    // 多選checkbox 沒綁定v-model所以需手動設定
-      // 窗戶類型
-    const stdwin_type = data_id.value[order_data.value.win_stdwin_subtype.code]
-    order_form.value.setFieldValue("win_stdwin_subtype.option_value_id", stdwin_type);
-      // 切窗台
-    const outer_frame_cut_position = data_id.value[order_data.value.outer_frame_cut_position.code]
-    order_form.value.setFieldValue("outer_frame_cut_position.option_value_id", outer_frame_cut_position);
-    
-    // 不可編輯
-    const order_state = data.status_code 
-    if(view){
-      examine_mode()
-    }else{
-      switch(order_state) {
-        case 'Draft':
-          return
-        case 'Pending':
-          store.is_dealer? null:examine_mode()
-          return
-        default:
-          examine_mode()
-      }
+    } catch (error) {
+      console.log(error, 'get_product_data');
     }
   }
 };
@@ -4379,38 +4413,19 @@ const onSubmit = async(values) => {
   if(product_id){
     submit_data.order_product_id = product_id
   }
-  // 轉成formdata
-  const news_form_data = store.jsonToFormData(submit_data)
-  
-  const url = `${store.baseUrl}api/v2/sales/orders/product/save`
-      try {
-          const res = await fetch(url, {
-              method: "POST",
-              headers: {
-                  "Authorization": "Bearer " + store.userData.access_token,
-                  "X-CLIENT-IPV4":store.userData.loginIpAddress
-              },
-              body: news_form_data
-          })
-          const data = await res.json()
-          if(res.ok){
-            console.log(data);
-            // material=${submit_data.material} 是列表頁要更新主要材質用的
-            router.push(`/order-list/item?id=${order_id}&material=${submit_data.material}`)
-          }
-      } catch (err) {
-          console.log('error', err);
-      }
+  try {
+    await $api.sales.productSave(submit_data)
+    // material=${submit_data.material} 是列表頁要更新主要材質用的
+    router.push(`/order-list/item?id=${order_id}&material=${submit_data.material}`)
+  } catch (err) {
+      console.log('error', err);
+  }
 };
-
-
-store.show_loading(true)
 
 onMounted(async() => {
   window.addEventListener("scroll", handleScroll); //監聽側邊欄目前位置
   await get_order_data()
   await get_product_data()
-  store.show_loading(false)
 });
 
 

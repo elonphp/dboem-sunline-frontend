@@ -231,8 +231,6 @@ const prev_page = computed(()=>{
 
 
 const onSubmit = async(values)=>{
-    store.show_loading(true)
-    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${locale.value}`
     const data = {
         // 運送方式
         delivery_method:values.delivery_method,
@@ -277,29 +275,17 @@ const onSubmit = async(values)=>{
     }
     // console.log(data);
     try{
-        const res = await fetch(url,{
-            method:"POST",
-            headers:{
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + userData.value.access_token,
-                "X-CLIENT-IPV4":userData.value.loginIpAddress
-            },
-            body:JSON.stringify(data)
-        })
-        const res_data = await res.json()
-        // console.log(res);
-        // console.log(res_data);
-        if(res.ok && order_id ){
+      const res = await $api.sales.saveOrderHeader(data, locale.value)
+        if(order_id){
             // 路由參數有id則返回列表頁
-            router.push(`/order-list/item?id=${order_id}`)
-        }else if(res.ok && res_data.order_id){
+            router.replace(`/order-list/item?id=${order_id}`)
+        }else if(res.order_id){
             // 則往新增頁
-            router.push(`create_order/order?id=${res_data.order_id}`)
+            router.replace(`create_order/order?id=${res.order_id}`)
         }
     }catch(err){
         console.log(err);
     }
-    store.show_loading(false)
 }
 
 // 會員資料
@@ -307,17 +293,14 @@ const { $j } = useNuxtApp()
 
 // 訂單資料
 const get_order_data = async()=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
+  const params = {
+    locale: locale.value,
+    equal_id: order_id
+  }
     try{
-        const res = await fetch(url,{
-            headers:{
-                "Authorization": "Bearer " + userData.value.access_token
-            },
-        })
-        const res_data = await res.json()
-        if(res.ok && res_data.success){
+      const res = await $api.sales.ordersInfo(params)
+        if(res.success){
           order_info.value = res_data.response
-          console.log(order_info.value);
             // 不是草稿且有訂單id則不能修改
             if (!is_Draft.value && order_id) {
                 nextTick(() => {

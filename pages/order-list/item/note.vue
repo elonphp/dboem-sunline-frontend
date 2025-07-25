@@ -199,33 +199,24 @@ const get_user_data = async () => {
 }
 
 const get_data = async () => {
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
-    try {
-        const res = await fetch(url, {
-            headers: {
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
-        if (res.ok) {
-            order_info.value = data.response
-            // console.log('order', order_info.value);
-        }
-    } catch (err) {
-        console.log('error', err);
+  try {
+    const params = {
+      locale: locale.value,
+      equal_id: order_id
     }
+
+      const res = await $api.sales.ordersInfo(params)
+      order_info.value = res.response
+      
+  } catch (err) {
+      console.log('get_data', err);
+  }
 }
 
 // 留言已讀
 const set_read = async ()=>{
-    const url =`${store.baseUrl}api/v2/sales/orders/comments/clearCommentCount?order_id=${order_id}`
     try{
-        const res =  await fetch(url,{
-            headers: {
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
+        await $api.sales.ordersCommentsClearCommentCount(order_id)
     }catch(err){
         console.log('error');
     }

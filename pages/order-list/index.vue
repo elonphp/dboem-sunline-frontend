@@ -468,19 +468,15 @@ const del_data = async(id)=>{
 
 // 獲取該筆訂單資訊
 const get_order_data = async(id)=>{
-    const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${id}`
-    try{
-        const res = await fetch(url,{
-            headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
-        if(res.ok){
-            return data.response
-        }
+  try{
+      const params = {
+        locale: locale.value,
+        equal_id: id
+      }
+      const res = await $api.sales.ordersInfo(params)
+      return res.response
     }catch(err){
-        console.log('error',err);
+        console.log('get_order_data',err);
     }
 }
 

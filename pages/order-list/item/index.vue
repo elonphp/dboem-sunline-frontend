@@ -226,25 +226,12 @@ const show_data = computed(()=>{
 
 // 複製
 const copy_product = async(item)=>{
-    store.show_loading(true)
-    const url = `${store.baseUrl}api/v2/sales/orders/copyOrderProduct/${item.id}`
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: ""
-            })
-            const data = await res.json()
-            if(res.ok){
-                alert(data.success)
-                await up_date()
-                store.show_loading(false)
-            }
+            const res = await $api.sales.ordersCopyOrderProduct(item.id)
+            alert(res.success)
+            await up_date()
         } catch (err) {
-            console.log('error', err);
+            console.log('copy_product', err);
         }
         await get_data()
 }
@@ -255,9 +242,6 @@ const delete_product = async(item)=>{
     // 顯示確認視窗，詢問是否要刪除
     const confirmed = confirm(t('order.text_confirm_delete'));
     if (!confirmed) return;
-
-    // 顯示 loading 畫面
-    store.show_loading(true);
 
     // 儲存要刪除的商品 ID
     let del_item_ids = [];
@@ -277,41 +261,25 @@ const delete_product = async(item)=>{
 
     // 逐筆執行刪除
     for (const id of del_item_ids) {
-        const url = `${store.baseUrl}api/v2/sales/orders/deleteOrderProduct/${order_id}/${id}`;
-
         try {
             // 發送 POST 請求進行刪除
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: ""
-            });
-
-            const data = await res.json();
-            
-
+            const res = await $api.sales.ordersDeleteOrderProduct(order_id, id)
             // 若成功，顯示一次成功訊息（可視需求取消或修改）
-            if (res.ok && data.success) {
+            if (res.success) {
                 // alert(data.success);
-                lastSuccessMessage = data.success;
+                lastSuccessMessage = res.success;
             }else {
-                lastSuccessMessage = data.message;
+                lastSuccessMessage = res.message;
             }
             
         } catch (err) {
             // 發生錯誤時印出錯誤訊息到 console（開發用）
-            console.error('刪除失敗', err);
+            console.error(`刪除失敗${id}`, err);
         }
     }
 
     // 刪除完成後重新取得資料
     await up_date()
-
-    // 關閉 loading 畫面
-    store.show_loading(false);
 
     if (lastSuccessMessage) {
         alert(lastSuccessMessage);
@@ -323,30 +291,18 @@ const delete_product = async(item)=>{
 const submit_review = async () => {
     const confirmed = confirm(t('order.text_confirm_submit'))
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/apply?locale=${locale.value}`
         const formData = {
             order_id: order_id
         }
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json()
-            if(res.ok){
-                alert(data.success)
+            const res = await $api.sales.ordersApply(formData, locale.value)
+            if (res.success) {
+              alert(res.success)
             }
         } catch (err) {
-            console.log('error', err);
+            console.log('submit_review', err);
         }
         await get_data()
-        store.show_loading(false)
-
     }
 }
 
@@ -354,32 +310,20 @@ const submit_review = async () => {
 const return_review = async () => {
     const confirmed = confirm(t('order.text_confirm_return'))
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerReturn/${order_id}?locale=${locale.value}`
         const formData = {
             status_code: order_info.value.status_code
         }
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json()
-            if(data.success){
-                alert(data.success);
-            }else if (data.error){
-                alert(data.error.status_code)
+            const res = await $api.sales.ordersStatusDealerReturn(formData, order_id, locale.value)
+            if(res.success){
+                alert(res.success);
+            }else if (res.error){
+                alert(res.error.status_code)
             }
         } catch (err) {
-            console.log('error', err);
+            console.log('return_review', err);
         }
         await get_data()
-        store.show_loading(false)
-
     }
 }
 
@@ -388,54 +332,31 @@ const submit_corporate = async ()=>{
     const confirmed = confirm(t('order.text_confirm_send'))
     approve_excel()
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/status/dealerApprove/${order_id}?locale=${locale.value}`
         const formData = {
             status_code: order_info.value.status_code
         }
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: JSON.stringify(formData)
-            })
-            const data = await res.json()
-            // console.log(res);
-            // console.log(data);
-            if(res.ok){
-                alert(data.success)
+            const res = await $api.sales.ordersStatusDealerApprove(formData, order_id, locale.value)
+            if(res.success){
+                alert(res.success)
             }
         } catch (err) {
-            console.log('error', err);
+            console.log('submit_corporate', err);
         }
         await get_data()
-        store.show_loading(false)
-
     }
 }
 // 寄信
 const approve_excel = async()=>{
     const excel = store.exportTable(order_info.value,'mail')
-    const url = `${store.baseUrl}api/v2/sales/orders/saveExcel?locale=${locale.value}`
     const formData = new FormData
     formData.append("order_id",order_info.value.id)
     formData.append("order_code",order_info.value.code)
     formData.append("order-excel",excel)
     try{
-        const res = await fetch(url,{
-            method:"POST",
-            headers: {
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-            body: formData
-        })
-        const data = await res.json()
-        // console.log(data);
+        await $api.sales.ordersSaveExcel(formData, locale.value)
     }catch (err) {
-            console.log('error', err);
+        console.log('approve_excel', err);
     }
 }
 
@@ -445,36 +366,24 @@ const approve_excel = async()=>{
 const delete_order = async()=>{
     const confirmed =  confirm(t('order.text_confirm_delete'))
     if (confirmed) {
-        store.show_loading(true)
-        const url = `${store.baseUrl}api/v2/sales/orders/destroyMany`
         let del_order = {
             'selected[]': order_id,
         }
-        del_order = store.jsonToFormData(del_order)
         try {
-            const res = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + store.userData.access_token
-                },
-                body: del_order
-            })
-            const data = await res.json()
-            if (res.ok && data.success) {
-                alert(data.success)
+            const res = await $api.sales.ordersDestroyMany(del_order)
+            if (res.success) {
+                alert(res.success)
                 router.push('/order-list')
             }
         } catch (err) {
-            console.log('error', err);
+            console.log('delete_order', err);
         }
-        store.show_loading(false)
     }
 }
 
 // 更新資料
 const up_date = async () => {
     await get_data()
-    const url = `${store.baseUrl}api/v2/sales/orders/header/save?locale=${locale.value}`
     const data = {...order_info.value}
     console.log(data);
     // 如果目前沒有材質則從網址路徑抓
@@ -493,16 +402,7 @@ const up_date = async () => {
 
     
     try{
-        const res = await fetch(url,{
-            method:"POST",
-            headers:{
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + store.userData.access_token,
-                "X-CLIENT-IPV4":store.userData.loginIpAddress
-            },
-            body:JSON.stringify(data)
-        })
-        const res_data = await res.json()
+        await $api.sales.saveOrderHeader(data, locale.value)
         // 更新完如果網址路徑還有材質的code則清空網址路徑
         if(route.query.material){
             router.push(`/order-list/item?id=${order_id}`)
@@ -516,25 +416,17 @@ const up_date = async () => {
 
 
 const get_data = async()=>{
-    // const url = `${store.baseUrl}api/v2/sales/orders/info?locale=${locale.value}&equal_id=${order_id}`
-    const url = `${store.baseUrl}api/v2/sales/orders/info/${order_id}?locale=${locale.value}`
     try{
-        const res = await fetch(url,{
-            headers:{
-                "Authorization": "Bearer " + store.userData.access_token
-            }
-        })
-        const data = await res.json()
-        if(res.ok){ 
-                order_info.value = data.response
-                list_data.value = data.response.order_products
-                // console.log('get',list_data.value);
-                // console.log('order',order_info.value);
-                // 設置checkbox 數量
-                checkboxes.value = list_data.value.map(()=>false)
-        }
+      const res = await $api.sales.ordersInfoById(order_id, locale.value)        
+      order_info.value = res.response
+      list_data.value = res.response.order_products
+      // console.log('get',list_data.value);
+      // console.log('order',order_info.value);
+      // 設置checkbox 數量
+      checkboxes.value = list_data.value.map(()=>false)
+        
     }catch(err){
-        console.log('error',err);
+        console.log('get_data',err);
         // router.push('/error')
     }
     
@@ -545,16 +437,9 @@ const exportTable = ()=>{
 }
 
 
-
-
-
-store.show_loading(true)
-
 onMounted(async()=>{
     await get_data()
     await up_date()
-    store.show_loading(false)
-    
 })
 
 </script>

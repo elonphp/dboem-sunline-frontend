@@ -72,6 +72,9 @@ export default () => {
         body
       });
     },
+    ordersDestroy: (id) => {
+      return useHttp.post(`v2/sales/orders/destroy/${id}`);
+    },
     ordersCommentsAdd: (body, locale) => {
       return useHttp.post(`v2/sales/orders/comments/add?locale=${locale}`, {
         body

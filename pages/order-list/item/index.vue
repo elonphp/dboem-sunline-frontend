@@ -366,11 +366,8 @@ const approve_excel = async()=>{
 const delete_order = async()=>{
     const confirmed =  confirm(t('order.text_confirm_delete'))
     if (confirmed) {
-        let del_order = {
-            'selected[]': order_id,
-        }
         try {
-            const res = await $api.sales.ordersDestroyMany(del_order)
+            const res = await $api.sales.ordersDestroy(order_id)
             if (res.success) {
                 alert(res.success)
                 router.push('/order-list')

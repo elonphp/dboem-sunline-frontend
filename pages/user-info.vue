@@ -145,11 +145,8 @@ const form_data = ref({
 
 
 const get_data = async()=>{
-    store.show_loading(true)
     const data = await store.get_user_data()
-    userinfo.value = data
-    // console.log(userinfo.value);
-    store.show_loading(false)
+    userinfo.value = data.response
 }
 
 

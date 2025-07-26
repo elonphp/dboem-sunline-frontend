@@ -300,7 +300,7 @@ const get_order_data = async()=>{
     try{
       const res = await $api.sales.ordersInfo(params)
         if(res.success){
-          order_info.value = res_data.response
+          order_info.value = res.response
             // 不是草稿且有訂單id則不能修改
             if (!is_Draft.value && order_id) {
                 nextTick(() => {

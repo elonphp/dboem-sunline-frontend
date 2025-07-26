@@ -2,7 +2,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const store = useStore()
   store.method_nav  = false
   const isLogin = useCookie('token_data').value
-  console.log(isLogin);
   
   // console.log(store.is_login, 'is_login', to);
   

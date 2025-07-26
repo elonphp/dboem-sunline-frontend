@@ -4414,7 +4414,8 @@ const onSubmit = async(values) => {
     submit_data.order_product_id = product_id
   }
   try {
-    await $api.sales.productSave(submit_data)
+    const news_form_data = store.jsonToFormData(submit_data)
+    await $api.sales.productSave(news_form_data)
     // material=${submit_data.material} 是列表頁要更新主要材質用的
     router.push(`/order-list/item?id=${order_id}&material=${submit_data.material}`)
   } catch (err) {

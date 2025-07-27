@@ -15,4 +15,6 @@
 <script setup>
 const store = useStore()
 const { locale } = useI18n()
+const { $setValidationLocale } = useNuxtApp();
+$setValidationLocale(locale.value);
 </script>

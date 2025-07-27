@@ -43,7 +43,7 @@ configure({
   }),
 });
 
-setLocale("zh_Hant");
+// setLocale("zh_Hant");
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.provide('setValidationLocale', setLocale);

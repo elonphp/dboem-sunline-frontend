@@ -7,7 +7,6 @@ export default defineNuxtConfig({
   devtools: { 
     enabled: true
    },
-   ssr: false,
 
   devServer: process.env.HTTPS === 'true' ? {
    https: {

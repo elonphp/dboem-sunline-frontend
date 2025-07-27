@@ -6,7 +6,7 @@
     <div class="d-flex align-items-center gap-3">
       <!-- <button type="button" @click="logout" v-show="is_login">登出</button> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2">
-        <label for="">{{header_txt}}：</label>
+        <label for="">{{ $t('default.language') }}：</label>
         <div class="d-flex">
           <select class="form-select me-4" @change="change_language" v-model="selectLang">
             <option value="en">English</option>
@@ -70,11 +70,6 @@ const is_reset_password = computed(()=>{
 // 角色
 const role = computed(()=>{
   return Object.values(store.role)[0] || ""
-})
-
-// header語言切換的語言字
-const header_txt = computed(()=>{
-  return lang.value == 'en'? "Language":"語言"
 })
 
 // 登出

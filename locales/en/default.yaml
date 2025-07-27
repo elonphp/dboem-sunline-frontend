@@ -106,3 +106,4 @@ default:
   text_upload: "Upload"
   text_view: "View"
   text_yes: "Yes"
+  language: "Language"

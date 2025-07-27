@@ -106,3 +106,4 @@ default:
   text_upload: "上傳"
   text_view: "檢視"
   text_yes: "是"
+  language: "語言"

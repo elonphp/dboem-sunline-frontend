@@ -38,6 +38,11 @@ export default () => {
         body,
       });
     },
+    productSave2: (body, locale) => {
+      return useHttp.post(`v2/sales/orders/product/save2?locale=${locale}`, {
+        body,
+      });
+    },
     ordersCommentsClearCommentCount: (order_id) => {
       return useHttp.get(`v2/sales/orders/comments/clearCommentCount?order_id=${order_id}`);
     },

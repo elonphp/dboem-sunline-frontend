@@ -4334,7 +4334,7 @@ const onInvalidSubmit = ({ values, errors, results }) =>{
 }
 // 通過驗證
 const onSubmit = async(values) => {
-  await store.refresh_token();  //驗證token
+  // await store.refresh_token();  //驗證token
   const order_id = route.query.id   //訂單ID
   const product_id = route.query.product  //商品ID
   const quantity = values.quantity     // 數量
@@ -4417,11 +4417,29 @@ const onSubmit = async(values) => {
   if(product_id){
     submit_data.order_product_id = product_id
   }
+  // const submit_data = {
+  //   note,
+  //   product_data: {
+  //     name:new_values.win_material.value + new_values.win_type.value + new_values[selected_win_style.value].value,
+  //     order_id:order_id,
+  //     order_product_options: {
+  //       en: new_values,
+  //       zh_Hant: new_values
+  //     }
+  //   },
+  // }
+  // if(product_id){
+  //   submit_data.product_data.order_product_id = product_id
+  // }
+  // const formData = new FormData()
+  // formData.append('note', submit_data.note)
+  // formData.append('product_data', JSON.stringify(submit_data.product_data))
   try {
     const news_form_data = store.jsonToFormData(submit_data)
     await $api.sales.productSave(news_form_data)
+    // await $api.sales.productSave2(formData, locale.value)
     // material=${submit_data.material} 是列表頁要更新主要材質用的
-    router.push(`/order-list/item?id=${order_id}&material=${submit_data.material}`)
+    router.push(`/order-list/item?id=${order_id}&material=${material_code.value}`)
   } catch (err) {
       console.log('error', err);
   }

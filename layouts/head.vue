@@ -52,6 +52,7 @@ const changeLang = () => {
 }
 watch(lang, () => {
   selectLang.value = lang.value
+  changeLang()
 })
 
 const { $setValidationLocale } = useNuxtApp();

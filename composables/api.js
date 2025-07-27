@@ -49,6 +49,9 @@ const fetch = $fetch.create({
 
     // 3. 其他狀態照常處理
     if (response.status === 200) {
+      if (response._data?.success === false || response._data?.error) {
+        return Promise.reject(response._data)
+      }
       return response
     }
     return Promise.reject(response._data)

@@ -115,7 +115,8 @@ const login = async () =>{
       expires: dayjs(res.expires_at).toDate()
     }).value = JSON.stringify(res)
     await nextTick()
-    await store.get_user_data()
+    const is_first_login = true
+    await store.get_user_data(is_first_login)
     router.push('/home')
   } catch (error) {
     console.log(error);

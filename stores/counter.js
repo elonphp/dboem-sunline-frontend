@@ -68,10 +68,10 @@ export const useStore = defineStore('counter', () => {
         
     }
 
-    const get_user_data = async () => {
+    const get_user_data = async (is_first_login = false) => {
         const params = {
-          locale: lang.value,
-          equal_id: useCookie('token_data').value?.member_id
+            locale: lang.value,
+            equal_id: useCookie('token_data').value?.member_id
         }
         try {
             const res = await $api.member.getMemberInfo(params)
@@ -79,6 +79,10 @@ export const useStore = defineStore('counter', () => {
             //  角色
             role.value = res.response.roles
             userData.value = res.response
+            if (lang.value !== res.response.locale && is_first_login) {
+                lang.value = res.response.locale
+            }
+
             //  上級
             return res
             

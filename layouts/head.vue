@@ -90,7 +90,7 @@ const change_language = async()=>{
   // 語言檔
   changeLang()
   // 重新渲染主要頁面
-  store.pageKey++
+  // store.pageKey++
   // 重新獲取會員資料(右上角會員名字用)
 }
 

@@ -3044,6 +3044,10 @@ import AuxiliaryInfoImg from '@/assets/images/auxiliary_info_img.jpg'
 const { validate,validateField,errors, } = useForm();//驗證套件
 
 const { t, locale } = useI18n()
+watch(locale, () => {
+  // 切換語言就強制重整頁面
+  location.reload(true)
+})
 
 const route = useRoute()
 const router = useRouter()

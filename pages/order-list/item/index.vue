@@ -435,7 +435,6 @@ const exportTable = ()=>{
 
 
 onMounted(async()=>{
-    await get_data()
     await up_date()
 })
 

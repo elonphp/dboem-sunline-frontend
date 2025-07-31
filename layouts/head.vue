@@ -16,7 +16,7 @@
       </div>
       <!-- <div style="font-size: 24px;">Cookie:{{ lang }}</div>
       <div style="font-size: 24px;">selectLang:{{ selectLang }}</div> -->
-      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="store.userData">
+      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="isLogin && store.userData">
         <label class="w-100">{{ role }}：</label>
         <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
           <span>{{ store.userData.name }}</span>
@@ -43,6 +43,7 @@
 <script setup>
 
 const lang = useCookie('i18n_redirected')
+const isLogin = useCookie('token_data')
 const selectLang = ref(lang.value)
 const route = useRoute()
 const store = useStore()
@@ -82,7 +83,7 @@ const logout = ()=> {
 // 換語言
 const change_language = async()=>{
   // 設定驗證套件語言
-  $setValidationLocale(lang.value);
+  $setValidationLocale(selectLang.value);
   // 語言檔
   changeLang()
   // 重新渲染主要頁面

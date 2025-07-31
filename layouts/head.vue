@@ -16,23 +16,25 @@
       </div>
       <!-- <div style="font-size: 24px;">Cookie:{{ lang }}</div>
       <div style="font-size: 24px;">selectLang:{{ selectLang }}</div> -->
-      <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="isLogin && store.userData">
-        <label class="w-100">{{ role }}：</label>
-        <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
-          <span>{{ store.userData.name }}</span>
-          <ul v-show="store.method_nav ">
-            <li @click="store.method_nav = !store.method_nav">
-              <nuxt-link to="/user-info">{{ $t('default.text_basic_information') }}</nuxt-link>
-            </li>
-            <li @click="store.method_nav = !store.method_nav">
-              <nuxt-link to="/">{{ $t('default.text_return_home') }}</nuxt-link>
-            </li>
-            <li @click="store.method_nav = !store.method_nav">
-              <button type="button" @click="logout" v-show="store.is_login">{{ $t('auth.text_logout') }}</button>
-            </li>
-          </ul>
+      <client-only>
+        <div class="flex-shrink-0 d-flex align-items-center gap-2" v-if="isLogin && store.userData">
+          <label class="w-100">{{ role }}：</label>
+          <div class="method_nav form-select" @click="store.method_nav = !store.method_nav">
+            <span>{{ store.userData.name }}</span>
+            <ul v-show="store.method_nav ">
+              <li @click="store.method_nav = !store.method_nav">
+                <nuxt-link to="/user-info">{{ $t('default.text_basic_information') }}</nuxt-link>
+              </li>
+              <li @click="store.method_nav = !store.method_nav">
+                <nuxt-link to="/">{{ $t('default.text_return_home') }}</nuxt-link>
+              </li>
+              <li @click="store.method_nav = !store.method_nav">
+                <button type="button" @click="logout" v-show="store.is_login">{{ $t('auth.text_logout') }}</button>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </client-only>
     </div>
   </header>
  

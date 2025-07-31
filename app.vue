@@ -1,8 +1,6 @@
 <template>
   <div :class="locale === 'en' ? 'en-main' : ''">
-    <client-only>
-      <NuxtLayout name="head" />
-    </client-only>
+    <NuxtLayout name="head" />
     <main :key="store.pageKey" @click="store.method_nav = false" >
         <NuxtPage />
     </main>

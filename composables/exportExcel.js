@@ -1,0 +1,506 @@
+export function useExportExcel() {
+  const { t, locale } = useI18n()
+  const textMap = ref(null) //匯出excel的json_header
+    // json選項標題語言文字
+    const json_headers_language = (data) => {
+      // 放各個json格式裡面的標題
+      let headers = []
+      // 需要跳過的(中格2以後不出現)
+      const skip_header = ['beneath_handle_division', 'beneath_handle_division_center']
+      Object.keys(data).forEach((key) => {
+          // 如果json是物件陣列
+          if (Array.isArray(data[key])) {
+              data[key].forEach((item, idx) => {
+                  let text
+                  if (Object.keys(item)[0] == 't_post_value') {
+                      const value = textMap.value[Object.keys(item)[0]].replace('idx', idx + 1)
+                      text = value
+                  } else {
+                      // 把key值當索引獲取語言文字
+                      text = textMap.value[key] + (idx + 1)
+                  }
+                  if (text) {
+                      headers.push(text)
+                  }
+              })
+              // json是陣列物件
+          } else if (typeof data[key] == 'object') {
+              data.map((item, idx) => {
+                  Object.keys(data[key]).forEach((obj_key, i) => {
+                      if (idx > 0) {
+                          // 只有中隔1有以下拉桿分段
+                          if (skip_header.find((item) => item == obj_key)) {
+                              return
+                          }
+                      }
+                      // 把key值當索引獲取語言文字
+                      let text
+                      if(obj_key === 'corner_angle_item'){
+                          text = textMap.value[obj_key].replace(':num', idx + 2)
+                      }else if(textMap.value[obj_key].includes(':num')){
+                          text = textMap.value[obj_key].replace(':num', idx + 1)
+                      }else{
+                          text = textMap.value[obj_key].replace('idx', idx + 1)
+                      }
+                      if (text) {
+                          headers.push(text)
+                      }
+                  })
+              })
+              // 物件
+          } else {
+              // 把key值當索引獲取語言文字
+              let text = textMap.value[key]
+              if (text) {
+                  headers.push(text)
+              }
+          }
+      })
+      console.log('語言');
+      
+      return headers
+  }
+
+  // json選項設定值
+  const json_body_value = (data, header) => {
+      let match_value = null
+
+      data.forEach((item) => {
+          // 如果 item 不是陣列，表示是物件資料
+          if (!Array.isArray(item)) {
+              Object.keys(item).forEach((k) => {
+                  // 比對textMap的文字欄位
+                  if (textMap.value[k] === header) {
+                      match_value = item[k] || ''    // 沒有值就給空字串
+                  }
+                  // 如果item[k]是陣列
+                  else if (Array.isArray(item[k])) {
+                      item[k].forEach((v, i) => {
+                          // 顯示文字 形式如：欄位名稱1、欄位名稱2...
+                          if (textMap.value[k] + (i + 1) === header) {
+                              match_value = v || ''   
+                          } else {
+                              // 針對陣列中是物件的情況，抓出 key 跟 value
+                              const key = Object.keys(v)[0]
+                              const textMapValue = textMap.value[key]
+                              // 如果 textMap 中的對應欄位有設定 idx，例如：欄位idx → 替換成欄位1、欄位2
+                              if (textMapValue && textMapValue.replace('idx', i + 1) === header) {
+                                  match_value = Object.values(v)[0] || ''
+                              }
+                          }
+                      })
+                  }
+              })
+          } 
+          // 如果 item 是陣列
+          else {
+              item.forEach((obj, idx) => {
+                  Object.keys(obj).forEach((k) => {
+                      let index = idx + 1
+                      let replace = 'idx'
+
+                      // 處理 textMap 用的是 :num 的格式（例如欄位:num）
+                      if(textMap.value[k].includes(':num')){
+                          replace = ':num'
+                      }
+                      // corner_angle_item 這個欄位特別處理，index +2
+                      if(k === 'corner_angle_item'){
+                          index = idx +2
+                      }
+                      // 比對處理後的欄位名稱是與 header 是否一致
+                      if (textMap.value[k].replace(replace, index) === header) {
+                          match_value = obj[k]
+                      }
+                  })
+              })
+          }
+      })
+      // 如果值是空字串，預設填入 'N'
+      if (match_value == '') {
+          match_value = 'N'
+      }
+      return match_value
+  }
+  
+
+  // 匯出excel
+  const exportTable = (order,mail) => {
+      console.log(order);
+      
+      // 檔案名字
+      const fileName = order.code + '.xlsx'
+      // 樣式
+      const border = {
+          top: { style: 'thin' },
+          bottom: { style: 'thin' },
+          left: { style: 'thin' },
+          right: { style: 'thin' },
+      }
+      const alignment = {
+          horizontal: 'center',
+          vertical: 'center',
+          wrapText: true,
+      }
+      const font = {
+          sz: 10,
+      }
+      const excel_data = []
+      // 分窗型/軌道分頁
+      const track = order.order_products.filter((x) => !!x.order_product_options.win_track_subtype)
+      const windows = order.order_products.filter((x) => !!x.order_product_options.win_win_subtype)
+      if (track.length > 0) {
+          excel_data.push(track)
+      }
+      if (windows.length > 0) {
+          excel_data.push(windows)
+      }
+
+      // STEP 1: 創建工作簿
+      const wb = XLSX.utils.book_new()
+
+      excel_data.forEach((item_data, index) => {
+          // STEP 1-1:工作簿名字
+          const sheetName = 'type' + (index + 1)
+
+          // STEP 2: 放資料&設定樣式
+          // 建置資料表
+          var ws = XLSX.utils.aoa_to_sheet([])
+          // 標題先設置'item#'
+          let table_header = [{ name: 'item#', code: 'item' }]
+          const color = order.material + '_color'
+
+          // 需排列至前面的選項(照順序優先權)
+          const priority_header = [
+              'win_type',
+              'win_position',
+              'win_width',
+              'win_height',
+              'wsms',
+              'imom',
+              color,
+              'win_win_subtype',
+              'win_track_subtype',
+          ]
+
+          // 用來存放已經處理過的選項名字，避免重複添加
+          const processedOptions = new Set()
+
+          // 存放JSON格式的選項
+          const json_data = []
+          // 存放需要優先排列的選項及其排序索引
+          const priority_header_data = []
+
+          item_data.forEach((item, idx) => {
+              // 各個商品的選項物件
+              const options = item.order_product_options
+              // 遍歷所有選項
+              Object.keys(options)
+                  .sort()
+                  .forEach((option) => {
+                      if (options[option].type == 'checkbox') {
+                          options[option].option_code = option
+                      }
+                      // 如果已經處理過這個選項，則跳過
+                      if (processedOptions.has(options[option].option_code)) {
+                          return
+                      }
+                      // 標頭中英文
+                      // const header_name = lang.value == 'en' ? options[option].en_name : options[option].name
+                      const header_name = options[option].name
+
+                      // 檢查選項是否在優先排列的清單中
+                      const priority_header_idx = priority_header.findIndex((text) => option.includes(text))
+
+                      // 如果選項不是 '材質' 且不在優先清單中
+                      if (option !== 'win_material' && option !== 'attached_images' && priority_header_idx === -1) {
+                          if (idx == 2) {
+                          }
+                          // 如果選項的類型是 JSON，則存入 json_data
+                          if (options[option].type === 'json') {
+                              if(options[option].value !== 'undefined'){
+                                  json_data.push(options[option])
+                              }
+                              console.log(options[option]);
+                              
+                              return
+                          } else {
+                              // 否則直接添加到表頭
+                              table_header.push({ name: header_name, code: options[option].option_code })
+                          }
+                          // 如果選項在優先清單中，存入 priority_header_data
+                      } else if (priority_header_idx !== -1) {
+                          priority_header_data.push({ name: header_name, sort: priority_header_idx, option_code: options[option].option_code })
+                      }
+
+                      // 標記這個選項已經處理過
+                      processedOptions.add(options[option].option_code)
+                  })
+
+              if (idx == item_data.length - 1) {
+                  // 按照 sort 屬性對 priority_header_data 進行排序
+                  priority_header_data.sort((a, b) => a.sort - b.sort)
+                  // 根據排序索引將優先選項插入到表頭的指定位置
+                  priority_header_data.forEach((item) => {
+                      // console.log(item);
+                      // 窗型/軌道型指定第3個位置
+                      if (item.sort == 7 || item.sort == 8) {
+                          table_header.splice(2, 0, { name: item.name, code: item.option_code })
+                      } else {
+                          table_header.splice(item.sort + 1, 0, { name: item.name, code: item.option_code })
+                      }
+                  })
+
+                  // 處理 JSON 選項，把標題添加到表頭
+                  let json_data_sort = ["dividers_json","lever_segmentation_note","auxiliaries","layers_json","t_post_json","corner_angle"]
+                  json_data.sort((a, b) => {
+                      
+                      const json_valuesA = json_headers_language(JSON.parse(a.value))
+                      const json_valuesB = json_headers_language(JSON.parse(b.value))
+                      const indexA = json_data_sort.indexOf(a.option_code);
+                      const indexB = json_data_sort.indexOf(b.option_code);
+                      // 如果 option_code 相同
+                      if (indexA === indexB) {
+                          // 比較 json_values 的長度，長的排前面所以B - A
+                          return json_valuesB.length - json_valuesA.length;
+                      }
+                      // 如果 option_code 不同，維持原本的排序邏輯
+                      return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+                    });
+                  json_data.forEach((data) => {
+                      const json_values = json_headers_language(JSON.parse(data.value))
+                      json_values.forEach((name) => {
+                          if (processedOptions.has(name)) {
+                              return
+                          } else {
+                              table_header.push({ name: name, code: 'json' })
+                              processedOptions.add(name)
+                          }
+                      })
+                  })
+              }
+          })
+
+          // 標題最後加M2(平方米)
+          table_header.push({ name: 'M2', code: 'sqm' })
+          const quantity = t('order.text_quantity')
+          table_header.push({ name: quantity, code: 'quantity' })
+          const note = t('order.text_option_section_note')
+          table_header.push({ name: note, code: 'note' })
+
+          // 設置資料表
+          let row_data = item_data.map((item, idx) => {
+              // 各個商品的選項物件
+              const options = item.order_product_options
+              // 搜尋是否有json
+              const json = Object.keys(options).filter((key) => options[key].type == 'json')
+              let json_arr
+              // 有的話另外處理
+              if (json) {
+                  // json_arr = json.map((key) => JSON.parse(options[key].value))
+                 json_arr = json
+                  .map((key) => {
+                    const value = options[key]?.value;
+                    if (value !== undefined && value !== 'undefined') {
+                      try {
+                        return JSON.parse(value);
+                      } catch (e) {
+                        console.warn(`JSON parse failed for key ${key}:`, value);
+                        return null;
+                      }
+                    }
+                    return null;
+                  })
+                  .filter(item => item !== null);
+              }
+              // 商品順序
+              let row = [idx + 1]
+
+              // // 按照header填入資料
+              table_header.forEach((header, idx) => {
+                  // 資料是否有對應的code
+                  const key = Object.keys(options).find((k) => options[k].option_code === header.code)
+                  // 中英文value
+                  const language_value = () => {
+                      if (key) {
+                          const value = locale.value == 'en' ? options[key]?.en_value : options[key].value
+                          return value ? value : options[key].value
+                      }
+                  }
+                  // checkbox
+                  const is_checkbox = options[key]?.type == 'checkbox'
+                  // m2
+                  const is_M2 = header.code == 'sqm'
+                  // 數量
+                  const is_quantity = header.code == 'quantity'
+                  // 備註
+                  const is_note = header.code == 'note'
+                  let is_json
+                  // json
+                  
+                  if (json_arr.length > 0) {
+                      is_json = json_body_value(json_arr, header.name)
+                  }
+                  // 都不符合條件則加入
+                  if (header.code !== 'item' && !is_M2 && !is_checkbox && !is_json && !is_quantity && !is_note) {
+                      row.push(key ? language_value() : '')
+
+                  } else if (is_checkbox) {
+                      // checkbox
+                      if (key == 'win_stdwin_subtype' || key == 'outer_frame_cut_position') {
+                          let data = ''
+                          options[key].option_values.forEach((value) => {
+                              data += `${value.value},\n`
+                          }) 
+                          
+                          row.push(key ? data : '')
+                      } else {
+                          options[key].option_values.forEach((value) => {
+                              
+                              row.push(value.value == 'Y'? '✓' : '')
+                          })
+                      }
+                  } else if (json.length > 0 && !!is_json) {
+                      // json加入json_arr的值
+                      if (is_json == 'Y' || is_json == 'N') {
+                          row.push(is_json == 'Y' ? '✓' : '')
+                      } else {
+                          row.push(is_json)
+                      }
+                  } else if (is_M2) {
+                      // M2
+                      row.push(item.sqm ? item.sqm : '')
+                  } else if (is_quantity) {
+                      row.push(item.quantity ? item.quantity : '')
+                  } else if (is_note) {
+                      if(item.note == 'null'){
+                          row.push('')
+                      }else{
+                          row.push(item.note)
+                      }
+                  }
+              })
+
+              return row
+          })
+          const name = table_header.map((item) => item.name)
+          // 標題+資料
+          let data = [name, ...row_data]
+          // data從A8位置開始
+          XLSX.utils.sheet_add_aoa(ws, data, { origin: 'A8' })
+          // 要合併儲存格的 arr
+          let merges = []
+          // 上方資料位置到5
+          const info_end_idx = 5
+          // 設置合併儲存格
+          for (let i = 0; i < info_end_idx; i++) {
+              merges.push(XLSX.utils.decode_range(`A${i + 1}:G${i + 1}`))
+              merges.push(XLSX.utils.decode_range(`I${i + 1}:J${i + 1}`))
+              merges.push(XLSX.utils.decode_range(`K${i + 1}:M${i + 1}`))
+          }
+          merges.push(XLSX.utils.decode_range(`R2:S2`))
+          const address = order.state + order.city + order.shipping_address1 + order.shipping_address2
+          // 合併
+          ws['!merges'] = merges
+
+          // 設置最上方資料
+          ws['A1'] = { v: 'Homecreations' }
+          ws['A2'] = { v: 'Unit 21 Clarke Road, Milton Keynes, MK1 1LG' }
+          ws['A3'] = { v: 'United Kingdom' }
+          ws['A4'] = { v: 'Phone:01908 642 888' }
+          ws['A5'] = { v: 'Fax:02892 625947' }
+
+          ws['I1'] = { v: 'CUSTOMER NAME:' }
+          ws['I2'] = { v: 'ADDRESS：' }
+          ws['I4'] = { v: 'ORDER NUMBER:' }
+          ws['I5'] = { v: 'DATE:' }
+
+          ws['K1'] = { v: order.customer_name }
+          ws['K2'] = { v: '' }
+          ws['K4'] = { v: order.code }
+          ws['K5'] = { v: order.order_date }
+
+          ws['R2'] = { v: 'ORDER Total M2' }
+          ws['T2'] = { v: order.sqm }
+
+          // 設置所有儲存格的邊框
+          const setCellBorder = (ws, range) => {
+              // 遍歷範圍內的所有行
+              for (let R = range.s.r; R <= range.e.r; ++R) {
+                  // 遍歷範圍內的所有列
+                  for (let C = range.s.c; C <= range.e.c; ++C) {
+                      // 生成儲存格的引用（例如 "A1", "B1","C1" 等）
+                      const cellRef = XLSX.utils.encode_cell({ r: R, c: C })
+                      // 如果儲存格不存在，初始化它
+                      if (!ws[cellRef]) ws[cellRef] = { v: '' }
+                      // 確保儲存格有樣式屬性
+                      ws[cellRef].s = ws[cellRef].s || {}
+                      // 設置邊框樣式
+                      ws[cellRef].s.border = border
+                  }
+              }
+          }
+
+          // 對所有合併範圍內的儲存格設置邊框
+          merges.forEach((range) => setCellBorder(ws, range))
+
+          // 設置資料格式
+          const info_positon = ['A', 'I', 'K', 'R', 'T']
+          Object.keys(ws).forEach((key) => {
+              const col = key.substring(0, 1)
+              const row = parseInt(key.substring(1))
+
+              if (info_positon.includes(col) && row <= info_end_idx) {
+                  ws[key].t = 's'
+                  ws[key].s = {
+                      font: { bold: true, sz: 12 },
+                      border,
+                      alignment,
+                  }
+              } else {
+                  if (ws[key].v || ws[key].v === '') {
+                      ws[key].t = 's'
+                      ws[key].s = {
+                          font: { sz: 10 },
+                          alignment,
+                          border,
+                      }
+                  }
+              }
+          })
+          // 最資料格式設定--end
+
+          // 資料+上方資訊+中間空2格
+          const maxRow = data.length + info_end_idx + 2
+          const maxCol = data[0].length
+
+          // 設定資料庫範圍(S:起始位置,e:結束位置)
+          // c:列↓　r:行→
+          ws['!ref'] = XLSX.utils.encode_range({
+              s: { c: 0, r: 0 },
+              e: { c: maxCol - 1, r: maxRow - 1 },
+          })
+
+          XLSX.utils.book_append_sheet(wb, ws, sheetName)
+      })
+      
+      if (mail) {
+          //字串符
+          const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' })
+
+          // 轉 Uint8Array
+          const uint8Array = new Uint8Array([...wbout].map((char) => char.charCodeAt(0)))
+
+          // file 對象
+          const file = new File([uint8Array], 'filename.xlsx', {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              lastModified: new Date().getTime(), // 時間
+          })
+          return file
+      } else {
+          XLSX.writeFile(wb, fileName)
+      }
+  }
+  return {
+    exportTable
+  }
+}

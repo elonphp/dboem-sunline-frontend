@@ -28,7 +28,7 @@
                     <nuxt-link :to="localePath(`/create_order?code=${order_info.code}&id=${order_id}`)" class="btn link">{{$t('order.text_information')}}</nuxt-link>
                     <nuxt-link :to="localePath(`/create_order/order?id=${order_id}&main=${order_info.material}`)" v-if="list_data.length > 0 && is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
                     <nuxt-link :to="localePath(`/create_order/order?id=${order_id}`)" v-else-if="is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
-                    <button class="btn link" @click="exportTable(0)">{{$t('default.text_export')}}</button>
+                    <button class="btn link" @click="exportOrderInfo">{{$t('default.text_export')}}</button>
                     <nuxt-link :to="localePath(`/order-list/item/note?id=${order_id}`)" class="btn link">{{$t('order.tab_comments')}}</nuxt-link>
                 </div>
                 <div class="table-inner">
@@ -348,8 +348,9 @@ const submit_corporate = async ()=>{
     }
 }
 // 寄信
+const { exportTable } = useExportExcel()
 const approve_excel = async()=>{
-    const excel = store.exportTable(order_info.value,'mail', locale.value)
+    const excel = exportTable(order_info.value,'mail')
     const formData = new FormData
     formData.append("order_id",order_info.value.id)
     formData.append("order_code",order_info.value.code)
@@ -430,8 +431,8 @@ const get_data = async()=>{
     
 }
 
-const exportTable = ()=>{
-    store.exportTable(order_info.value, null, locale.value)
+const exportOrderInfo = ()=>{
+    exportTable(order_info.value, null)
 }
 
 

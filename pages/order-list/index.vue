@@ -186,6 +186,7 @@ import { saveAs } from 'file-saver'
 import flatpickr from 'flatpickr';
 import {Mandarin} from 'flatpickr/dist/l10n/zh-tw.js';
 import 'flatpickr/dist/flatpickr.min.css';
+import { useExportExcel } from '~/composables/exportExcel';
 
 const { t, locale } = useI18n()
 const localePath = useLocalePath()
@@ -523,11 +524,12 @@ const submit_approve = async (item) => {
     }
 }
 // 經銷商審核(excel)
+const { exportTable } = useExportExcel()
 const approve_excel = async(item)=>{
     const confirmed = confirm(t('order.text_confirm_send'))
     if (confirmed) {
         const data = await get_order_data(item.id)
-        const excel = store.exportTable(data, 'mail', locale.value)
+        const excel = exportTable(data, 'mail')
         const formData = new FormData
         formData.append("order_id", item.id)
         formData.append("order_code", item.code)

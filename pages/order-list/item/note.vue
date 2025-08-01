@@ -10,7 +10,7 @@
                     <h2 class="title">{{ $t('order.tab_comments') }}</h2>
                 </div>
                 <div class="d-flex align-items-center justify-content-between  gap-3 mb-4">
-                    <nuxt-link :to="`/order-list/item?id=${order_id}`" class="btn link">{{ $t('default.text_back') }}</nuxt-link>
+                    <nuxt-link :to="localePath(`/order-list/item?id=${order_id}`)" class="btn link">{{ $t('default.text_back') }}</nuxt-link>
                 </div>
                 <!-- msg_box -->
                 <div class="">
@@ -79,6 +79,7 @@
 <script setup>
 
 const store = useStore()
+const localePath = useLocalePath()
 const route = useRoute()
 const router = useRouter()
 const order_id = route.query.id

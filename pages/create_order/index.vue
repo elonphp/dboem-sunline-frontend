@@ -201,6 +201,7 @@
 
 <script setup>
 const { locale } = useI18n()
+const localePath = useLocalePath()
 const store = useStore()
 const { userData } = storeToRefs(store)
 const router = useRouter()
@@ -225,7 +226,7 @@ const is_Draft = computed(() =>{
 
 // 返回的路徑
 const prev_page = computed(()=>{
-    return order_id? `/order-list/item?id=${order_id}`:'/home'
+    return order_id? localePath(`/order-list/item?id=${order_id}`):localePath('/home')
 })
 
 
@@ -278,10 +279,10 @@ const onSubmit = async(values)=>{
       const res = await $api.sales.saveOrderHeader(data, locale.value)
         if(order_id){
             // 路由參數有id則返回列表頁
-            router.replace(`/order-list/item?id=${order_id}`)
+            router.push(localePath(`/order-list/item?id=${order_id}`))
         }else if(res.order_id){
             // 則往新增頁
-            router.replace(`create_order/order?id=${res.order_id}`)
+            router.push(localePath(`/create_order/order?id=${res.order_id}`))
         }
     }catch(err){
         console.log(err);

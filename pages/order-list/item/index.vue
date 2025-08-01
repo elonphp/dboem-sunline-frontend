@@ -24,12 +24,12 @@
                     </div>
                 </div>              
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <nuxt-link to="/order-list" class="btn link">{{$t('default.text_back')}}</nuxt-link>
-                    <nuxt-link :to="`/create_order?code=${order_info.code}&id=${order_id}`" class="btn link">{{$t('order.text_information')}}</nuxt-link>
-                    <nuxt-link :to="`/create_order/order?id=${order_id}&main=${order_info.material}`" v-if="list_data.length > 0 && is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
-                    <nuxt-link :to="`/create_order/order?id=${order_id}`" v-else-if="is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
+                    <nuxt-link :to="localePath('/order-list')" class="btn link">{{$t('default.text_back')}}</nuxt-link>
+                    <nuxt-link :to="localePath(`/create_order?code=${order_info.code}&id=${order_id}`)" class="btn link">{{$t('order.text_information')}}</nuxt-link>
+                    <nuxt-link :to="localePath(`/create_order/order?id=${order_id}&main=${order_info.material}`)" v-if="list_data.length > 0 && is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
+                    <nuxt-link :to="localePath(`/create_order/order?id=${order_id}`)" v-else-if="is_Draft" class="btn link">{{$t('default.text_add')}}{{$t('order.tab_products')}}</nuxt-link>
                     <button class="btn link" @click="exportTable(0)">{{$t('default.text_export')}}</button>
-                    <nuxt-link :to="`/order-list/item/note?id=${order_id}`" class="btn link">{{$t('order.tab_comments')}}</nuxt-link>
+                    <nuxt-link :to="localePath(`/order-list/item/note?id=${order_id}`)" class="btn link">{{$t('order.tab_comments')}}</nuxt-link>
                 </div>
                 <div class="table-inner">
                     <table class="table">
@@ -71,12 +71,12 @@
                                 <td>{{ item.sqm }}</td>
                                 <td class="col-2" v-if="is_Draft">
                                     <button type="button" class="method-btn btn-s" @click="copy_product(item)">{{$t('default.text_copy')}}</button>
-                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
+                                    <nuxtLink :to="localePath(`/order-list/item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`)" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
                                     <button type="button" class="method-btn btn-s" @click="delete_product(item)">{{$t('default.text_delete')}}</button>
                                 </td>
                                 <td class="col-2" v-else>
-                                    <nuxtLink :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`" class="method-btn btn-s">{{$t('default.text_view')}}</nuxtLink>
-                                    <nuxtLink v-if="(is_pending && store.is_dealer)" :to="`item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
+                                    <nuxtLink :to="localePath(`/order-list/item/product?id=${order_id}&product=${item.id}&main=${order_info.material}&view=1`)" class="method-btn btn-s">{{$t('default.text_view')}}</nuxtLink>
+                                    <nuxtLink v-if="(is_pending && store.is_dealer)" :to="localePath(`/order-list/item/product?id=${order_id}&product=${item.id}&main=${order_info.material}`)" class="method-btn btn-s">{{$t('default.text_edit')}}</nuxtLink>
                                     <button type="button" class="method-btn btn-s" v-if="is_pending && store.is_dealer" @click="copy_product(item)">{{$t('default.text_copy')}}</button>
                                     <button v-if="(is_pending && store.is_dealer)" type="button" class="method-btn btn-s" @click="delete_product(item)">{{$t('default.text_delete')}}</button>
                                 </td>
@@ -111,6 +111,7 @@
 <script setup>
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -370,7 +371,7 @@ const delete_order = async()=>{
             const res = await $api.sales.ordersDestroy(order_id)
             if (res.success) {
                 alert(res.success)
-                router.push('/order-list')
+                router.push(localePath('/order-list'))
             }
         } catch (err) {
             console.log('delete_order', err);
@@ -402,7 +403,7 @@ const up_date = async () => {
         await $api.sales.saveOrderHeader(data, locale.value)
         // 更新完如果網址路徑還有材質的code則清空網址路徑
         if(route.query.material){
-            router.push(`/order-list/item?id=${order_id}`)
+            router.push(localePath(`/order-list/item?id=${order_id}`))
         }
         
     }catch(err){

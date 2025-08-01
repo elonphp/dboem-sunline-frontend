@@ -1,48 +1,23 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.client) {
     const store = useStore()
+    const localePath = useLocalePath()
     store.method_nav  = false
     const isLogin = useCookie('token_data').value
     
-    // console.log(store.is_login, 'is_login', to);
+    // 檢查是否為登入頁（根據 prefix_except_default 策略調整）
+    const isLoginPage = to.path === '/' || to.path === '/zh_Hant'
+    const isResetPasswordPage = to.path === '/reset-password' || to.path === '/zh_Hant/reset-password'
     
-    // 只要沒登入，且不是在登入頁，就導向首頁
-    if (!isLogin && to.path !== '/') {
+    // 如果已登入且訪問登入頁或重置密碼頁，導向主頁
+    if (isLogin && (isLoginPage || isResetPasswordPage)) {
+      return navigateTo(localePath('/home'), { redirectCode: 301 })
+    }
+    
+    // 如果未登入且訪問需要登入的頁面，導向登入頁
+    if (!isLogin && !isLoginPage && !isResetPasswordPage) {
       return navigateTo('/')
     }
-    // 已登入且在首頁，導向主頁
-    if (isLogin && to.path === '/') {
-      return navigateTo('/home')
-    }
-    // if (to.path === '/' && store.is_login) {
-    //   return navigateTo('/home')
-    // }
-      
-    // if (process.client) {
-    //   store.method_nav  = false
-      
-    //   // 檢查是否已經加載過用戶數據
-    //   if (!store.is_login) {
-    //     console.log("開啟網頁");
-    //     store.get_user();
-    //     // await store.get_auth_language_txt('global')
-    //     }
-  
-    //     // 執行 token 驗證
-    //     await store.refresh_token();
-    //     if (to.path === "/" && store.is_login) {
-    //       // console.log("返回home");
-    //       // 如果有登入則導向主頁
-    //     return navigateTo("/home");
-    //   }
-  
-    
-      if (to.path !== "/" && to.path !== "/reset-password" && !isLogin){
-        // console.log("返回首頁");
-        // 如果頁面是登入頁跟忘記密碼頁然後沒有登入的情況下返回登入頁
-        return navigateTo("/");
-        
-      }
   }
 
     

@@ -92,6 +92,7 @@
   import sha256 from 'js-sha256';
   const route = useRoute()
   const router = useRouter()
+  const localePath = useLocalePath()
   const store = useStore()
 
   const is_active = ref({
@@ -109,7 +110,7 @@
   const { $j } = useNuxtApp()
   const go_login = ()=>{
     $j('#close_modal').click()
-    router.push("/")
+    router.push(localePath("/"))
   }
 
   // 顯示密碼

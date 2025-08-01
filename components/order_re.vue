@@ -3020,7 +3020,7 @@
           <div class="row">
             <div class="col-12  text-center flex-auto mb-3">
               <!-- <button type="submit" class="btn sent_go">儲存訂單</button> -->
-              <nuxt-link :to="`/order-list/item?id=${order_id}`"
+              <nuxt-link :to="localePath(`/order-list/item?id=${order_id}`)"
                 class="btn sent_go me-4">{{ $t('default.text_back') }}</nuxt-link>
               <button type="submit" class="btn sent_go" v-if="!edit_mode">{{ button_text() }}</button>
             </div>
@@ -3044,6 +3044,7 @@ import AuxiliaryInfoImg from '@/assets/images/auxiliary_info_img.jpg'
 const { validate,validateField,errors, } = useForm();//驗證套件
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 // watch(locale, () => {
 //   // 切換語言就強制重整頁面
 //   location.reload(true)
@@ -4439,7 +4440,7 @@ const onSubmit = async(values) => {
     await $api.sales.productSave(news_form_data)
     // await $api.sales.productSave2(formData, locale.value)
     // material=${submit_data.material} 是列表頁要更新主要材質用的
-    router.push(`/order-list/item?id=${order_id}&material=${material_code.value}`)
+    router.push(localePath(`/order-list/item?id=${order_id}&material=${material_code.value}`))
   } catch (err) {
       console.log('error', err);
   }

@@ -19,7 +19,7 @@
           </div>
           <div class="fs-6 mt-1 login_input text-end">
               <i class="fas fa-question-circle"></i>
-              <nuxt-link to="/" class="ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+              <nuxt-link :to="localePath('/')" class="ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal" 
               style="text-decoration: underline;">{{ $t('auth.text_forget_password') }}</nuxt-link>
           </div>
           <button class="login_btn"> {{ $t('auth.text_login') }}</button>
@@ -72,6 +72,7 @@ import { useReCaptcha } from 'vue-recaptcha-v3'
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha()
 
 const store = useStore()
+const localePath = useLocalePath()
 const router = useRouter()
 const recaptchaToken = ref('')
 
@@ -122,7 +123,7 @@ const login = async () =>{
       $setValidationLocale(res2.response.locale)
     }
     
-    router.push('/home')
+    router.push(localePath('/home'))
   } catch (error) {
     console.log(error);
   }

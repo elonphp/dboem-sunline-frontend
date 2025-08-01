@@ -23,10 +23,10 @@
                 <!-- 功能區(篩選按鈕) -->
                 <div class="my-4 row justify-content-between ">
                     <div class="col-xxl-4 d-flex align-items-center gap-3 mb-3 mb-xxl-0">
-                        <nuxt-link to="home" class="btn link">{{$t('default.text_back')}}</nuxt-link>
+                        <nuxt-link :to="localePath('/home')" class="btn link">{{$t('default.text_back')}}</nuxt-link>
                         <button type="button" class="btn link" data-bs-toggle="modal"
                             data-bs-target="#list-setting">{{$t('order.text_order_display_setting')}}</button>
-                        <nuxt-link to="/create_order" class="btn link">{{$t('order.text_add_order')}}</nuxt-link>
+                        <nuxt-link :to="localePath('/create_order')" class="btn link">{{$t('order.text_add_order')}}</nuxt-link>
                     </div>
                     <div class="col-xxl-8 col-12 row gx-2">
                         <div class="date-input col-lg-4 col-6">
@@ -90,7 +90,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <nuxt-link :to="`/order-list/item?id=${item.id}`"
+                                    <nuxt-link :to="localePath(`/order-list/item?id=${item.id}`)"
                                         class="method-btn btn-s">{{$t('default.text_view')}}</nuxt-link>
                                     <button type="button" class="method-btn btn-s" @click="submit_review(item.id)"
                                         v-if="is_Draft(item)">{{$t('order.text_submit_order')}}</button>
@@ -100,7 +100,7 @@
                                         v-if="is_Pending(item) && store.is_dealer">{{$t('order.text_order_status_return_to_draft')}}</button>
                                     <button type="button" class="method-btn btn-s"
                                         @click="copy_data(item.id)">{{$t('default.text_copy')}}</button>
-                                    <nuxtLink :to="`/order-list/item/note?id=${item.id}`" class="method-btn btn-s position-relative ">
+                                    <nuxtLink :to="localePath(`/order-list/item/note?id=${item.id}`)" class="method-btn btn-s position-relative ">
                                         <div class="new-comment" v-if="item.unread_comment_count > 0" >
                                             {{ item.unread_comment_count }}
                                         </div>
@@ -188,6 +188,7 @@ import {Mandarin} from 'flatpickr/dist/l10n/zh-tw.js';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const store = useStore()
 const show_export_box = ref(false)
 const search_order_code = ref("")

@@ -4,7 +4,7 @@
             <div class="table-box">
                 <h2 class="title">{{$t('default.text_basic_information')}}</h2>
                 <div class="my-4">
-                    <nuxt-link to="/home" class="btn link">{{$t('default.text_back')}}</nuxt-link>
+                    <nuxt-link :to="localePath('/home')" class="btn link">{{$t('default.text_back')}}</nuxt-link>
                 </div>
                 <div class="user-info px-2" v-if="!!userinfo">
                     <div class="row mb-xl-4">
@@ -130,7 +130,8 @@ import { useReCaptcha } from 'vue-recaptcha-v3'
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha()
 const store = useStore()
 const recaptchaToken = ref('')
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const localePath = useLocalePath()
 
 const userinfo = ref()
 const submit_btn_close = ref(false)

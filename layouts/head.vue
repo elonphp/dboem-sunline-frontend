@@ -1,6 +1,6 @@
 <template>
   <header class="header justify-content-between align-items-center d-flex">
-    <nuxt-link to="/home">
+    <nuxt-link :to="localePath('/home')">
       <img src="@/assets/images/logo.png" alt="sunline logo">
     </nuxt-link>
     <div class="d-flex align-items-center gap-3">
@@ -23,10 +23,10 @@
             <span>{{ store.userData.name }}</span>
             <ul v-show="store.method_nav ">
               <li @click="store.method_nav = !store.method_nav">
-                <nuxt-link to="/user-info">{{ $t('default.text_basic_information') }}</nuxt-link>
+                <nuxt-link :to="localePath('/user-info')">{{ $t('default.text_basic_information') }}</nuxt-link>
               </li>
               <li @click="store.method_nav = !store.method_nav">
-                <nuxt-link to="/">{{ $t('default.text_return_home') }}</nuxt-link>
+                <nuxt-link :to="localePath('/')">{{ $t('default.text_return_home') }}</nuxt-link>
               </li>
               <li @click="store.method_nav = !store.method_nav">
                 <button type="button" @click="logout" v-show="store.is_login">{{ $t('auth.text_logout') }}</button>
@@ -45,6 +45,7 @@
 <script setup>
 
 const { setLocale, locale } = useI18n()
+const localePath = useLocalePath()
 const isLogin = useCookie('token_data')
 watch(locale, newVal => {
   selectLang.value = newVal

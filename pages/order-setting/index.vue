@@ -4,7 +4,7 @@
             <div class="table-box" id="table">
                 <h2 class="title">{{$t('order.text_option_setting')}}</h2>
                 <div class="my-4 d-flex align-items-center justify-content-between ">
-                    <nuxt-link to="/home" class="btn link align-self-center">{{$t('default.text_back')}}</nuxt-link>
+                    <nuxt-link :to="localePath('/home')" class="btn link align-self-center">{{$t('default.text_back')}}</nuxt-link>
                     <div class="d-flex col-5 gap-2 align-items-center justify-content-end ">
                         <button type="button" class="btn search align-self-stretch me-2" @click="cancel_search" v-if="keyword">{{$t('default.text_cancel')}}{{$t('default.text_search')}}</button>
                         <div class="d-flex gap-2 align-items-center col-8">
@@ -31,7 +31,7 @@
                             <tr v-for="(item,idx) in show_data" :key="'data_' + idx">
                                 <td>{{ item.name }}</td>
                                 <td class="justify-content-end  pe-5">
-                                    <nuxt-link :to="`/order-setting/${item.id}?code=${item.code}`" class="method-btn large">{{$t('default.text_setting')}}</nuxt-link>
+                                    <nuxt-link :to="localePath(`/order-setting/${item.id}?code=${item.code}`)" class="method-btn large">{{$t('default.text_setting')}}</nuxt-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -63,6 +63,7 @@
 <script setup>
 
 const { t, locale } = useI18n()
+const localePath = useLocalePath()
 const store = useStore()
 const input_keyword = ref("")
 const keyword = ref("")

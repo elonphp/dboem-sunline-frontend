@@ -4,7 +4,7 @@
             <div class="row mb-5" v-if="order">
                 <template v-for="(item, idx) in link" :key="'link_' + idx">
                     <div class="col-lg-3 col-md-6 mb-lg-0 mb-4" v-if="is_access(item.roles)">
-                        <nuxt-link class="btn-home" :to="item.router">
+                        <nuxt-link class="btn-home" :to="localePath(item.router)">
                             <i class="fas" :class="item.icon"></i>
                             <h2>
                                 {{ item.title }}
@@ -13,7 +13,7 @@
                     </div>
                 </template>
                 <div class="col-lg-4 col-md-6 mt-5" v-for="(item,idx) in order" :key="'order_' + idx">
-                    <nuxt-link :to="`order-list/item?id=${item.id}`" class="home-order">
+                    <nuxt-link :to="localePath(`/order-list/item?id=${item.id}`)" class="home-order">
                         <div class="createtime">
                             <span class="fw-bold">{{item.created_at.slice(0, 16)}}</span>
                             <span class="tag m-0" :class="store.status_colors(item.status_code)">{{item.status_name}}</span>
@@ -49,16 +49,17 @@
 
 <script setup>
 const store = useStore()
+const localePath = useLocalePath()
 const order = ref()
 const { t, locale} = useI18n()
 
 // 連結區塊
 const link = computed(() => [
-    { icon: 'fa-plus', title: t('order.text_add_order'), router: 'create_order', roles: ['salesperson', 'dealer','sunline'] },
-    { icon: 'fa-history', title: t('order.tab_data'), router: 'order-list', roles: ['salesperson'] },
-    { icon: 'fa-clipboard-list', title: t('order.text_manage_order'), router: 'order-list', roles: ['dealer','sunline'] },
-    { icon: 'fa-file-circle-check', title: t('order.text_confirmed_orders'), router: 'order-list?status=DealerApproved', roles: ['salesperson'] },
-    { icon: 'fa-user-pen', title: t('default.text_basic_information'), router: 'user-info', roles: ['salesperson', 'dealer','sunline'] },
+    { icon: 'fa-plus', title: t('order.text_add_order'), router: '/create_order', roles: ['salesperson', 'dealer','sunline'] },
+    { icon: 'fa-history', title: t('order.tab_data'), router: '/order-list', roles: ['salesperson'] },
+    { icon: 'fa-clipboard-list', title: t('order.text_manage_order'), router: '/order-list', roles: ['dealer','sunline'] },
+    { icon: 'fa-file-circle-check', title: t('order.text_confirmed_orders'), router: '/order-list?status=DealerApproved', roles: ['salesperson'] },
+    { icon: 'fa-user-pen', title: t('default.text_basic_information'), router: '/user-info', roles: ['salesperson', 'dealer','sunline'] },
     { icon: 'fa-gear', title: t('order.text_option_setting'), router: '/order-setting', roles: ['dealer','sunline'] },
 ])
 

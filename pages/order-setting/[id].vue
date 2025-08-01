@@ -4,7 +4,7 @@
             <div class="table-box" v-if="!!data" :key="data_page">
                 <h2 class="title">{{ $t('default.text_setting') }} - {{ data.name }}</h2>
                 <div class="my-4">
-                    <nuxt-link to="/order-setting" class="btn link ">{{ $t('default.text_back') }}</nuxt-link>
+                    <nuxt-link :to="localePath('/order-setting')" class="btn link ">{{ $t('default.text_back') }}</nuxt-link>
                 </div>
                 <VeeForm class="table-inner" v-slot="{ values}" @submit="onSubmit">
                     <table class="table">
@@ -88,6 +88,7 @@
 <script setup>
 
 const store = useStore()
+const localePath = useLocalePath()
 const route = useRoute()
 const id = route.params.id
 const option_code = route.query.code

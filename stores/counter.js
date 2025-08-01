@@ -8,12 +8,10 @@ export const useStore = defineStore('counter', () => {
     const router = useRouter()
     const userData = ref('')
     const role = ref({})
-    const pageKey = ref(1)    // 換語言重新渲染用的key
     const baseUrl = config.public.apiUrl
     const loading = ref(false)
     const language_txt = ref({})
     const method_nav = ref(false)
-    const temporarily_product = ref()
     const textMap = ref(null) //匯出excel的json_header
     
     // 判斷token是否過期
@@ -48,25 +46,6 @@ export const useStore = defineStore('counter', () => {
         logoutHandle()
     }
 
-    const get_user = async () => {
-         // 從 localStorage 中取出儲存的 token 並解析為 JSON 物件
-        const data = JSON.parse(localStorage.getItem('token'))
-         // 如果 token 存在
-        if (data) {
-            userData.value = data
-            // 如果現在時間已超過 token 的過期時間，表示登入已逾時
-            if (isExpire()) {
-                 // 執行登出動作（如清除 token、導向登入頁）
-                await logout()
-                alert('連線逾時，請重新登入')
-            }
-        } else {
-            // 若無 token，清空使用者資料
-            userData.value = ''
-        }
-        
-    }
-
     const get_user_data = async () => {
         const params = {
             equal_id: useCookie('token_data').value?.member_id
@@ -84,18 +63,6 @@ export const useStore = defineStore('counter', () => {
         } catch (err) {
             console.log(err)
         }
-    }
-
-    const get_ip = async () => {
-        fetch('https://api.ipify.org?format=json')
-            .then((res) => res.json())
-            .then((data) => {
-                console.log('使用者 IP:', data.ip)
-                return data.ip
-            })
-            .catch((err) => {
-                console.error('取得 IP 失敗:', err)
-            })
     }
 
     // 刷新 access token
@@ -118,55 +85,6 @@ export const useStore = defineStore('counter', () => {
         logout()
       }
     }
-    // const refresh_token = async () => {
-    //     if (!isExpire()) return
-    //     // 從使用者資料中取得 refresh token
-    //     const refresh_token = userData.value.refresh_token
-    //     if (!refresh_token) return
-    //     // const url = `${baseUrl}api/v3/refresh`
-    //     const url = `${baseUrl}api/v2/newAccessToken/${refresh_token}`
-    //     try {
-    //       const res = await fetch(url, {
-    //         method: 'POST',
-    //         headers: {
-    //             Authorization: 'Bearer ' + userData.value.access_token,
-    //         },
-    //         body: jsonToFormData({
-    //           refresh_token
-    //         })
-    //       })
-    //       if (res.status !== 200) {
-    //         logout()
-    //       }
-    //       const data = await res.json()
-    //       userData.value = {
-    //         ...userData.value,
-    //         ...data
-    //       }
-          
-    //     } catch (error) {
-    //       logout()
-    //       console.log(error, 'refresh_token');
-    //     }
-    //     // 如果 refresh token
-    //     // if (refresh_token) {
-    //     //     fetch(`${baseUrl}api/v2/newAccessToken/${refresh_token}`)
-    //     //         .then((res) => res.json())
-    //     //         .then((res) => {
-    //     //              // 如果後端回傳錯誤（例如 token 已失效），執行登出
-    //     //             if (res.error) {
-    //     //                 logout()
-    //     //             }
-    //     //              // 否則儲存新的 token 資訊
-    //     //             set_token(res)
-    //     //             // console.log("刷新");
-    //     //         })
-    //     //         .catch((err) => {
-    //     //             console.log(err)
-    //     //         })
-    //     // }
-    // }
-
     // 表單 轉formData
     const jsonToFormData = (data, formData = new FormData(), parentKey = '') => {
         // 檢查 data 是否是一個物件，並且不是 Date 或 File 的實例。
@@ -185,11 +103,6 @@ export const useStore = defineStore('counter', () => {
         }
         return formData
     }
-
-
-    // const add_product = (item) => {
-    //     temporarily_product.value = item
-    // }
 
     // tag狀態顏色
     const status_colors = (status) => {
@@ -212,49 +125,6 @@ export const useStore = defineStore('counter', () => {
     // loading
     const show_loading = (val) => {
         loading.value = val
-    }
-
-    // excel
-    const set_textMap = ()=>{
-        const order = language_txt.value.order
-      textMap.value = {
-        // 水平T
-        layer: order.text_layers, //層數
-        layer_value: 'T POST', //水平arr
-
-        // T柱(垂直T)
-        t_post_value: 'T-' + 'idx' + order.text_position,
-        t_post_average: order.text_divide_equally,
-
-        // 輔料
-        auxiliary_height: order.text_auxiliaries + 'idx' + order.text_height,
-        auxiliary_width: order.text_auxiliaries + 'idx' + order.text_width,
-        auxiliary_length: order.text_auxiliaries + 'idx' + order.text_length,
-        auxiliary_quantity: order.text_auxiliaries + 'idx' + order.text_quantity,
-
-        // 中隔
-        division_height: order.text_dividers + 'idx' + order.text_height, //中隔高度
-        division_no_move: order.text_dividers + 'idx' + order.text_dividers_json_is_fixed, //不移動
-        division_center: order.text_dividers + 'idx' + order.text_dividers_json_is_center, //置中
-        above_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_above_division, // 以上拉桿
-        beneath_handle_division: order.text_dividers + 'idx' + order.text_dividers_json_beneath_divide, // 以下拉桿
-        // 以上拉桿分段置中
-        beneath_handle_division_center:order.text_dividers + 'idx'  + order.text_dividers_json_above_division + order.text_dividers_json_is_center, 
-        // 以上拉桿分段置中
-        above_handle_division_center: order.text_dividers + 'idx' + order.text_dividers_json_beneath_divide + order.text_dividers_json_is_center, 
-        
-        // 拉桿分段需求
-        lever_value:'拉桿分段需求idx',
-        // 轉角度數
-        corner_angle_value:order.text_corner_angle,
-        
-        position_value:`C:num${order.text_position}`,
-
-        corner_angle_item1:'item1',
-
-        corner_angle_item:'item:num'
-
-      }
     }
 
     // json選項標題語言文字
@@ -759,11 +629,6 @@ export const useStore = defineStore('counter', () => {
 
 
     // computed
-    // 有登入?
-    const is_login = computed(() => {
-        // return !!userData.value
-        return !!useCookie('token_data').value
-    })
     // 是經銷商?
     const is_dealer = computed(() => {
         console.log(role.value);
@@ -776,18 +641,13 @@ export const useStore = defineStore('counter', () => {
     })
 
     return {
-        pageKey,
         role,
         method_nav,
         baseUrl,
         userData,
-        // add_product,
-        temporarily_product,
         logout,
         get_user_data,
-        get_user,
         refresh_token,
-        is_login,
         show_loading,
         loading,
         jsonToFormData,

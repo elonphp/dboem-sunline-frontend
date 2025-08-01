@@ -4,7 +4,6 @@
       <img src="@/assets/images/logo.png" alt="sunline logo">
     </nuxt-link>
     <div class="d-flex align-items-center gap-3">
-      <!-- <button type="button" @click="logout" v-show="is_login">登出</button> -->
       <div class="flex-shrink-0 d-flex align-items-center gap-2">
         <label for="">{{ $t('default.language') }}：</label>
         <div class="d-flex">
@@ -29,7 +28,7 @@
                 <nuxt-link :to="localePath('/')">{{ $t('default.text_return_home') }}</nuxt-link>
               </li>
               <li @click="store.method_nav = !store.method_nav">
-                <button type="button" @click="logout" v-show="store.is_login">{{ $t('auth.text_logout') }}</button>
+                <button type="button" @click="logout" v-show="isLogin">{{ $t('auth.text_logout') }}</button>
               </li>
             </ul>
           </div>
@@ -83,10 +82,6 @@ const change_language = async()=>{
   // 設定驗證套件語言
   await setLocale(selectLang.value)
   $setValidationLocale(selectLang.value);
-  // 語言檔
-  // 重新渲染主要頁面
-  // store.pageKey++
-  // 重新獲取會員資料(右上角會員名字用)
 }
 
 

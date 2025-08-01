@@ -50,7 +50,7 @@
 <script setup>
 const store = useStore()
 const order = ref()
-const { t, locale } = useI18n()
+const { t, locale} = useI18n()
 
 // 連結區塊
 const link = computed(() => [
@@ -73,13 +73,8 @@ onMounted(() => {
 })
 const get_order_data = async()=>{
     // 今日
-    // const now = new Date();
-    // const todayDate = now.toISOString().substring(0, 10); // 只保留日期部分
     const todayDate = dayjs().format('YYYY-MM-DD');
-
     // 10天前
-    // const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000);
-    // const tenDaysAgoDate = tenDaysAgo.toISOString().substring(0, 10); // 只保留日期部分
     const tenDaysAgoDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
     const params = {
       locale: locale.value,
@@ -95,35 +90,6 @@ const get_order_data = async()=>{
       console.log(error);
       
     }
-    // //業務 
-    // let url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_salesperson_id=${store.userData.member_id}&limit=6`
-
-    // // 經銷商
-    // if(store.is_dealer){
-    //     url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&equal_dealer_id=${store.userData.employer_company_id}&limit=6`
-    // }else if(store.is_corporate){
-    //     url = `${store.baseUrl}api/v2/sales/orders/list?locale=${locale.value}&limit=6`
-    // }
-    // console.log(url);
-    // const default_time_zone = `&filter_order_date=${tenDaysAgoDate}-${todayDate}`
-    // url = url + default_time_zone
-    
-    // try{
-    //     const res = await fetch(url,{
-    //          headers:{
-    //             "Authorization": "Bearer " + store.userData.access_token
-    //         }
-    //     })
-    //     const data = await res.json()
-    //     // console.log(data);
-    //     if(res.ok){
-    //         order.value = data.response.data
-            
-    //     }
-
-    // }catch(err){
-    //     console.log('error',err);
-    // }
 }
 
 

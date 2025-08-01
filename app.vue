@@ -16,15 +16,9 @@
 const store = useStore()
 const { locale } = useI18n()
 const { $setValidationLocale } = useNuxtApp();
-const lang = useCookie('i18n_redirected')
 
 // 初始化時設定 vee-validate 語系
 onMounted(() => {
-  $setValidationLocale(lang.value);
-})
-
-// 監聽語系變化
-watch(lang, (newLang) => {
-  $setValidationLocale(newLang);
+  $setValidationLocale(locale.value);
 })
 </script>

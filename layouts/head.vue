@@ -44,19 +44,14 @@
 
 <script setup>
 
-const lang = useCookie('i18n_redirected')
+const { setLocale, locale } = useI18n()
 const isLogin = useCookie('token_data')
-const selectLang = ref(lang.value)
+watch(locale, newVal => {
+  selectLang.value = newVal
+})
+const selectLang = ref(locale.value)
 const route = useRoute()
 const store = useStore()
-const { setLocale } = useI18n()
-const changeLang = () => {
-  setLocale(selectLang.value)
-}
-watch(lang, () => {
-  selectLang.value = lang.value
-  changeLang()
-})
 
 const { $setValidationLocale } = useNuxtApp();
 
@@ -85,9 +80,9 @@ const logout = ()=> {
 // 換語言
 const change_language = async()=>{
   // 設定驗證套件語言
+  await setLocale(selectLang.value)
   $setValidationLocale(selectLang.value);
   // 語言檔
-  changeLang()
   // 重新渲染主要頁面
   // store.pageKey++
   // 重新獲取會員資料(右上角會員名字用)

@@ -3,7 +3,6 @@ import  XLSX  from 'xlsx-js-style'
 import { useDayjs } from '#imports'
 
 export const useStore = defineStore('counter', () => {
-    const lang = useCookie('i18n_redirected')    
     const dayjs = useDayjs()
     const config = useRuntimeConfig()
     const router = useRouter()
@@ -68,9 +67,8 @@ export const useStore = defineStore('counter', () => {
         
     }
 
-    const get_user_data = async (is_first_login = false) => {
+    const get_user_data = async () => {
         const params = {
-            locale: lang.value,
             equal_id: useCookie('token_data').value?.member_id
         }
         try {
@@ -79,9 +77,6 @@ export const useStore = defineStore('counter', () => {
             //  角色
             role.value = res.response.roles
             userData.value = res.response
-            if (lang.value !== res.response.locale && is_first_login) {
-                lang.value = res.response.locale
-            }
 
             //  上級
             return res
@@ -385,7 +380,7 @@ export const useStore = defineStore('counter', () => {
     
 
     // 匯出excel
-    const exportTable = (order,mail) => {
+    const exportTable = (order,mail, locale = 'en') => {
         console.log(order);
         
         // 檔案名字
@@ -583,7 +578,7 @@ export const useStore = defineStore('counter', () => {
                     // 中英文value
                     const language_value = () => {
                         if (key) {
-                            const value = lang.value == 'en' ? options[key]?.en_value : options[key].value
+                            const value = locale == 'en' ? options[key]?.en_value : options[key].value
                             return value ? value : options[key].value
                         }
                     }
@@ -779,11 +774,6 @@ export const useStore = defineStore('counter', () => {
     const is_sunline = computed(() => {
         return !!role.value.sunline
     })
-    // 英文版樣式
-    const en_class = computed(() => {
-        
-        return lang.value == 'en' ? 'en-main' : '';
-    });
 
     return {
         pageKey,
@@ -806,7 +796,6 @@ export const useStore = defineStore('counter', () => {
         language_txt,
         is_sunline,
         exportTable,
-        en_class
     }
 }, {
   persist: [

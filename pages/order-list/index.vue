@@ -526,7 +526,7 @@ const approve_excel = async(item)=>{
     const confirmed = confirm(t('order.text_confirm_send'))
     if (confirmed) {
         const data = await get_order_data(item.id)
-        const excel = store.exportTable(data, 'mail')
+        const excel = store.exportTable(data, 'mail', locale.value)
         const formData = new FormData
         formData.append("order_id", item.id)
         formData.append("order_code", item.code)

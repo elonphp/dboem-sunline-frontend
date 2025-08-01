@@ -348,7 +348,7 @@ const submit_corporate = async ()=>{
 }
 // 寄信
 const approve_excel = async()=>{
-    const excel = store.exportTable(order_info.value,'mail')
+    const excel = store.exportTable(order_info.value,'mail', locale.value)
     const formData = new FormData
     formData.append("order_id",order_info.value.id)
     formData.append("order_code",order_info.value.code)
@@ -430,7 +430,7 @@ const get_data = async()=>{
 }
 
 const exportTable = ()=>{
-    store.exportTable(order_info.value)
+    store.exportTable(order_info.value, null, locale.value)
 }
 
 

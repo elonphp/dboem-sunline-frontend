@@ -99,7 +99,8 @@ const recaptcha  = async()=>{
   submit_btn.value = false
 }
 
-const { setLocale } = useI18n()
+const { locale, setLocale } = useI18n()
+const { $setValidationLocale } = useNuxtApp();
 const dayjs = useDayjs()
 // // 登入
 const login = async () =>{
@@ -115,8 +116,12 @@ const login = async () =>{
       expires: dayjs(res.expires_at).toDate()
     }).value = JSON.stringify(res)
     await nextTick()
-    const is_first_login = true
-    await store.get_user_data(is_first_login)
+    const res2 =  await store.get_user_data()
+    if (res2.response.locale !== locale.value) {
+      await setLocale(res2.response.locale)
+      $setValidationLocale(res2.response.locale)
+    }
+    
     router.push('/home')
   } catch (error) {
     console.log(error);

@@ -228,10 +228,12 @@ const is_Draft = computed(() =>{
 const prev_page = computed(()=>{
     return order_id? localePath(`/order-list/item?id=${order_id}`):localePath('/home')
 })
-
+const dayjs = useDayjs()
 
 
 const onSubmit = async(values)=>{
+  const now  = dayjs().format('YYYY-MM-DD HH:mm:ss')
+  const timezone = userData.value.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const data = {
         // 運送方式
         delivery_method:values.delivery_method,
@@ -256,6 +258,10 @@ const onSubmit = async(values)=>{
         side_mark:values.side_mark,
         note:values.note || "",
         tax:userData.value.tax_id_number || "",
+        order_date: now,
+        shipping_date: '',
+        delivery_date: '',
+        timezone
     }
     if(is_ship_to_me.value && (order_info.value.salesperson_id == userData.value.user_id || !order_id)){
         // 運送

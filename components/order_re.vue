@@ -4021,7 +4021,7 @@ const get_order_data = async()=>{
   }
   const res = await $api.sales.getCatalogOptions(params)
 
-  order_data.value = res.response.data
+  order_data.value = res.response
 
   // 把所有選項的code賦予空值，綁定v-model雙向控制
   Object.values(order_data.value).forEach(item=>{

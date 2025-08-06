@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import sha256 from 'js-sha256';
+// import sha256 from 'js-sha256';
 import { useReCaptcha } from 'vue-recaptcha-v3'
 const { executeRecaptcha, recaptchaLoaded } = useReCaptcha()
 
@@ -105,10 +105,9 @@ const { $setValidationLocale } = useNuxtApp();
 const dayjs = useDayjs()
 // // 登入
 const login = async () =>{
-  const sha256_PW = sha256(login_password.value.toString())
   const form_data = {
     email: login_email.value,
-    password: sha256_PW,
+    password: login_password.value,
     'google-recaptcha-v3-token':recaptchaToken.value
   }
   try {

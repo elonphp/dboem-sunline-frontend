@@ -1198,6 +1198,8 @@
                     <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
                     <span>{{ $t('order.text_dividers') }}</span>
                   </button>
+                </div>
+                <div class="col-12 text-center mt-4 d-flex align-items-center justify-content-center gap-4">
                   <button type="button" class="add_text_btn" v-if="show_add_lever && !is_none_win_lever" @click="add_json(order_data. lever_segmentation_note.code,lever_segmentation_obj)">
                     <i class="fa-solid fa-circle-plus fs-4 add_btn"></i>
                     <span>{{ order_data.lever_segmentation_note.name }}</span>

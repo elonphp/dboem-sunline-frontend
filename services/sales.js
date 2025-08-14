@@ -110,7 +110,7 @@ export default () => {
       });
     },
     ordersResource: (locale) => {
-      return useHttp.get(`v2/sales/orders/resource?locale${locale}`);
+      return useHttp.get(`v2/sales/orders/resource?locale=${locale}`);
     },
   };
 };

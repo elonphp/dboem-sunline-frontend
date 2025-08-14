@@ -382,7 +382,7 @@ const copy_data = async(id)=>{
     const confirmed =  confirm(t('order.text_confirm_copy'))
     if (confirmed){
         try {
-            const res = $api.sales.ordersCopyOrder(id)
+            const res = await $api.sales.ordersCopyOrder(id)
             alert(res.success || res.error)
             await get_list_data()
         } catch (err) {

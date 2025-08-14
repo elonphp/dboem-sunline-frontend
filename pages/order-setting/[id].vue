@@ -123,7 +123,7 @@ const onSubmit = async(values)=>{
     }
     try{
         const res = await $api.sales.dealersSaveMany(submit_data)
-        alert(res.success)
+        alert('儲存成功')
         await get_data()
         data_page.value++
     }catch(err){
@@ -134,11 +134,9 @@ const onSubmit = async(values)=>{
 
 
 
-store.show_loading(true)
 
 onMounted(async()=>{
     await get_data()
-    store.show_loading(false)
     
 })
 

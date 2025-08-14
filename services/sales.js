@@ -63,7 +63,7 @@ export default () => {
       });
     },
     ordersStatusDealerApprove: (body,order_id,locale) => {
-      return useHttp.post(`v2/sales/orders/status/dealerApprove/${order_id}?locale=${locale.value}`, {
+      return useHttp.post(`v2/sales/orders/status/dealerApprove/${order_id}?locale=${locale}`, {
         body
       });
     },

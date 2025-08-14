@@ -50,7 +50,7 @@ order:
   helper_ms: "MS= Mount Size"
   helper_om: "OM= Outside Mount"
   helper_panel_height: "Style Valance: 140mm\nFlat Valance: 150mm"
-  helper_selected_number_of_blades_exceeded: "Selected number of blades exceeded"
+  helper_selected_number_of_blades_exceeded: "Width/Number of blade groups must be greater than 228"
   helper_shipping: "Avaible to cut if width is too wide"
   helper_track: "M Floor Trck, Recessed Floor Track, T Floor Track"
   placeholder_helper_track_bypass_t_post_width_limit: "By-Pass Panel with Mid-rail maxiam width 1092mm"

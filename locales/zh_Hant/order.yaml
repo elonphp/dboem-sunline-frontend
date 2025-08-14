@@ -50,7 +50,7 @@ order:
   helper_ms: "MS=包含外框四邊的完成尺寸"
   helper_om: "OM=外裝"
   helper_panel_height: "花紋：美式線板型 140mm平面：平面式150mm可手動輸入指定高度。"
-  helper_selected_number_of_blades_exceeded: "所選葉片組數量已超過寬度制規"
+  helper_selected_number_of_blades_exceeded: "寬度/葉片組數量 必須大於228"
   helper_shipping: "請評估運送是否合適，超寬請裁切。"
   helper_track: "M軌平鋪。T軌坎入底版或是軌道預留槽。"
   placeholder_helper_track_bypass_t_post_width_limit: "推拉門單片加中柱的寬度限制為1092mm"

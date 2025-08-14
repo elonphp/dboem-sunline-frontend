@@ -1713,7 +1713,7 @@
                       class="form-select"
                       :class="{ 'error': errors[`${magnetic_data.code}.option_value_id`] }"
                       label="magnetic_options" rules="required">
-                      <option value="" >{{ $t('order.text_choose_specification') }}</option>
+                      <option value="" disabled>{{ $t('order.text_choose_specification') }}</option>
                       <option 
                         :value="item.id" 
                         v-for="item in magnetic_data.option_values"

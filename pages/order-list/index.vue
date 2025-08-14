@@ -548,17 +548,11 @@ const approve_excel = async(item)=>{
 
 // 資料
 const dayjs = useDayjs()
-const get_list_data = async(search)=>{
-      // 今日
-    const todayDate = dayjs().format('YYYY-MM-DD');
-    // 10天前
-    const tenDaysAgoDate = dayjs().subtract(10, 'day').format('YYYY-MM-DD');
-    // 預設業務
+const get_list_data = async(search)=>{   
     const params = {
       locale: locale.value,
       [store.is_dealer ? 'equal_dealer_id' : 'equal_salesperson_id']: store.is_dealer ? store.userData.employer_company_id : store.userData.member_id,
       limit: 0,
-      filter_order_date: `${tenDaysAgoDate}-${todayDate}`
     }
     // 搜尋
     if(search || status_query){

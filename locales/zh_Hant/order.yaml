@@ -60,7 +60,7 @@ order:
   text_attached_images: "附圖"
   text_auxiliaries: "輔料需求"
   text_basicsetting: "尺寸"
-  text_choose_specification: "請選擇規格"
+  text_choose_specification: "-- 請選擇規格 --"
   text_color: "顏色"
   text_confirm_copy: "是否確定複製？"
   text_confirm_delete: "是否確定刪除？"

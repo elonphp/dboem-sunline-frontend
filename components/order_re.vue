@@ -48,7 +48,7 @@
                    />
                 <label :for="`material${item.id}`">
                   <span class="pic_lable d-inline-block">
-                    <img :src="item.href" :alt="item.name" />
+                    <img :src="item.thumb" :alt="item.name" />
                   </span>
                   <span class="material_val">{{ item.name }}</span>
                 </label>
@@ -4016,14 +4016,15 @@ watch(() => t_post_json.value, (newVal, oldVal) => {
 // API ------------------------------------------------>
 const get_order_data = async()=>{
   try {
-    const params = {
-    locale: locale.value,
-    limit: 0,
-    details: 1
-  }
-  const res = await $api.sales.getCatalogOptions(params)
+  //   const params = {
+  //   locale: locale.value,
+  //   limit: 0,
+  //   details: 1
+  // }
+  // const res = await $api.sales.getCatalogOptions(params)
+  const res = await $api.sales.getListAllWithOptionValues(locale.value)
 
-  order_data.value = res.response
+  order_data.value = res.data
 
   // 把所有選項的code賦予空值，綁定v-model雙向控制
   Object.values(order_data.value).forEach(item=>{

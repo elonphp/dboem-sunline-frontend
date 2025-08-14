@@ -23,6 +23,9 @@ export default () => {
         params,
       });
     },
+    getListAllWithOptionValues: (locale) => {
+      return useHttp.get(`v2/catalog/options/listAllWithOptionValues?locale=${locale}`);
+    },
     getCatalogOptionGroups: (params) => {
       return useHttp.get(`v2/catalog/option_groups/info`, {
         params,

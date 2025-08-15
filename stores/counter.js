@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import  XLSX  from 'xlsx-js-style'
 import { useDayjs } from '#imports'
 
 export const useStore = defineStore('counter', () => {

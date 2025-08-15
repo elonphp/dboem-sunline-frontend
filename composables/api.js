@@ -1,11 +1,11 @@
 const fetch = $fetch.create({
   // 攔截request
-  onRequest({ request, options }) {
+  onRequest({ options }) {
     const {
       public: { apiUrl }
     } = useRuntimeConfig()
-
-    options.baseURL = apiUrl
+    
+    options.baseURL = process.env.NODE_ENV === 'production' ? `${window.location.origin}/api/` : apiUrl
     // 取代 process.server
     const token = useCookie('token_data')
     if (token.value) {

@@ -16,23 +16,25 @@
                 <div class="">
                     <div class="msg-box" v-if="note_data" @scroll="checkScroll">
                         <!-- msg -->
-                        <div class="msg-inner" v-for="item in note_data" :key="item.id" :class="my_msg(item.user_id)">
-                            <div class="msg-name">
-                                <div>
-                                    <i class="fas fa-circle" :class="roles_colors(item.identity,item.user_id)"></i>
-                                </div>
-                                <div>
-                                    <p class="fs-xs">{{ item.identity_name }}</p>
-                                    <p>{{ item.commenter_name }}</p>
-                                </div>
-                            </div>
-                            <div class="flex-fill">
-                                <div class="content">
-                                    {{ item.comment }}
-                                </div>
-                                <!-- <span class="time">{{ item.created_at.slice(0, 16) }}</span> -->
-                                <span class="time">{{ item.created_at }}</span>
-                            </div>
+                        <div class="msg-container">
+                          <div class="msg-inner" v-for="item in note_data" :key="item.id" :class="my_msg(item.user_id)">
+                              <div class="msg-name">
+                                  <div>
+                                      <i class="fas fa-circle" :class="roles_colors(item.identity,item.user_id)"></i>
+                                  </div>
+                                  <div>
+                                      <p class="fs-xs">{{ item.identity_name }}</p>
+                                      <p>{{ item.commenter_name }}</p>
+                                  </div>
+                              </div>
+                              <div class="flex-fill">
+                                  <div class="content">
+                                      {{ item.comment }}
+                                  </div>
+                                  <!-- <span class="time">{{ item.created_at.slice(0, 16) }}</span> -->
+                                  <span class="time">{{ item.created_at }}</span>
+                              </div>
+                          </div>
                         </div>
                         <!-- my msg -->
                         <form class="for_msg" @submit.prevent="submit_comment" v-show="show_textarea">

@@ -92,7 +92,7 @@ const order_id = route.query.id
 const order_info = ref({})
 const note_data = ref()
 const new_msg_remind = ref(false)
-const user_id = ref("")
+const user_id = computed(() => store.userData?.user_id)
 const comment = ref("")
 const show_to_bottom = ref(false)
 const show_textarea = ref(true)
@@ -195,11 +195,6 @@ const get_note_data = async () => {
         console.log('get_note_data', err);
     }
 }
-const get_user_data = async () => {
-    const data = await store.get_user_data()
-    user_id.value = data.user_id
-    console.log(user_id.value);
-}
 
 const get_data = async () => {
   try {
@@ -236,7 +231,7 @@ onMounted(async () => {
         await get_data()
         try {
             // 等全部都跑完之後移至底部
-            await Promise.all([get_note_data(), get_user_data()]);
+            await Promise.all([get_note_data()]);
             nextTick(() => {
                 const $megBox = $j('.msg-box');
                 if ($megBox.length) {

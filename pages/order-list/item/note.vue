@@ -1,7 +1,7 @@
 <template>
     <section class="bg-block" @click="new_msg_remind = false">
         <div class="container container-note">
-            <div class="table-box position-relative" v-if="!store.loading">
+            <div class="table-box position-relative">
                 <div class="d-flex align-items-center gap-4 mb-4">
                     <h2 class="title">{{ order_info.code }}</h2>
                     <div class="tag m-0 " :class="store.status_colors(order_info.status_code)">{{ order_info.status_name
@@ -14,7 +14,7 @@
                 </div>
                 <!-- msg_box -->
                 <div class="">
-                    <div class="msg-box" v-if="!store.loading && note_data" @scroll="checkScroll">
+                    <div class="msg-box" v-if="note_data" @scroll="checkScroll">
                         <!-- msg -->
                         <div class="msg-inner" v-for="item in note_data" :key="item.id" :class="my_msg(item.user_id)">
                             <div class="msg-name">
@@ -134,7 +134,6 @@ const roles_colors = (role,id) =>{
 // 傳送訊息
 const submit_comment = async () => {
     submit_btn.value = true
-    const url = `${store.baseUrl}api/v2/sales/orders/comments/add?locale=${locale.value}`
     const comment_data = {
         order_id: order_id,
         comment: comment.value,
@@ -215,7 +214,6 @@ const set_read = async ()=>{
 
 let update_note_data;
 
-store.show_loading(true)
 
 onMounted(async () => {
     if(order_id){
@@ -224,7 +222,6 @@ onMounted(async () => {
         try {
             // 等全部都跑完之後移至底部
             await Promise.all([get_note_data(), get_user_data()]);
-            store.show_loading(false);
             nextTick(() => {
                 const $megBox = $j('.msg-box');
                 if ($megBox.length) {

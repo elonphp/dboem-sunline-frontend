@@ -47,7 +47,7 @@ export default () => {
       });
     },
     ordersCommentsClearCommentCount: (order_id) => {
-      return useHttp.get(`v2/sales/orders/comments/clearCommentCount?order_id=${order_id}`);
+      return useHttp.get(`v2/sales/orders/comments/clearCommentCount?order_id=${order_id}`, {} , { noLoading: trues });
     },
     ordersCopyOrderProduct: (id) => {
       return useHttp.post(`v2/sales/orders/copyOrderProduct/${id}`);
@@ -86,12 +86,12 @@ export default () => {
     ordersCommentsAdd: (body, locale) => {
       return useHttp.post(`v2/sales/orders/comments/add?locale=${locale}`, {
         body
-      });
+      }, { noLoading: true });
     },
     getOrdersCommentsList: (params) => {
       return useHttp.get(`v2/sales/orders/comments/list`, {
         params
-      });
+      }, { noLoading: true });
     },
     getDealersOptionList: (locale) => {
       return useHttp.get(`v2/dealers/option/list?locale=${locale}`);

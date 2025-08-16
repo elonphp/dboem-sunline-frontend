@@ -5,24 +5,38 @@ const fetch = $fetch.create({
       public: { apiUrl }
     } = useRuntimeConfig()
     
-    options.baseURL = process.env.NODE_ENV === 'production' ? `${window.location.origin}/api/` : apiUrl
-    // 取代 process.server
+    options.baseURL = process.env.NODE_ENV === 'production' 
+      ? `${window.location.origin}/api/` 
+      : apiUrl
+
+    // token 帶入
     const token = useCookie('token_data')
     if (token.value) {
       options.headers = new Headers(options.headers)
       options.headers.set('Authorization', `Bearer ${token.value.access_token}`)
     }
-    const store = useStore()
-    store.show_loading(true)
+
+    // 🚩 判斷是否需要 loading
+    if (!options.noLoading) {
+      const store = useStore()
+      store.show_loading(true)
+    }
   },
-  onRequestError({ error }) {
-    const store = useStore()
-    store.show_loading(false)
+
+  onRequestError({ error, options }) {
+    if (!options.noLoading) {
+      const store = useStore()
+      store.show_loading(false)
+    }
     return error
   },
+
   async onResponse({ response, options }) {
-    const store = useStore()
-    store.show_loading(false)
+    if (!options.noLoading) {
+      const store = useStore()
+      store.show_loading(false)
+    }
+
     // 1. logout API 直接略過
     if (response.url && response.url.includes('/logout')) {
       return Promise.reject(response._data)
@@ -30,24 +44,21 @@ const fetch = $fetch.create({
 
     // 2. 只處理 401
     if (response.status === 401) {
-      // 只允許 retry 一次
       if (options._retry) {
-        store.logout()
+        useStore().logout()
         return
       }
       options._retry = true
       try {
-        await store.refresh_token(true)
-        // refresh 成功，重打原本的 API
+        await useStore().refresh_token(true)
         return fetch(response.url, options)
       } catch (error) {
-        // refresh 失敗，直接登出
-        store.logout()
+        useStore().logout()
         return
       }
     }
 
-    // 3. 其他狀態照常處理
+    // 3. 其他狀態
     if (response.status === 200) {
       if (response._data?.success === false || response._data?.error) {
         return Promise.reject(response._data)
@@ -56,29 +67,32 @@ const fetch = $fetch.create({
     }
     return Promise.reject(response._data)
   },
-  onResponseError({ response }) {
-    const store = useStore()
-    store.show_loading(false)
+
+  onResponseError({ response, options }) {
+    if (!options.noLoading) {
+      const store = useStore()
+      store.show_loading(false)
+    }
     return Promise.reject(response?._data ?? null)
   }
 })
 
 export const useHttp = {
-  get:(url, options = {}) => {
+  get:(url, options = {}, extra = {}) => {
     const { params } = options
-    return fetch(url, { method: 'get', params })
+    return fetch(url, { method: 'get', params, ...extra })
   },
 
-  post:(url, options = {}) => {
+  post:(url, options = {}, extra = {}) => {
     const { body } = options
-    return fetch(url, { method: 'post', body })
+    return fetch(url, { method: 'post', body, ...extra })
   },
 
-  put:(url, body) => {
-    return fetch(url, { method: 'put', body })
+  put:(url, body, extra = {}) => {
+    return fetch(url, { method: 'put', body, ...extra })
   },
 
-  delete:(url, body) => {
-    return fetch(url, { method: 'delete', body })
+  delete:(url, body, extra = {}) => {
+    return fetch(url, { method: 'delete', body, ...extra })
   }
 }

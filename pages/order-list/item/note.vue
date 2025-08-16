@@ -37,7 +37,13 @@
                         <!-- my msg -->
                         <form class="for_msg" @submit.prevent="submit_comment" v-show="show_textarea">
                             <div class="msg_height_box">{{ comment }}</div>
-                            <textarea v-model="comment" @keyup.enter="submit_comment"></textarea>
+                            <textarea 
+                              v-model="comment"   
+                              @keydown.enter.prevent="handleEnter"
+                              @compositionstart="isComposing = true"
+                              @compositionend="isComposing = false"
+                            >
+                          </textarea>
                             <button type="submit" class="btn sent_go" :disabled="submit_btn">
                                 <span v-if="!submit_btn">{{ $t('default.text_send') }}</span>
                                 <div class="loader loader--style2" title="1" v-else>
@@ -150,6 +156,15 @@ const submit_comment = async () => {
     await get_note_data()
     to_bottom()
     submit_btn.value = false
+}
+const isComposing = ref(false)
+
+const handleEnter = (e) => {
+  // 如果正在中文輸入狀態，就不要送出
+  if (isComposing.value) return
+
+  // 如果輸入法已經結束，就正常送出
+  submit_comment()
 }
 
 const get_note_data = async () => {

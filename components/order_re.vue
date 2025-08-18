@@ -2898,6 +2898,15 @@
                           {{ data.name }}
                         </option>
                       </VeeField>
+                      <VeeField
+                        v-if="item.auxiliary_length === 'other' || item.auxiliary_length === '其他'" 
+                        rules="required"
+                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_custom_length`"
+                        :id="`auxiliary_custom_length${idx + 1 }`"
+                        type="text" 
+                        class="form-control mt-2"
+                        v-model="item.auxiliary_custom_length" 
+                      />
                     </div>
                   </div>
                   <div class="row mb-3">
@@ -3375,7 +3384,7 @@ const corner_angle_obj = ref([
 
 // 輔料obj
 const auxiliary_obj = ref([
-    { auxiliary_width: "", auxiliary_height: "", auxiliary_length: "", auxiliary_quantity: "" },
+    { auxiliary_width: "", auxiliary_height: "", auxiliary_length: "", auxiliary_quantity: "", auxiliary_custom_length: '' },
 ]);
 
 // 圖片obj

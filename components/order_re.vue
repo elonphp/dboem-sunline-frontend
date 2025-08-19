@@ -2886,20 +2886,20 @@
                 <div class="col-md-6 flex-auto">
                   <div class="row mb-3">
                     <label class="label-set col-form-label col-sm-4 " for="">
-                      {{ order_data.auxiliary_length.name }}
+                      {{ order_data.packer_type.name }}
                     </label>
                     <div class="col-sm-8">
                       <VeeField as="select" :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_length`"
                         :id="`auxiliary_length${idx + 1 }`" v-model="item.auxiliary_length"
                         class="form-select" rules="required">
                         <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
-                        <option v-for="data in order_data.auxiliary_length.option_values" :key="data.id"
+                        <option v-for="data in order_data.packer_type.option_values" :key="data.id"
                           :value="data.name">
                           {{ data.name }}
                         </option>
                       </VeeField>
                       <VeeField
-                        v-if="item.auxiliary_length === 'other' || item.auxiliary_length === '其他'" 
+                        v-if="item.auxiliary_length === order_data.packer_type.option_values[order_data.packer_type.option_values.length - 1].name" 
                         rules="required"
                         :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_custom_length`"
                         :id="`auxiliary_custom_length${idx + 1 }`"
@@ -3790,7 +3790,27 @@ const corner_angle_data = computed(()=>{
 
 // 輔料
 const auxiliary_data = computed(()=>{
-  return data_val.value[order_data.value.auxiliaries?.code]
+  const auxiliariesDatas = data_val.value[order_data.value.auxiliaries?.code]
+  if (locale.value === 'en') {
+    return auxiliariesDatas.map(item => {
+      if (item.auxiliary_length === '其他') {
+        return {
+          ...item,
+          auxiliary_length: 'Custom'
+        }
+      }
+      return item
+    })
+  }
+  return auxiliariesDatas.map(item => {
+    if (item.auxiliary_length === 'Custom') {
+      return {
+        ...item,
+        auxiliary_length: '其他'
+      }
+    }
+    return item
+  })
 })
 
 // 不要轉角片
@@ -4280,7 +4300,7 @@ const get_product_data = async () => {
       order_form.value.setFieldValue("outer_frame_cut_position.option_value_id", outer_frame_cut_position);
       
       // 不可編輯
-      const order_state = data.status_code 
+      const order_state = res.response.status_code 
       if(view){
         examine_mode()
       }else{

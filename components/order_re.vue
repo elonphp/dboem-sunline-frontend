@@ -3233,7 +3233,8 @@ const set_name = (item,code)=>{
 // 設置選項value的自訂名稱值
 const set_custom_name = (item,code)=>{
   if(item.option_id !== 1008){
-    data_val.value[code] = item.code + " " + show_custom_name(item)
+    const name = show_custom_name(item)
+    data_val.value[code] = `${item.code ? item.code + " " : ''}${name}`
   }else{
     data_val.value[code] = show_custom_name(item)
   }

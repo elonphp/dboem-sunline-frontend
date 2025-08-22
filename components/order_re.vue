@@ -2898,15 +2898,23 @@
                           {{ data.name }}
                         </option>
                       </VeeField>
-                      <VeeField
-                        v-if="item.auxiliary_length === order_data.packer_type.option_values[order_data.packer_type.option_values.length - 1].name" 
-                        rules="required"
-                        :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_custom_length`"
-                        :id="`auxiliary_custom_length${idx + 1 }`"
-                        type="text" 
-                        class="form-control mt-2"
-                        v-model="item.auxiliary_custom_length" 
-                      />
+                    </div>
+                  </div>
+                  <div class="row mb-3" v-if="item.auxiliary_length === order_data.packer_type.option_values[order_data.packer_type.option_values.length - 1].name">
+                    <label class="label-set col-form-label col-sm-4 ">
+                      {{ t('order.text_auxiliary_custom_length') }}
+                    </label>
+                    <div class="col-sm-8">
+                      <div class="input-group">
+                        <VeeField
+                          rules="required"
+                          :name="`${order_data.auxiliaries.code}.value[${idx}].auxiliary_custom_length`"
+                          :id="`auxiliary_custom_length${idx + 1 }`"
+                          type="text" 
+                          class="form-control"
+                          v-model="item.auxiliary_custom_length" 
+                        />
+                      </div>
                     </div>
                   </div>
                   <div class="row mb-3">

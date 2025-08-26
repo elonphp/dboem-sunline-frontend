@@ -551,8 +551,7 @@ const dayjs = useDayjs()
 const get_list_data = async(search)=>{   
     const params = {
       locale: locale.value,
-      [store.is_dealer ? 'equal_dealer_id' : 'equal_salesperson_id']: store.is_dealer ? store.userData.employer_company_id : store.userData.member_id,
-      limit: 0,
+      [store.is_dealer ? 'equal_dealer_id' : 'equal_salesperson_id']: store.is_dealer ? store.userData.employer_company_id : store.userData.member_id
     }
     // 搜尋
     if(search || status_query){

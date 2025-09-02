@@ -2,6 +2,7 @@ import  XLSX  from 'xlsx-js-style'
 
 export function useExportExcel() {
   const { t, locale } = useI18n()
+  const dayjs = useDayjs()
   const textMap = ref(null) //匯出excel的json_header
     // json選項標題語言文字
     const json_headers_language = (data) => {
@@ -128,6 +129,21 @@ export function useExportExcel() {
   // 匯出excel
 // 匯出excel
   const exportTable = (order, mail) => {
+    // console.log(order);
+    const orderDate = dayjs(order.order_date).format('YYYY-MM-DD')
+    const orderNumber = order.code
+    const customName = order.customer_name
+    const total = order.total
+    const phone = order.salesperson_mobile
+    const fax = order.salesperson_telephone
+    const addressHandle = () => {
+      const { shipping_zip_code, shipping_city, shipping_country_name, shipping_address1, shipping_address2 } = order
+      if (shipping_zip_code && shipping_city && shipping_country_name && shipping_address1 && shipping_address2) {
+        return `${shipping_zip_code} ${shipping_city} ${shipping_country_name} ${shipping_address1} ${shipping_address2}`
+      }
+      return ''
+    }
+
     try {
       if (!order?.order_products || order.order_products.length === 0) {
         alert('沒有可匯出的訂單產品資料');
@@ -146,6 +162,23 @@ export function useExportExcel() {
         alert('沒有符合條件的產品資料可匯出');
         return;
       }
+
+            // 訂單資訊區塊 - 重新排列
+      const infoRows = [
+        // 第1列 (r:0)
+        ["Homecreations", "", "", "", "", "", "", "", "CUSTOMER NAME:", "", customName || "", "", "", "", "", "", "", "", ""],
+        // 第2列 (r:1) - 空列，用於合併
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        // 第3列 (r:2)
+        ["Unit 21 Clarke Road, Milton Keynes, MK1 1LG", "", "", "", "", "", "", "", "ADDRESS：", "", addressHandle(), "", "", "", "", "", "ORDER Total M2", "", total || ""],
+        // 第4列 (r:3)
+        ["United Kingdom", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        // 第5列 (r:4)
+        [`Phone:${phone || ""}`, "", "", "", "", "", "", "", "ORDER NUMBER:", "", orderNumber || "", "", "", "", "", "", "", "", ""],
+        // 第6列 (r:5)
+        [`Fax:${fax || ""}`, "", "", "", "", "", "", "", "DATE:", "", orderDate || "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""], // 空行
+      ];
 
       excel_data.forEach((item_data, index) => {
         const sheetName = `type${index + 1}`;
@@ -218,8 +251,9 @@ export function useExportExcel() {
         table_header.push({ name: t('order.text_quantity'), code: 'quantity' });
         table_header.push({ name: t('order.text_option_section_note'), code: 'note' });
 
-        // 填資料
-        const row_data = item_data.map((item, idx) => {
+        // 填資料 - 每筆資料佔用三列，但所有資料都放在第一列
+        const row_data = [];
+        item_data.forEach((item, idx) => {
           const options = item.order_product_options || {};
           const json_keys = Object.keys(options).filter(k => options[k]?.type === 'json');
           const json_arr = json_keys.map(k => {
@@ -229,35 +263,233 @@ export function useExportExcel() {
             } catch { return null; }
           }).filter(Boolean);
 
-          const row = [idx + 1];
-          table_header.forEach(header => {
+          // 第一列資料 - 包含所有資料
+          const row1 = [idx + 1];
+          // 第二列資料 - 所有欄位都是空白
+          const row2 = [''];
+          // 第三列資料 - 所有欄位都是空白
+          const row3 = [''];
+          
+          table_header.forEach((header, headerIdx) => {
+            // 跳過第一欄 item#，因為已經處理了
+            if (headerIdx === 0) return;
+            
             const key = Object.keys(options).find(k => options[k]?.option_code === header.code);
+            let cellValue = '';
+            
             if (!key && header.code !== 'json' && header.code !== 'sqm' && header.code !== 'quantity' && header.code !== 'note') {
-              row.push('');
-              return;
-            }
-            if (header.code === 'sqm') {
-              row.push(item.sqm || '');
+              cellValue = '';
+            } else if (header.code === 'sqm') {
+              cellValue = item.sqm || '';
             } else if (header.code === 'quantity') {
-              row.push(item.quantity || '');
+              cellValue = item.quantity || '';
             } else if (header.code === 'note') {
-              row.push(item.note && item.note !== 'null' ? item.note : '');
+              cellValue = item.note && item.note !== 'null' ? item.note : '';
             } else if (header.code === 'json') {
               const val = json_body_value(json_arr, header.name);
-              row.push(val === 'Y' ? '✓' : val === 'N' ? '' : val);
+              cellValue = val === 'Y' ? '✓' : val === 'N' ? '' : val;
             } else if (options[key]?.type === 'checkbox') {
               const values = options[key].option_values.map(v => v.value === 'Y' ? '✓' : '');
-              row.push(values.join(', '));
+              cellValue = values.join(', ');
             } else {
               const val = locale.value === 'en' ? options[key]?.en_value : options[key]?.value;
-              row.push(val || '');
+              cellValue = val || '';
             }
+            
+            // 防止顯示 undefined、null 或其他不合法資料
+            if (cellValue === 'undefined' || cellValue === 'null' || cellValue === undefined || cellValue === null) {
+              cellValue = '';
+            }
+            
+            // 第一列放入資料
+            row1.push(cellValue);
+            // 第二列放空字串
+            row2.push('');
+            // 第三列放空字串
+            row3.push('');
           });
-          return row;
+          
+          // 將三列都加入資料陣列
+          row_data.push(row1);
+          row_data.push(row2);
+          row_data.push(row3);
         });
 
-        const data = [table_header.map(h => h.name), ...row_data];
-        XLSX.utils.sheet_add_aoa(ws, data, { origin: 'A1' });
+        // 合併訂單資訊與表格資料
+        let sheetData = [
+          ...infoRows,
+          // 表格標題第一列
+          table_header.map(h => h.name),
+          // 表格標題第二列（空白列，用於合併）
+          table_header.map(() => ''),
+          // 表格標題第三列（空白列，用於合併）
+          table_header.map(() => ''),
+          ...row_data
+        ];
+        XLSX.utils.sheet_add_aoa(ws, sheetData, { origin: 'A1' });
+
+        // 設定欄位寬度
+        const colWidths = [];
+        for (let col = 0; col < table_header.length; col++) {
+          // 計算這一欄所有內容的最大長度
+          let maxLength = table_header[col].name.length; // 標題長度
+          
+          // 檢查資料列的內容長度
+          item_data.forEach((item, idx) => {
+            const options = item.order_product_options || {};
+            const json_keys = Object.keys(options).filter(k => options[k]?.type === 'json');
+            const json_arr = json_keys.map(k => {
+              try {
+                const val = options[k]?.value;
+                return (val && val !== 'undefined') ? JSON.parse(val) : null;
+              } catch { return null; }
+            }).filter(Boolean);
+
+            let cellValue = '';
+            const header = table_header[col];
+            
+            if (col === 0) {
+              cellValue = (idx + 1).toString();
+            } else {
+              const key = Object.keys(options).find(k => options[k]?.option_code === header.code);
+              
+              if (!key && header.code !== 'json' && header.code !== 'sqm' && header.code !== 'quantity' && header.code !== 'note') {
+                cellValue = '';
+              } else if (header.code === 'sqm') {
+                cellValue = item.sqm || '';
+              } else if (header.code === 'quantity') {
+                cellValue = item.quantity || '';
+              } else if (header.code === 'note') {
+                cellValue = item.note && item.note !== 'null' ? item.note : '';
+              } else if (header.code === 'json') {
+                const val = json_body_value(json_arr, header.name);
+                cellValue = val === 'Y' ? '✓' : val === 'N' ? '' : val;
+              } else if (options[key]?.type === 'checkbox') {
+                const values = options[key].option_values.map(v => v.value === 'Y' ? '✓' : '');
+                cellValue = values.join(', ');
+              } else {
+                const val = locale.value === 'en' ? options[key]?.en_value : options[key]?.value;
+                cellValue = val || '';
+              }
+            }
+            
+            // 防止顯示 undefined、null 或其他不合法資料
+            if (cellValue === 'undefined' || cellValue === 'null' || cellValue === undefined || cellValue === null) {
+              cellValue = '';
+            }
+            
+            if (cellValue && cellValue.length > maxLength) {
+              maxLength = cellValue.length;
+            }
+          });
+          
+          // 設定最小寬度和最大寬度，並根據內容調整
+          const minWidth = 10;
+          const maxWidth = 50;
+          let width = Math.max(minWidth, Math.min(maxWidth, maxLength * 1.2));
+          
+          colWidths.push({ wch: width });
+        }
+        
+        ws['!cols'] = colWidths;
+
+        // 文字全部置中，並設定自動換行 - 確保所有儲存格都有樣式
+        const totalRows = sheetData.length;
+        const totalCols = Math.max(...sheetData.map(row => row.length)); // 確保涵蓋所有欄位
+        for (let r = 0; r < totalRows; r++) {
+          for (let c = 0; c < totalCols; c++) {
+            const cellRef = XLSX.utils.encode_cell({ r, c });
+            // 確保儲存格存在，如果不存在就創建
+            if (!ws[cellRef]) {
+              ws[cellRef] = { v: '', t: 's' }; // 創建空白儲存格
+            }
+            // 設定樣式
+            ws[cellRef].s = ws[cellRef].s || {};
+            ws[cellRef].s.alignment = ws[cellRef].s.alignment || {};
+            ws[cellRef].s.alignment.horizontal = 'center';
+            ws[cellRef].s.alignment.vertical = 'center';
+            ws[cellRef].s.alignment.wrapText = true; // 自動換行
+          }
+        }
+
+        // 設定列高
+        const rowHeights = [];
+        for (let r = 0; r < totalRows; r++) {
+          // 為標題列和資料列設定適中的高度
+          if (r >= infoRows.length) {
+            // 表格部分（標題和資料）設定適中高度
+            rowHeights.push({ hpt: 25 }); // 25 點高度，再少一點
+          } else {
+            // 訂單資訊區塊保持預設高度
+            rowHeights.push({ hpt: 20 }); // 20 點高度
+          }
+        }
+        
+        ws['!rows'] = rowHeights;
+
+        // 合併儲存格設定
+        const merges = [
+          // 訂單資訊區塊的合併儲存格
+          // Homecreations 合併兩列、從A到G
+          { s: { r:0, c:0 }, e: { r:1, c:6 } },
+          // CUSTOMER NAME: 合併兩列、從I到J
+          { s: { r:0, c:8 }, e: { r:1, c:9 } },
+          // customName 合併兩列、從K到L
+          { s: { r:0, c:10 }, e: { r:1, c:11 } },
+          // Unit 21 Clarke Road... 第三列、從A到G
+          { s: { r:2, c:0 }, e: { r:2, c:6 } },
+          // ADDRESS：第三列從I到J
+          { s: { r:2, c:8 }, e: { r:2, c:9 } },
+          // address 從K到Q
+          { s: { r:2, c:10 }, e: { r:2, c:16 } },
+          // ORDER Total M2 第三列從R到S
+          { s: { r:2, c:17 }, e: { r:2, c:18 } },
+          // United Kingdom 第四列從A到G
+          { s: { r:3, c:0 }, e: { r:3, c:6 } },
+          // "Phone:" + phone 第五列從A到G
+          { s: { r:4, c:0 }, e: { r:4, c:6 } },
+          // ORDER NUMBER: 第五列從I到J
+          { s: { r:4, c:8 }, e: { r:4, c:9 } },
+          // orderNumber從K到M
+          { s: { r:4, c:10 }, e: { r:4, c:12 } },
+          // "Fax:" + fax 第六列從A到G
+          { s: { r:5, c:0 }, e: { r:5, c:6 } },
+          // DATE:從I到J
+          { s: { r:5, c:8 }, e: { r:5, c:9 } },
+          // orderDate從K到M
+          { s: { r:5, c:10 }, e: { r:5, c:12 } },
+        ];
+
+        // 表格資料的合併儲存格 - 表格標題和每個產品的所有欄位都跨三列
+        const headerRowIndex = infoRows.length; // 標題列的索引
+        const headerSecondRow = headerRowIndex + 1; // 標題第二列
+        const headerThirdRow = headerRowIndex + 2; // 標題第三列
+        const dataStartRow = headerRowIndex + 3; // 資料開始的列（因為標題佔三列）
+        
+        // 為表格標題的每一欄建立合併儲存格（標題跨三列）
+        for (let col = 0; col < table_header.length; col++) {
+          merges.push({
+            s: { r: headerRowIndex, c: col }, // 標題第一列
+            e: { r: headerThirdRow, c: col }  // 標題第三列
+          });
+        }
+        
+        // 為每個 item 的所有欄位建立合併儲存格（每三列合併一次）
+        for (let i = 0; i < item_data.length; i++) {
+          const startRow = dataStartRow + (i * 3); // 每個 item 佔三列
+          const endRow = startRow + 2; // 第三列
+          
+          // 為這個產品的每一欄都建立合併儲存格
+          for (let col = 0; col < table_header.length; col++) {
+            merges.push({
+              s: { r: startRow, c: col },
+              e: { r: endRow, c: col }
+            });
+          }
+        }
+
+        ws['!merges'] = merges;
+
         XLSX.utils.book_append_sheet(wb, ws, sheetName);
       });
 

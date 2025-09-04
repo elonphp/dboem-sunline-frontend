@@ -3138,7 +3138,7 @@ const link_items = ref({
     { id: "partitio", title: t('order.text_option_section_dividers') },
     { id: "track_style", title: t('order.text_track_style') },
     { id: "decorative", title: t('order.text_decorative_pane') },
-    { id: "auxiliary", title: t('order.text_option_section_packer') },
+    // { id: "auxiliary", title: t('order.text_option_section_packer') },
     { id: "other", title: t('order.text_option_section_other') },
     { id: "note", title: t('order.text_option_section_note') },
   ],

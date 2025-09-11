@@ -404,13 +404,20 @@
                     {{ order_data.blade_numbers.name }}
                   </label>
                   <div class="col-sm-8">
-                    <VeeField type="number" :name="`${order_data.blade_numbers.code}.value`"
-                    @keydown="clearInput"
-                      :id="order_data.blade_numbers.id" class="form-control"
+                    <VeeField as="select" :name="`${order_data.blade_numbers.code}.value`"
+                      :id="order_data.blade_numbers.id" class="form-select"
                       :class="{ 'error': errors[`${order_data.blade_numbers.code}.value`] }"
                       v-model="data_val[order_data.blade_numbers.code]" label="blade_numbers"
-                      :rules="validateWidth"
-                       />
+                      @change="() => {
+                        data_val[order_data.blade_arrangement.code] = ''
+                      }"
+                      rules="required">
+                      <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5+">5+</option>
+                    </VeeField>
                     <!-- <span class="fs-xs">{{ doorSet_comment }}</span> -->
                     <VeeField type="hidden" :name="`${order_data.blade_numbers.code}.name`"
                       :value="order_data.blade_numbers.name" />
@@ -455,13 +462,36 @@
                     {{ order_data.blade_arrangement.name }}
                   </label>
                   <div class="col-sm-8">
-                    <VeeField type="text" :name="`${order_data.blade_arrangement.code}.value`"
+                    <template v-if="data_val[order_data.blade_numbers.code] === '5+'">
+                      <VeeField type="text" :name="`${order_data.blade_arrangement.code}.value`"
                       :id="order_data.blade_arrangement.name"
                       placeholder="2P-1B/1F，4P-1B/1F/1F/1B"
                       v-model="data_val[order_data.blade_arrangement.code]" 
                       class="form-control"
                       :class="{ 'error': errors[`${order_data.blade_arrangement.code}.value`] }"
-                      label="blade_arrangement" rules="required" />
+                      label="blade_arrangement" rules="required">
+                    </VeeField>
+                    </template>
+                    <template v-else>
+                      <VeeField as="select" :name="`${order_data.blade_arrangement.code}.value`"
+                        :id="order_data.blade_arrangement.name"
+                        placeholder="2P-1B/1F，4P-1B/1F/1F/1B"
+                        v-model="data_val[order_data.blade_arrangement.code]" 
+                        class="form-control"
+                        :class="{ 'error': errors[`${order_data.blade_arrangement.code}.value`] }"
+                        label="blade_arrangement" rules="required">
+                        <option value="" disabled selected>{{ $t('order.text_choose_specification') }}</option>
+                        <template v-if="data_val[order_data.blade_numbers.code] === '2'">
+                          <option v-for="op in order_data.panel_layout_2.option_values" :value="op.id">{{ op.name }}</option>
+                        </template>
+                        <template v-else-if="data_val[order_data.blade_numbers.code] === '3'">
+                          <option v-for="op in order_data.panel_layout_3.option_values" :value="op.id">{{ op.name }}</option>
+                        </template>
+                        <template v-else-if="data_val[order_data.blade_numbers.code] === '4'">
+                          <option v-for="op in order_data.panel_layout_4.option_values" :value="op.id">{{ op.name }}</option>
+                        </template>
+                      </VeeField>
+                    </template>
                     <VeeField type="hidden" :name="`${order_data.blade_arrangement.code}.name`"
                       :value="order_data.blade_arrangement.name" />
                     <VeeField type="hidden" :name="`${order_data.blade_arrangement.code}.option_id`"
@@ -3747,6 +3777,7 @@ const lever_segmentation_note_data = computed(()=>{
 
 // 中隔
 const Divider_rail_data = computed(()=>{
+  if (!order_data.value?.dividers_json?.code) return []
   return data_val.value[order_data.value?.dividers_json?.code]
 })
 
@@ -3943,7 +3974,7 @@ watch(() => data_val.value[order_data.value?.win_width?.code],debounce(async (ne
       order_form.value.validateField(`${order_data.value?.blade_numbers?.code}.value`);  //觸發葉片組驗證
       track_to_window_width() // 軌道總寬與窗同寬
       
-      if (t_post_json.value.t_post_height.length > 0 && t_post_json.value.t_post_average == 'Y') {
+      if (t_post_json.value?.t_post_height?.length > 0 && t_post_json.value.t_post_average == 'Y') {
         // 調整所有垂直T的均分值
         t_post_json.value.t_post_height.forEach((item, idx) => {
           calculate_T_POST(idx)
@@ -3952,13 +3983,19 @@ watch(() => data_val.value[order_data.value?.win_width?.code],debounce(async (ne
     }
   }, 300)
 );
+// 葉片組數量預設2
+watch(() => data_val.value[order_data.value?.blade_numbers?.code], () => {
+  if (!data_val.value[order_data.value?.blade_numbers?.code]) {
+    data_val.value[order_data.value?.blade_numbers?.code] = '2'
+  }
+}, { immediate: true });
 
 // 葉片組結構value改成大寫
-watch(() => data_val.value[order_data.value?.blade_arrangement?.code], debounce((newVal, oldVal) => {
-  if (newVal) {
-    data_val.value[order_data.value?.blade_arrangement?.code] = newVal.toUpperCase();
-  }
-},0),{ immediate: true })
+// watch(() => data_val.value[order_data.value?.blade_arrangement?.code], debounce((newVal, oldVal) => {
+//   if (newVal) {
+//     data_val.value[order_data.value?.blade_arrangement?.code] = newVal.toUpperCase();
+//   }
+// },0),{ immediate: true })
 
 // 中隔置中計算
 watch(() => Divider_rail_data.value, (newPartitio, oldPartitio) => {
